@@ -1,7 +1,7 @@
 # Личный проект «Большое путешествие» [![Build status][travis-image]][travis-url]
 
 * Студент: [Макс Кравченко](https://up.htmlacademy.ru/ecmascript/8/user/544023).
-* Наставник: `Неизвестно`.
+* Наставник: [Всеволод Артемьев](https://htmlacademy.ru/profile/id459331).
 
 ---
 
