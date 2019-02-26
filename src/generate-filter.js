@@ -15,5 +15,5 @@ const makeFilter = (acc, filter) => {
   return acc;
 };
 
-// заполняем разметку фильтра данными из массива фильтров
+// Заполняем разметку фильтра данными из массива фильтров
 export const filters = makeStringFromData(filtersData, makeFilter);

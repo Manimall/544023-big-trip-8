@@ -13,6 +13,11 @@ addToHtml(filters, filterListWrapper);
 // добавляем на страницу маршруты путешествий
 addToHtml(trips, tripListWrapper);
 
+/**
+ * Добавляем функцию-обработчик события для переключения фильтров,
+ * удаляем все ранее созданные путешествия и добавляем случайное кол-во новых
+ * @param {evt} evt - событие, на котором ловим клик
+ */
 const addFilterClickHandler = (evt) => {
   const clickedFilter = evt.target.classList.contains(`trip-filter__item`);
   if (clickedFilter) {
@@ -21,5 +26,6 @@ const addFilterClickHandler = (evt) => {
   }
 };
 
+// устанавливаем обработчик события на контейнер секции с фильтрами
 filterListWrapper.addEventListener(`click`, addFilterClickHandler);
 
