@@ -1,19 +1,17 @@
 import {tripsData} from './trips-data';
 import {makeStringFromData} from './helpers';
 
-const getOffer = (offers) => offers.map((offer) =>
-  `
-   <li>
+
+const getOffersLayout = (offers) => offers.map((offer) => {
+  return `
+  <li>
       <button class="trip-point__offer">${offer}</button>
-   </li>
-  `)
-;
+  </li>
+  `;
+});
 
-console.log(getOffer([1, 2, 3]));
-
-
-const makeTrip = (trip) =>
-  `
+const makeTrip = (acc, trip) => {
+  acc += `
   <article class="trip-point">
     <i class="trip-icon">${trip.icon}</i>
     <h3 class="trip-point__title">${trip.title}</h3>
@@ -23,13 +21,12 @@ const makeTrip = (trip) =>
     </p>
     <p class="trip-point__price">${trip.price}</p>
     <ul class="trip-point__offers">
-      ${getOffer(trip.offers)}
+      ${getOffersLayout(trip.offers).join(``)}
     </ul>
   </article>
-  `
-;
-
-console.log(makeTrip);
+  `;
+  return acc;
+};
 
 export const trips = makeStringFromData(tripsData, makeTrip);
 

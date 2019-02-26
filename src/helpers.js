@@ -21,7 +21,7 @@ const makeStringFromData = (layoutData, cb) => layoutData.reduce(cb, ``);
  * @param {boolean} [addToStart=false] - куда именно вставляем (если true - вначало fragmentWrapper)
  */
 const addToHtml = (fragment, fragmentWrapper, addToStart = true) => {
-  fragmentWrapper.insertAdjancedHtml(addToStart ? `afterbegin` : `beforeend`, fragment);
+  fragmentWrapper.insertAdjacentHTML(addToStart ? `afterbegin` : `beforeend`, fragment);
 };
 
 export {getRandomNumber, makeStringFromData, addToHtml};
