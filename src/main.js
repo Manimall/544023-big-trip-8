@@ -1,17 +1,27 @@
-import {getRandomNumber, addToHtml} from './helpers';
-import {filters} from './generate-filter';
-import {trips, insertRandomTripsToHtml} from './generate-trip';
+import {makeStringFromData, getRandomNumber, addToHtml} from './helpers';
+import {tripsData} from './trips-data';
+import {filtersData} from '.filters-data';
+import {makeFilter} from './generate-filter';
+import {makeTrip, insertRandomTripsToHtml} from './generate-trip';
 
 const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
 
 const filterListWrapper = document.querySelector(`.trip-filter`); // контэйнер для вставки фильтров
 const tripListWrapper = document.querySelector(`.trip-day__items`); // контэйнер для вставки событий
 
-// добавляем на страницу фильтры
-addToHtml(filters, filterListWrapper);
+// Генерируем разметку для всех путешествий (элементов массива tripsData)
+// документация к функции описана в helpers.js
+const trips = makeStringFromData(tripsData, makeTrip);
 
 // добавляем на страницу маршруты путешествий
 addToHtml(trips, tripListWrapper);
+
+
+// Заполняем разметку фильтра данными из массива фильтров
+const filters = makeStringFromData(filtersData, makeFilter);
+
+// добавляем на страницу фильтры
+addToHtml(filters, filterListWrapper);
 
 /**
  * Добавляем функцию-обработчик события для переключения фильтров,

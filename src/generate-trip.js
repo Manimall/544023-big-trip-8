@@ -1,5 +1,5 @@
+import {getRandomNumber} from './helpers';
 import {tripsData} from './trips-data';
-import {makeStringFromData, getRandomNumber} from './helpers';
 
 /**
  * Отрисовываем каждое предложение из массива offers (в обьекте trip)
@@ -39,10 +39,6 @@ const makeTrip = (acc, trip) => {
   return acc;
 };
 
-// Генерируем разметку для всех путешествий (элементов массива tripsData)
-// документация к функции описана в helpers.js
-const trips = makeStringFromData(tripsData, makeTrip);
-
 /**
  * Формируем разметку для 1ого случайного путешествия
  * @param {Object} trip - текущий элемент массива
@@ -77,4 +73,4 @@ const insertRandomTripsToHtml = (tripsWrapper, tripsAmount) => {
   tripsWrapper.insertAdjacentHTML(`afterbegin`, renderedTrips);
 };
 
-export {trips, insertRandomTripsToHtml};
+export {makeTrip, insertRandomTripsToHtml};
