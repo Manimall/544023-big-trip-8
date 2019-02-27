@@ -1,0 +1,14 @@
+
+/**
+ * Отрисовываем (заполняем данными) отдельный фильтр
+ * @param {String} acc - ячейка, куда будут складываться заполненные данными фильтры
+ * @param {Object} filter - Объект с данными
+ * @return {String}  - строку с заполненными данными фильтра
+ */
+export const makeFilter = (acc, filter) => {
+  acc += `
+  <input type="radio" id="filter-${filter.name}" name="filter" value="${filter.name}" ${filter.checked ? `checked` : ``}>
+  <label class="trip-filter__item" for="filter-${filter.name}">${filter.name.charAt(0).toUpperCase() + filter.name.substr(1)}</label>
+  `;
+  return acc;
+};
