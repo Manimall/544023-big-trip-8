@@ -14,14 +14,4 @@ const getRandomNumber = (min = 1, max = 10) => Math.floor(min + Math.random() * 
  */
 const makeStringFromData = (layoutData, cb) => layoutData.reduce(cb, ``);
 
-/**
- * Добавляем элементы в разметку
- * @param {String} fragment - фрагмент, который нужно вставить в разметку
- * @param {HTMLElemen} fragmentWrapper - элемент для вставки фрагмента
- * @param {boolean} [addToStart=false] - куда именно вставляем (если true - вначало fragmentWrapper)
- */
-const addToHtml = (fragment, fragmentWrapper, addToStart = true) => {
-  fragmentWrapper.insertAdjacentHTML(addToStart ? `afterbegin` : `beforeend`, fragment);
-};
-
-export {getRandomNumber, makeStringFromData, addToHtml};
+export {getRandomNumber, makeStringFromData};

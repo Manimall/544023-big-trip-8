@@ -1,6 +1,6 @@
-import {makeStringFromData, getRandomNumber, addToHtml} from './helpers';
+import {makeStringFromData, getRandomNumber} from './helpers';
 import {tripsData} from './trips-data';
-import {filtersData} from '.filters-data';
+import {filtersData} from './filters-data';
 import {makeFilter} from './generate-filter';
 import {makeTrip, insertRandomTripsToHtml} from './generate-trip';
 
@@ -14,14 +14,14 @@ const tripListWrapper = document.querySelector(`.trip-day__items`); // конт�
 const trips = makeStringFromData(tripsData, makeTrip);
 
 // добавляем на страницу маршруты путешествий
-addToHtml(trips, tripListWrapper);
+tripListWrapper.insertAdjacentHTML(`afterbegin`, trips);
 
 
 // Заполняем разметку фильтра данными из массива фильтров
 const filters = makeStringFromData(filtersData, makeFilter);
 
 // добавляем на страницу фильтры
-addToHtml(filters, filterListWrapper);
+filterListWrapper.insertAdjacentHTML(`afterbegin`, filters);
 
 /**
  * Добавляем функцию-обработчик события для переключения фильтров,
