@@ -2,7 +2,7 @@ import {makeStringFromData, getRandomNumber} from './helpers';
 // import {tripsData} from './trips-data';
 import {filtersData} from './mock-data/filters-data';
 import {makeFilter} from './generate-filter';
-import {makeTrip, insertRandomTripsToHtml} from './generate-trip';
+import {makeTrip, generateFullTrip, insertRandomTripsToHtml} from './generate-trip';
 
 // новые данные
 import {mockTrip} from './mock-data/generate-mock-trips';
@@ -16,7 +16,7 @@ const tripListWrapper = document.querySelector(`.trip-day__items`); // конт�
 // документация к функции описана в helpers.js
 
 // const trips = makeStringFromData(tripsData, makeTrip);
-const trips = makeStringFromData(mockTrip, makeTrip);
+const trips = makeStringFromData(generateFullTrip(INITIAL_TRIP_COUNT), makeTrip);
 
 // добавляем на страницу маршруты путешествий
 tripListWrapper.insertAdjacentHTML(`afterbegin`, trips);
