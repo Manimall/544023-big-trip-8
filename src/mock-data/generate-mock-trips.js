@@ -15,9 +15,12 @@ for (let currentPrice = MIN_PRICE; currentPrice <= MAX_PRICE; currentPrice += st
 }
 
 export const mockTrip = () => {
+  const tripType = getRandomElementFromArr(Object.keys(tripIcons)); // ищем первую часть названия - ключ
+  const tripIcon = tripIcons[tripType]; // привязываем к ней иконку - значение
+
   return {
-    title: `${getRandomElementFromArr[Object.keys(tripIcons)]} to ${getRandomElementFromArr([...tripCities])}`,
-    icon: Object.keys(tripIcons).value,
+    title: `${tripType} to ${getRandomElementFromArr([...tripCities])}`,
+    icon: tripIcon,
     description: getFewRandomItemsFromArr(tripDescription, minDescriptionSentenceQuantity, maxDescriptionSentenceQuantity),
     picture: `http://picsum.photos/300/150?r=${Math.random()}`,
     price: getRandomElementFromArr(prices),
