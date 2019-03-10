@@ -5,7 +5,7 @@ import {makeFilter} from './generate-filter';
 import {makeTrip, generateFullTrip, insertRandomTripsToHtml} from './generate-trip';
 
 // новые данные
-import {mockTrip} from './mock-data/generate-mock-trips';
+// import {mockTrip} from './mock-data/generate-mock-trips';
 
 const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
 

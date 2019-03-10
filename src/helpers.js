@@ -7,11 +7,18 @@
 const getRandomNumber = (min = 1, max = 10) => Math.floor(min + Math.random() * (max + 1 - min));
 
 /**
- * Берем Случайное значение из массива
+ * Берем случайный индекс элемента из массива
  * @param {Array} arr - исходный массив
- * @return {ElementFromArray} - случайный элемент из массива
+ * @return {Number} - индекс случайного элемента из массива
  */
 const getRandomItemFromArr = (arr) => getRandomNumber(0, arr.length - 1);
+
+/**
+ * Выбираем случайный элемент из массива
+ * @param {Array} arr - исходный массив
+ * @return {ElementFromArray} - элемент массива
+ */
+const getRandomElementFromArr = (arr) => arr[getRandomItemFromArr(arr)];
 
 /**
  * Получаем массив с несколькими рандомными элементами из имеющегося массива
@@ -35,4 +42,4 @@ const getFewRandomItemsFromArr = (arr, minItemsQuantity, maxItemsQuantity) => {
  */
 const makeStringFromData = (layoutData, cb) => layoutData.reduce(cb, ``);
 
-export {getRandomNumber, getRandomItemFromArr, getFewRandomItemsFromArr, makeStringFromData};
+export {getRandomNumber, getRandomItemFromArr, getRandomElementFromArr, getFewRandomItemsFromArr, makeStringFromData};

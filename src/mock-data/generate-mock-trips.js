@@ -1,5 +1,5 @@
 import {tripIcons, tripCities, tripDescription} from './trip-constants';
-import {getRandomItemFromArr, getFewRandomItemsFromArr} from '../helpers';
+import {getRandomElementFromArr, getFewRandomItemsFromArr} from '../helpers';
 import {generateOffers} from './generate-offers';
 
 const minDescriptionSentenceQuantity = 1;
@@ -16,11 +16,11 @@ for (let currentPrice = MIN_PRICE; currentPrice <= MAX_PRICE; currentPrice += st
 
 export const mockTrip = () => {
   return {
-    title: `${getRandomItemFromArr(Object.keys(tripIcons))} to ${getRandomItemFromArr(tripCities)}`,
+    title: `${getRandomElementFromArr[Object.keys(tripIcons)]} to ${getRandomElementFromArr([...tripCities])}`,
     icon: Object.keys(tripIcons).value,
     description: getFewRandomItemsFromArr(tripDescription, minDescriptionSentenceQuantity, maxDescriptionSentenceQuantity),
     picture: `http://picsum.photos/300/150?r=${Math.random()}`,
-    price: getRandomItemFromArr(prices),
+    price: getRandomElementFromArr(prices),
     offers: new Set(generateOffers()),
   };
 };
