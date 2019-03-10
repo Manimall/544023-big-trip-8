@@ -1,7 +1,16 @@
 import {getRandomNumber} from './helpers';
 import {tripsData} from './trips-data';
-// import {mockTrip} from './mock-data/generate-mock-trips';
+import {mockTrip} from './mock-data/generate-mock-trips';
 import {getOffersLayout} from './format-offers';
+
+const generateFullTrip = (tripQuantity) => {
+  const tripArr = [];
+  for (let i = 0; i < tripQuantity; i++) {
+    const singleTrip = mockTrip();
+    tripArr.push(singleTrip);
+  }
+  return tripArr;
+};
 
 /**
  * Формируем разметку для 1ого путешествия
@@ -62,4 +71,4 @@ const insertRandomTripsToHtml = (tripsWrapper, tripsAmount) => {
   tripsWrapper.insertAdjacentHTML(`afterbegin`, renderedTrips);
 };
 
-export {makeTrip, insertRandomTripsToHtml};
+export {makeTrip, generateFullTrip, insertRandomTripsToHtml};
