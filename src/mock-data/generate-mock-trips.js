@@ -1,5 +1,6 @@
-import {tripIcons, tripCities, tripOffers, tripDescription} from './mock-data';
-import {getRandomItemFromArr, getFewRandomItemsFromArr} from './helpers';
+import {tripIcons, tripCities, tripDescription} from './trip-constants';
+import {getRandomItemFromArr, getFewRandomItemsFromArr} from '../helpers';
+import {generateOffers} from './generate-offers';
 
 const minDescriptionSentenceQuantity = 1;
 const maxDescriptionSentenceQuantity = 3;
@@ -11,7 +12,7 @@ const step = 10;
 let prices = [];
 for (let currentPrice = MIN_PRICE; currentPrice <= MAX_PRICE; currentPrice += step) {
   prices.push(currentPrice);
-};
+}
 
 export const mockTrip = () => {
   return {
@@ -20,5 +21,6 @@ export const mockTrip = () => {
     description: getFewRandomItemsFromArr(tripDescription, minDescriptionSentenceQuantity, maxDescriptionSentenceQuantity),
     picture: `http://picsum.photos/300/150?r=${Math.random()}`,
     price: getRandomItemFromArr(prices),
+    offers: new Set(generateOffers()),
   };
 };

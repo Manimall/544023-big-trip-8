@@ -1,18 +1,7 @@
 import {getRandomNumber} from './helpers';
 import {tripsData} from './trips-data';
-
-/**
- * Отрисовываем каждое предложение из массива offers (в обьекте trip)
- * @param {Array} offers - массив предложений
- * @return {String} - разметка 1ого предложения с заполненными данными
- */
-const getOffersLayout = (offers) => offers.map((offer) => {
-  return `
-  <li>
-      <button class="trip-point__offer">${offer}</button>
-  </li>
-  `;
-});
+// import {mockTrip} from './mock-data/generate-mock-trips';
+import {getOffersLayout} from './format-offers';
 
 /**
  * Формируем разметку для 1ого путешествия

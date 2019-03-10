@@ -4,6 +4,9 @@ import {filtersData} from './filters-data';
 import {makeFilter} from './generate-filter';
 import {makeTrip, insertRandomTripsToHtml} from './generate-trip';
 
+// новые данные
+// import {mockTrip} from './mock-data/generate-mock-trips';
+
 const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
 
 const filterListWrapper = document.querySelector(`.trip-filter`); // контэйнер для вставки фильтров
