@@ -30,7 +30,7 @@ const generateTime = () => {
   const difference = timeEnd - timeStart;
   const minutes = difference / MS_IN_MINUTE;
 
-  const resultHours = Math.round(minutes / MINUTES_IN_HOUR);
+  const resultHours = Math.floor(minutes / MINUTES_IN_HOUR);
   const resultMinutes = Math.floor(minutes % MINUTES_IN_HOUR);
 
   const interval = {
@@ -48,7 +48,7 @@ const generateTime = () => {
 /**
  * Форматируем время - если цифры меньше 10 - добавляем перед цифрой 0
  * @param {Number} number - часы или минуты путешествия
- * @return {Number} - в засисимости от числа возвращаем или само это число или 0 + число
+ * @return {formatMinutes} - в засисимости от числа возвращаем или само это число или 0 + число
  */
 const formatTimeOutput = (number) => (number < 10) ? `0` + `${number}` : number;
 
