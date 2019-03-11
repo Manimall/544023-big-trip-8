@@ -9,8 +9,8 @@ const INITIAL_TRIP_COUNT = 7; // необходимое по заданию ко
 const filterListWrapper = document.querySelector(`.trip-filter`); // контэйнер для вставки фильтров
 const tripListWrapper = document.querySelector(`.trip-day__items`); // контэйнер для вставки событий
 
-// Генерируем разметку для всех путешествий (элементов массива tripsData)
-// документация к функции описана в helpers.js
+// Генерируем разметку для всех путешествий
+// документация к функции makeStringFromData описана в helpers.js
 const trips = makeStringFromData(generateFullTrip(INITIAL_TRIP_COUNT), makeTrip);
 
 // добавляем на страницу маршруты путешествий

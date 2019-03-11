@@ -1,5 +1,5 @@
 // import {getRandomNumber} from './helpers';
-// import {tripsData} from './trips-data';
+// import {tripsData} from './mock-data/initial-trips-data';
 import {mockTrip} from './mock-data/generate-mock-trips';
 import {getOffersLayout} from './format-offers';
 
@@ -13,8 +13,14 @@ const getRandomTrips = (trip) => {
     <i class="trip-icon">${trip.icon}</i>
     <h3 class="trip-point__title">${trip.title}</h3>
     <p class="trip-point__schedule">
-      <span class="trip-point__timetable">10:00&nbsp;— 11:00</span>
-      <span class="trip-point__duration">1h 30m</span>
+      <span class="trip-point__timetable">
+        ${trip.time.start.getHours()}:${trip.start.time.getMinutes()}
+        &nbsp;&mdash;
+        ${trip.time.end.getHours()}:${trip.time.end.getMinutes()}
+      </span>
+      <span class="trip-point__duration">
+        ${trip.time.interval.hours}h ${trip.time.interval.minutes}m
+      </span>
     </p>
     <p class="trip-point__price">${trip.price}</p>
     <ul class="trip-point__offers">

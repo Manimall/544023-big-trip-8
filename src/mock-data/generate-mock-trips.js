@@ -1,6 +1,7 @@
 import {tripIcons, tripCities, tripDescription} from './trip-constants';
 import {getRandomElementFromArr, getFewRandomItemsFromArr} from '../helpers';
 import {generateOffers} from './generate-offers';
+import {generateTime} from './generate-time';
 
 const MIN_DESCRIPTION_SENTENCE_QUANTITY = 1;
 const MAX_DESCRIPTION_SENTENCE_QUANTITY = 3;
@@ -29,5 +30,6 @@ export const mockTrip = () => {
     picture: `http://picsum.photos/300/150?r=${Math.random()}`,
     price: `${getRandomElementFromArr(prices)} €`,
     offers: new Set(generateOffers()),
+    time: generateTime(),
   };
 };
