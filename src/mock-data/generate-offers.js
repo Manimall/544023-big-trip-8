@@ -14,12 +14,11 @@ const MIN_OFFERS = 0;
  */
 export const generateOffers = () => {
   const offers = getFewRandomItemsFromArr(tripOffers, MIN_OFFERS, MAX_OFFERS);
-  const tmp = offers.reduce((acc, offer) => {
+  return offers.reduce((acc, offer) => {
     acc.push({
       name: offer,
       price: getRandomNumber(MIN_OFFER_PRICE, MAX_OFFER_PRICE),
     });
     return acc;
   }, []);
-  return tmp;
 };
