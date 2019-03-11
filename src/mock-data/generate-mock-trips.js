@@ -27,7 +27,7 @@ export const mockTrip = () => {
     icon: tripIcon,
     description: getFewRandomItemsFromArr(tripDescription, MIN_DESCRIPTION_SENTENCE_QUANTITY, MAX_DESCRIPTION_SENTENCE_QUANTITY),
     picture: `http://picsum.photos/300/150?r=${Math.random()}`,
-    price: getRandomElementFromArr(prices),
+    price: `${getRandomElementFromArr(prices)} €`,
     offers: new Set(generateOffers()),
   };
 };

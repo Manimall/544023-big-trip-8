@@ -1,26 +1,18 @@
 // данные для путешествий
+
 // иконки для путешествий
 const tripIcons = {
-  taxi: `🚕`,
-  bus: `🚌`,
-  train: `🚂`,
-  ship: `🛳️`,
-  transport: `🚊`,
-  drive: `🚗`,
-  flight: `✈️`,
-  checkIn: `🏨`,
-  sightseeing: `🏛️`,
-  restaurant: `🍴`
+  [`Taxi`]: `🚕`,
+  [`Bus`]: `🚌`,
+  [`Train`]: `🚂`,
+  [`Ship`]: `🛳️`,
+  [`Transport`]: `🚊`,
+  [`Drive`]: `🚗`,
+  [`Flight`]: `✈️`,
+  [`Check-in`]: `🏨`,
+  [`Sightseeing`]: `🏛️`,
+  [`Restaurant`]: `🍴`
 };
-
-// способы путешествий
-const tripTypes = new Set([
-  `travel`,
-  `flight`,
-  `drive`,
-  `train`,
-  `ship`
-]);
 
 // Названия городов для путешествий
 const tripCities = new Set([
@@ -52,4 +44,4 @@ const tripDescription = `Lorem ipsum dolor sit amet, consectetur adipiscing elit
   Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat.
   Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus`.split(`.`);
 
-export {tripIcons, tripTypes, tripCities, tripOffers, tripDescription};
+export {tripIcons, tripCities, tripOffers, tripDescription};
