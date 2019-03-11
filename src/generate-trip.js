@@ -1,14 +1,14 @@
 import {mockTrip} from './mock-data/generate-mock-trips';
 import {getOffersLayout} from './format-offers';
 
-// const generateFullTrip = (tripQuantity) => {
-//   const tripArr = [];
-//   for (let i = 0; i < tripQuantity; i++) {
-//     const singleTrip = mockTrip();
-//     tripArr.push(singleTrip);
-//   }
-//   return tripArr;
-// };
+const generateFullTrip = (tripQuantity) => {
+  const tripArr = [];
+  for (let i = 0; i < tripQuantity; i++) {
+    const singleTrip = mockTrip();
+    tripArr.push(singleTrip);
+  }
+  return tripArr;
+};
 
 /**
  * Формируем разметку для 1ого путешествия
@@ -35,15 +35,4 @@ const makeTrip = (acc, trip) => {
   return acc;
 };
 
-// export {makeTrip, generateFullTrip};
-
-const makeMyTrip = (tripQuantity) => {
-  const renderedTrips = new Array(tripQuantity) // создаем пустой массив из необходимого кол-ва объектов
-    .fill() // заполняем этот массив 7 undefined
-    .map(() => makeTrip(``, mockTrip()))// изменяем массив, выполнив функцию generateSingleCard на каждом элементе массива
-    .join(``); // превращаем массив в строку
-
-  return renderedTrips;
-};
-
-export {makeMyTrip};
+export {makeTrip, generateFullTrip};
