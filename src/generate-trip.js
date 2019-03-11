@@ -1,5 +1,6 @@
 import {mockTrip} from './mock-data/generate-mock-trips';
 import {getOffersLayout} from './format-offers';
+import {formatTimeOutput} from './mock-data/generate-time';
 
 /**
  * Создаем массив, превращаем (мапируем) его в массив путешествий
@@ -26,9 +27,9 @@ const makeTrip = (acc, trip) => {
     <h3 class="trip-point__title">${trip.title}</h3>
     <p class="trip-point__schedule">
       <span class="trip-point__timetable">
-        ${trip.time.start.getHours()}:${trip.time.end.getMinutes()}
-        &nbsp;&mdash;
-        ${trip.time.end.getHours()}:${trip.time.end.getMinutes()}
+        ${formatTimeOutput(trip.time.start.getHours())}:${formatTimeOutput(trip.time.start.getMinutes())}
+          &nbsp;&mdash;
+        ${formatTimeOutput(trip.time.end.getHours())}:${formatTimeOutput(trip.time.end.getMinutes())}
       </span>
       <span class="trip-point__duration">
         ${trip.time.interval.hours}h ${trip.time.interval.minutes}m

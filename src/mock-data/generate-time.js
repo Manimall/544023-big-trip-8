@@ -7,7 +7,7 @@ import {getRandomNumber} from '../helpers';
  * 1) дата и время начала; 2) дата и время завершения события;
  * 3) разница между началом и завершением в часах и минутах
  */
-export const generateTime = () => {
+const generateTime = () => {
 
   const MS_IN_MINUTE = 60 * 1000;
   const MS_IN_HOUR = 60 * MS_IN_MINUTE;
@@ -16,6 +16,7 @@ export const generateTime = () => {
 
   const MINUTES_IN_HOUR = 60;
 
+  // максимальная продолжительность путешествия равна одному дню
   const MAX_TRIP_DURATION = MS_IN_DAY;
 
   // возвращаем кол-во миллисекунд указанной даты (с текущего момента)
@@ -43,3 +44,12 @@ export const generateTime = () => {
     interval
   };
 };
+
+/**
+ * Форматируем время - если цифры меньше 10 - добавляем перед цифрой 0
+ * @param {Number} number - часы или минуты путешествия
+ * @return {Number} - в засисимости от числа возвращаем или само это число или 0 + число
+ */
+const formatTimeOutput = (number) => (number < 10) ? `0` + `${number}` : number;
+
+export {generateTime, formatTimeOutput};
