@@ -1,17 +1,15 @@
 import {mockTrip} from './mock-data/generate-mock-trips';
 import {getOffersLayout} from './format-offers';
 
+/**
+ * Создаем массив, превращаем (мапируем) его в массив путешествий
+ * @param {Number} tripQuantity - необзодимое по ТЗ изначальное кол-во путешествий
+ * @return {Array} - массив путешествий с заполненными данными
+ */
 const generateFullTrip = (tripQuantity) => {
-  // const tripArr = [];
-  // for (let i = 0; i < tripQuantity; i++) {
-  //   const singleTrip = mockTrip();
-  //   tripArr.push(singleTrip);
-  // }
-  // return tripArr;
-
   return new Array(tripQuantity)
-        .fill()
-        .map(mockTrip);
+      .fill()
+      .map(mockTrip);
 };
 
 /**

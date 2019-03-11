@@ -11,14 +11,14 @@ const getRandomNumber = (min = 1, max = 10) => Math.floor(min + Math.random() * 
  * @param {Array} arr - исходный массив
  * @return {Number} - индекс случайного элемента из массива
  */
-const getRandomItemFromArr = (arr) => getRandomNumber(0, arr.length - 1);
+const getRandomArrayIndex = (arr) => getRandomNumber(0, arr.length - 1);
 
 /**
  * Выбираем случайный элемент из массива
  * @param {Array} arr - исходный массив
  * @return {ElementFromArray} - элемент массива
  */
-const getRandomElementFromArr = (arr) => arr[getRandomItemFromArr(arr)];
+const getRandomElementFromArr = (arr) => arr[getRandomArrayIndex(arr)];
 
 /**
  * Получаем массив с несколькими рандомными элементами из имеющегося массива
@@ -28,10 +28,11 @@ const getRandomElementFromArr = (arr) => arr[getRandomItemFromArr(arr)];
  * @return {Array} - массив с нужным кол-вом элементов
  */
 const getFewRandomItemsFromArr = (arr, minItemsQuantity, maxItemsQuantity) => {
-  let copyArr = arr.slice(); // копируем массив
-  const resultArr = copyArr.sort(() => Math.random() - 0.5) // сортируем его в случайном порядке
-                    .slice(0, getRandomNumber(minItemsQuantity, maxItemsQuantity)); // возьмем необходимое кол-во элементов (от min до max)
-  return resultArr;
+  // let copyArr = arr.slice(); // копируем массив
+  let copyArr = [...arr]; // копируем массив
+  return copyArr
+      .sort(() => Math.random() - 0.5) // сортируем его в случайном порядке
+      .slice(0, getRandomNumber(minItemsQuantity, maxItemsQuantity)); // возьмем необходимое кол-во элементов (от min до max)
 };
 
 /**
@@ -42,4 +43,4 @@ const getFewRandomItemsFromArr = (arr, minItemsQuantity, maxItemsQuantity) => {
  */
 const makeStringFromData = (layoutData, cb) => layoutData.reduce(cb, ``);
 
-export {getRandomNumber, getRandomItemFromArr, getRandomElementFromArr, getFewRandomItemsFromArr, makeStringFromData};
+export {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, makeStringFromData};
