@@ -31,7 +31,7 @@ const generateTime = () => {
   const minutes = difference / MS_IN_MINUTE;
 
   const resultHours = Math.floor(minutes / MINUTES_IN_HOUR);
-  const resultMinutes = Math.floor(minutes % MINUTES_IN_HOUR);
+  const resultMinutes = Math.round(minutes % MINUTES_IN_HOUR);
 
   const interval = {
     hours: resultHours,
