@@ -32,7 +32,7 @@ const addFilterClickHandler = (evt) => {
   const clickedFilter = evt.target.classList.contains(`trip-filter__item`);
   if (clickedFilter) {
     tripListWrapper.innerHTML = ``;
-    insertRandomTripsToHtml(tripListWrapper, getRandomNumber(INITIAL_TRIP_COUNT));
+    insertRandomTripsToHtml(tripListWrapper, getRandomNumber(undefined, INITIAL_TRIP_COUNT));
   }
 };
 

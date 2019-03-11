@@ -2,12 +2,16 @@ import {mockTrip} from './mock-data/generate-mock-trips';
 import {getOffersLayout} from './format-offers';
 
 const generateFullTrip = (tripQuantity) => {
-  const tripArr = [];
-  for (let i = 0; i < tripQuantity; i++) {
-    const singleTrip = mockTrip();
-    tripArr.push(singleTrip);
-  }
-  return tripArr;
+  // const tripArr = [];
+  // for (let i = 0; i < tripQuantity; i++) {
+  //   const singleTrip = mockTrip();
+  //   tripArr.push(singleTrip);
+  // }
+  // return tripArr;
+
+  return new Array(tripQuantity)
+        .fill()
+        .map(mockTrip);
 };
 
 /**
