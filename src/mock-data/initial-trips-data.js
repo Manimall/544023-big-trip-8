@@ -6,8 +6,14 @@ export const tripsData = [
     title: `Taxi to Airport`,
     price: `€ 10`,
     offers: [
-      `Upgrade to business +&euro;&nbsp;20`,
-      `Order UBER +&euro;&nbsp;20`
+      {
+        name: `Upgrade to business`,
+        price: `20`
+      },
+      {
+        name: `Order UBER`,
+        price: `20`
+      }
     ]
   },
   {
@@ -15,20 +21,36 @@ export const tripsData = [
     title: `Flight to Geneva`,
     price: `€ 80`,
     offers: [
-      `Upgrade to business +&euro;&nbsp;20`,
-      `Select meal +&euro;&nbsp;20`
+      {
+        name: `Upgrade to business`,
+        price: `20`
+      },
+      {
+        name: `Select meal`,
+        price: `20`
+      }
     ]
   },
   {
     icon: `🚗`,
-    title: `Drive to Chamonix`,
+    title: `Drive to Ivanovo`,
     price: `€ 20`,
-    offers: [`Rent a car +&euro;&nbsp;200`]
+    offers: [
+      {
+        name: `Rent a car`,
+        price: `200`
+      }
+    ]
   },
   {
     icon: `🏨`,
     title: `Check into a hotel`,
     price: `€ 50`,
-    offers: [`Add breakfast +&euro;&nbsp;20`]
+    offers: [
+      {
+        name: `Add breakfast`,
+        price: `20`
+      }
+    ]
   }
 ];

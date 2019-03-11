@@ -1,17 +1,18 @@
 import {makeStringFromData, getRandomNumber} from './helpers';
-import {tripsData} from './trips-data';
-import {filtersData} from './filters-data';
+import {filtersData} from './mock-data/filters-data';
 import {makeFilter} from './generate-filter';
-import {makeTrip, insertRandomTripsToHtml} from './generate-trip';
+import {makeTrip, generateFullTrip} from './generate-trip';
+import {insertRandomTripsToHtml} from './render-random-trips';
 
 const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
+const MIN_TRIP_COUNT = 3; // необходимое по заданию кол-во событий
 
 const filterListWrapper = document.querySelector(`.trip-filter`); // контэйнер для вставки фильтров
 const tripListWrapper = document.querySelector(`.trip-day__items`); // контэйнер для вставки событий
 
-// Генерируем разметку для всех путешествий (элементов массива tripsData)
-// документация к функции описана в helpers.js
-const trips = makeStringFromData(tripsData, makeTrip);
+// Генерируем разметку для всех путешествий
+// документация к функции makeStringFromData описана в helpers.js
+const trips = makeStringFromData(generateFullTrip(INITIAL_TRIP_COUNT), makeTrip);
 
 // добавляем на страницу маршруты путешествий
 tripListWrapper.insertAdjacentHTML(`afterbegin`, trips);
@@ -32,7 +33,7 @@ const addFilterClickHandler = (evt) => {
   const clickedFilter = evt.target.classList.contains(`trip-filter__item`);
   if (clickedFilter) {
     tripListWrapper.innerHTML = ``;
-    insertRandomTripsToHtml(tripListWrapper, getRandomNumber(INITIAL_TRIP_COUNT));
+    insertRandomTripsToHtml(tripListWrapper, getRandomNumber(MIN_TRIP_COUNT, INITIAL_TRIP_COUNT));
   }
 };
 
