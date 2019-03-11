@@ -1,5 +1,6 @@
-import {getRandomNumber} from './helpers';
-import {tripsData} from './trips-data';
+// import {getRandomNumber} from './helpers';
+// import {tripsData} from './trips-data';
+import {mockTrip} from './mock-data/generate-mock-trips';
 import {getOffersLayout} from './format-offers';
 
 /**
@@ -31,7 +32,8 @@ const insertRandomTripsToHtml = (tripsWrapper, tripsAmount) => {
   let renderedTrips = ``;
   for (let i = 0; i < tripsAmount; i++) {
     // копируем рандомный обьект из массива путешествий и прибавляем его к renderedTrips
-    renderedTrips += getRandomTrips(Object.assign({}, tripsData[getRandomNumber(0, tripsData.length - 1)]));
+    // renderedTrips += getRandomTrips(Object.assign({}, tripsData[getRandomNumber(0, tripsData.length - 1)]));
+    renderedTrips += getRandomTrips(mockTrip());
   }
   tripsWrapper.insertAdjacentHTML(`afterbegin`, renderedTrips);
 };
