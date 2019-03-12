@@ -36,11 +36,11 @@ const getFewRandomItemsFromArr = (arr, minItemsQuantity, maxItemsQuantity) => {
 };
 
 /**
- * Генерируем Строку из массива данных
+ * Генерируем Строку из массива данных, который создаем с помощью функции
  * @param {Array} layoutData - исходный массив данныx
- * @param {cb-function} cb - функция-коллбэк, изменяем исходный массив с данными
- * @return {String} - строка с заполненными данными
+ * @param {function} generateFn - функция, изменяющая каждый элемент массива
+ * @return {String} - строка с заполненными и измененными с помощью функции данными
  */
-const makeStringFromData = (layoutData, cb) => layoutData.reduce(cb, ``);
+const makeStringFromData = (layoutData, generateFn) => layoutData.reduce((acc, el) => acc + generateFn(el), ``);
 
 export {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, makeStringFromData};

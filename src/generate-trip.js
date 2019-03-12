@@ -15,13 +15,11 @@ const generateFullTrip = (tripQuantity) => {
 
 /**
  * Формируем разметку для 1ого путешествия
- * @param {String} acc - аккумулирующий значение, которое возвращает функция cb
- * (в данном случаем строка, изначально пустая)
  * @param {Object} trip - текущий (обрабатываемый) элемент массива (в данном случае объект)
  * @return {String} - готовая разметка (с заполненными данными) для 1ого путешествия
  */
-const makeTrip = (tripsArr) => {
-  return [...tripsArr].map((trip) => `
+const makeTrip = (trip) => {
+  return `
     <article class="trip-point">
       <i class="trip-icon">${trip.icon}</i>
       <h3 class="trip-point__title">${trip.title}</h3>
@@ -40,7 +38,7 @@ const makeTrip = (tripsArr) => {
         ${getOffersLayout(trip.offers).join(``)}
       </ul>
     </article>
-    `).join(``); // return acc;
+    `;
 };
 
-export {makeTrip, generateFullTrip};
+export {generateFullTrip, makeTrip};

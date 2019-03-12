@@ -1,7 +1,7 @@
-import {makeStringFromData, getRandomNumber} from './helpers';
+import {getRandomNumber, makeStringFromData} from './helpers';
 import {filtersData} from './mock-data/filters-data';
 import {makeFilter} from './generate-filter';
-import {makeTrip, generateFullTrip} from './generate-trip';
+import {generateFullTrip, makeTrip} from './generate-trip';
 import {insertRandomTripsToHtml} from './render-random-trips';
 
 const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
@@ -12,7 +12,7 @@ const tripListWrapper = document.querySelector(`.trip-day__items`); // конт�
 
 // Генерируем разметку для всех путешествий
 // документация к функции makeStringFromData описана в helpers.js
-const trips = makeTrip(generateFullTrip(INITIAL_TRIP_COUNT));
+const trips = makeStringFromData(generateFullTrip(INITIAL_TRIP_COUNT), makeTrip);
 
 // добавляем на страницу маршруты путешествий
 tripListWrapper.insertAdjacentHTML(`afterbegin`, trips);
