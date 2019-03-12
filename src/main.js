@@ -12,7 +12,7 @@ const tripListWrapper = document.querySelector(`.trip-day__items`); // конт�
 
 // Генерируем разметку для всех путешествий
 // документация к функции makeStringFromData описана в helpers.js
-const trips = makeStringFromData(generateFullTrip(INITIAL_TRIP_COUNT), makeTrip);
+const trips = makeTrip(generateFullTrip(INITIAL_TRIP_COUNT));
 
 // добавляем на страницу маршруты путешествий
 tripListWrapper.insertAdjacentHTML(`afterbegin`, trips);
