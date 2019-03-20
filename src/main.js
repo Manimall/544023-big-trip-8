@@ -24,6 +24,10 @@ const filters = makeStringFromData(filtersData, makeFilter);
 // добавляем на страницу фильтры
 filterListWrapper.insertAdjacentHTML(`afterbegin`, filters);
 
+tripListWrapper.onEdit = () => {
+
+};
+
 /**
  * Добавляем функцию-обработчик события для переключения фильтров,
  * удаляем все ранее созданные путешествия и добавляем случайное кол-во новых

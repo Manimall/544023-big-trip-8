@@ -6,7 +6,7 @@
 export const getOffersLayout = (offers) => [...offers].map((offer) => {
   return `
   <li>
-      <button class="trip-point__offer">${offer.name} +&euro;&nbsp;${offer.price}</button>
+      <button class="trip-point__offer">${offer.name} +  ${offer.currency}&nbsp;${offer.price}</button>
   </li>
   `;
 });

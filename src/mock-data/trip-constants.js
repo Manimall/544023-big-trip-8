@@ -22,7 +22,8 @@ const tripCities = new Set([
   `Madrid`,
   `Amsterdam`,
   `Barcelona`,
-  `Paris`
+  `Paris`,
+  `Ivanovo`,
 ]);
 
 // все возможные доп. предложения
@@ -30,7 +31,8 @@ const tripOffers = [
   `Add luggage`,
   `Switch to comfort class`,
   `Add meal`,
-  `Choose seats`
+  `Choose seats`,
+  `Extend for a few days`,
 ];
 
 // описание для путешествий
@@ -44,4 +46,38 @@ const tripDescription = `Lorem ipsum dolor sit amet, consectetur adipiscing elit
   Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat.
   Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus`.split(`.`);
 
-export {tripIcons, tripCities, tripOffers, tripDescription};
+
+// данные для trip-edit
+const tripTypes = [
+  {icon: `🏨`, name: `Check-in`, transport: false, place: true},
+  {icon: `🚗`, name: `Drive`, transport: true, place: true},
+  {icon: `🚌`, name: `Bus`, transport: true, place: true},
+  {icon: `🚂`, name: `Train`, transport: true, place: true},
+  {icon: `🛳️`, name: `Ship`, transport: true, place: true},
+  {icon: `🚊`, name: `Transport`, transport: true, place: true},
+  {icon: `🏛️`, name: `Sightseeing`, transport: false, place: true},
+  {icon: `🍴`, name: `Restaurant`, transport: false, place: false},
+  {icon: `🚕`, name: `Taxi`, transport: true, place: true},
+  {icon: `✈️`, name: `Flight`, transport: true, place: true}
+];
+
+const tripPlaces = new Set([
+  `airport`,
+  `hotel`,
+  `mountains`,
+  `bar`,
+  `stadium`,
+  `station`
+]);
+
+const tripAllPictures = new Set([
+  `http://picsum.photos/300/150?r=${Math.random()}`,
+  `http://picsum.photos/300/150?r=${Math.random()}`,
+  `http://picsum.photos/300/150?r=${Math.random()}`,
+  `http://picsum.photos/300/150?r=${Math.random()}`,
+  `http://picsum.photos/300/150?r=${Math.random()}`,
+]);
+
+const tripPriceCurrency = `€`;
+
+export {tripIcons, tripCities, tripOffers, tripDescription, tripTypes, tripPlaces, tripPriceCurrency, tripAllPictures};

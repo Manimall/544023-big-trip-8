@@ -33,7 +33,7 @@ const makeTrip = (trip) => {
           ${trip.time.interval.hours}h ${trip.time.interval.minutes}m
         </span>
       </p>
-      <p class="trip-point__price">${trip.price}</p>
+      <p class="trip-point__price">${trip.fullPrice}</p>
       <ul class="trip-point__offers">
         ${getOffersLayout(trip.offers).join(``)}
       </ul>
