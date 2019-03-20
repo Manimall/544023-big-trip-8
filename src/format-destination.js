@@ -3,14 +3,13 @@ const setOptions = (array) => {
   return [...array].map((el) => `<option value="${el}"></option>`).join(``);
 };
 
-const makeDestination = (cities, selectedTripType, city, place) => {
+const makeDestination = (cities, selectedTripType, city) => {
 
   const labelText = selectedTripType.transport ? `${selectedTripType.name} to` : `${selectedTripType.name} in`;
-  const labelHasPlace = selectedTripType.place ? `${labelText} ${place} in` : `${labelText}`;
 
   return (
     `<div class="point__destination-wrap">
-      <label class="point__destination-label" for="destination">${labelHasPlace}</label>
+      <label class="point__destination-label" for="destination">${labelText}</label>
       <input class="point__destination-input"
              list="destination-select"
              id="destination"

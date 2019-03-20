@@ -62,15 +62,6 @@ const tripTypes = [
   {icon: `✈️`, name: `Flight`, transport: true, place: true}
 ];
 
-const tripPlaces = new Set([
-  `airport`,
-  `hotel`,
-  `mountains`,
-  `bar`,
-  `stadium`,
-  `station`
-]);
-
 const tripAllPictures = new Set([
   `http://picsum.photos/300/150?r=${Math.random()}`,
   `http://picsum.photos/300/150?r=${Math.random()}`,
@@ -81,4 +72,4 @@ const tripAllPictures = new Set([
 
 const tripPriceCurrency = `€`;
 
-export {tripIcons, tripCities, tripOffers, tripDescription, tripTypes, tripPlaces, tripPriceCurrency, tripAllPictures};
+export {tripIcons, tripCities, tripOffers, tripDescription, tripTypes, tripPriceCurrency, tripAllPictures};

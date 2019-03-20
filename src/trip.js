@@ -52,7 +52,7 @@ export class Trip {
   }
 
   onEdit() {
-    // console.log(`smth`);
+
   }
 
   bind() {

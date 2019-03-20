@@ -34,8 +34,6 @@ export class TripEdit {
     this._type = obj.type;
     this._types = obj.types;
 
-    this._place = obj.place;
-
     this._state = {};
     this._element = null;
   }
@@ -63,7 +61,7 @@ export class TripEdit {
 
             </div>
 
-            ${makeDestination(this._cities, this._type, this._city, this._place)}
+            ${makeDestination(this._cities, this._type, this._city)}
 
             <label class="point__time">
               choose time

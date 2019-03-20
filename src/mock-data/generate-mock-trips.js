@@ -1,4 +1,4 @@
-import {tripIcons, tripCities, tripDescription, tripOffers, tripPriceCurrency, tripAllPictures, tripTypes, tripPlaces} from './trip-constants';
+import {tripIcons, tripCities, tripDescription, tripOffers, tripPriceCurrency, tripAllPictures, tripTypes} from './trip-constants';
 import {getRandomElementFromArr, getFewRandomItemsFromArr, returnTrueOrFalse} from '../helpers';
 import {generateOffers} from './generate-offers';
 import {generateTime} from './generate-time';
@@ -44,7 +44,6 @@ const mockTrip = (id) => {
     offers: new Set(generateOffers(InitialOffers)), // изначальное кол-во оффер по заданию
     allOffers: new Set(generateOffers(tripOffers)), // все офферы
     time: generateTime(),
-    place: getRandomElementFromArr([...tripPlaces]),
     isFavorite: returnTrueOrFalse(),
     types: tripTypes,
     cities: tripCities,
