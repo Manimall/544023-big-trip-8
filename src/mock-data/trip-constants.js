@@ -24,6 +24,7 @@ const tripCities = new Set([
   `Barcelona`,
   `Paris`,
   `Ivanovo`,
+  `Novosibirsk`
 ]);
 
 // все возможные доп. предложения

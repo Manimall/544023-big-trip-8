@@ -20,50 +20,35 @@ const tripListWrapper = document.querySelector(`.trip-day__items`); // конт�
 
 // const trips = makeStringFromData(generateFullTrip(INITIAL_TRIP_COUNT), makeTrip);
 
-const generateFullTrip = (tripQuantity) => {
-  return new Array(tripQuantity)
-      .fill()
-      .map((el, id) => {
+// const makeStringFromData = (layoutData, generateFn) => layoutData.reduce((acc, el) => acc + generateFn(el), ``);
 
-        const trip = new Trip(mockTrip(id));
-        const tripEdit = new TripEdit(mockTrip(id));
+const genArr = (amount) => {
+  const points = new Array(amount)
+                      .fill(null)
+                      .map((el, id) => mockTrip(id));
 
-        return {
-          trip,
-          tripEdit
-        };
-      });
-};
+  points.forEach((item) => {
 
-generateFullTrip(INITIAL_TRIP_COUNT);
-// console.log(generateFullTrip(INITIAL_TRIP_COUNT)); // массив с данными
+    const trip = new Trip(item);
+    const tripEdit = new TripEdit(item);
 
-const getReadyTrips = () => {
-  generateFullTrip(INITIAL_TRIP_COUNT).forEach((el) => {
-    const singleTrip = el.trip;
-    const singleEditTrip = el.tripEdit;
-
-    // console.log(singleTrip);
-
-    singleTrip.onEdit = () => {
-      singleEditTrip.render();
-      tripListWrapper.replaceChild(singleEditTrip.element, singleTrip.element);
-      singleTrip.unrender();
+    trip.onEdit = () => {
+      tripEdit.render();
+      tripListWrapper.replaceChild(tripEdit.element, trip.element);
+      trip.unrender();
     };
 
-    singleEditTrip.onSubmit = () => {
-      singleTrip.render();
-      tripListWrapper.replaceChild(singleTrip.element, singleEditTrip.element);
-      singleEditTrip.unrender();
+    tripEdit.onSubmit = () => {
+      trip.render();
+      tripListWrapper.replaceChild(trip.element, tripEdit.element);
+      tripEdit.unrender();
     };
 
-    const renderedTrip = singleTrip.render();
-
-    tripListWrapper.appendChild(renderedTrip);
+    tripListWrapper.appendChild(trip.render());
   });
 };
 
-getReadyTrips();
+genArr(INITIAL_TRIP_COUNT);
 
 
 // добавляем на страницу маршруты путешествий
@@ -75,10 +60,6 @@ const filters = makeStringFromData(filtersData, makeFilter);
 
 // добавляем на страницу фильтры
 filterListWrapper.insertAdjacentHTML(`afterbegin`, filters);
-
-tripListWrapper.onEdit = () => {
-
-};
 
 /**
  * Добавляем функцию-обработчик события для переключения фильтров,
