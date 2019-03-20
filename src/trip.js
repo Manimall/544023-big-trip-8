@@ -52,15 +52,15 @@ export class Trip {
   }
 
   onEdit() {
-    console.log(`smth`);
+    // console.log(`smth`);
   }
 
   bind() {
-    this.element.addEventListener(`click`, this.onEdit.bind(this));
+    this.element.addEventListener(`click`, this.onEdit);
   }
 
   unbind() {
-    this._element.addEventListener(`click`, this.onEdit.bind(this));
+    this._element.addEventListener(`click`, this.onEdit);
   }
 
   render() {

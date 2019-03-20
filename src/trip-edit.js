@@ -18,7 +18,7 @@ export class TripEdit {
     this._description = obj.description;
 
     this._picture = obj.picture;
-    this._allPictures = obj.allPictures;
+    this._pictures = obj.pictures;
 
     this._price = obj.price;
     this._priceCurrency = obj.priceCurrency;

@@ -43,9 +43,7 @@ const getReadyTrips = () => {
     const singleTrip = el.trip;
     const singleEditTrip = el.tripEdit;
 
-    const renderedTrip = singleTrip.render();
-
-    console.log(singleTrip);
+    // console.log(singleTrip);
 
     singleTrip.onEdit = () => {
       singleEditTrip.render();
@@ -58,6 +56,8 @@ const getReadyTrips = () => {
       tripListWrapper.replaceChild(singleTrip.element, singleEditTrip.element);
       singleEditTrip.unrender();
     };
+
+    const renderedTrip = singleTrip.render();
 
     tripListWrapper.appendChild(renderedTrip);
   });

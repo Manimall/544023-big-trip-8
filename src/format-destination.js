@@ -18,7 +18,7 @@ const makeDestination = (cities, selectedTripType, city, place) => {
              value="${city}"
       >
       <datalist id="destination-select">
-        ${setOptions([...cities])}
+        ${setOptions(cities)}
       </datalist>
     </div>`
   );
