@@ -21,11 +21,12 @@ export class Trip {
 
     this._state = {};
     this._element = null;
+
   }
 
   get template() {
     return (
-      `<article class="trip-point">
+      `<article class="trip-point" id="${this._id}">
         <i class="trip-icon">${this._icon}</i>
         <h3 class="trip-point__title">${this._title}</h3>
         <p class="trip-point__schedule">
@@ -50,8 +51,16 @@ export class Trip {
     return this._element;
   }
 
-  bind() {
+  onEdit() {
+    console.log(`smth`);
+  }
 
+  bind() {
+    this.element.addEventListener(`click`, this.onEdit.bind(this));
+  }
+
+  unbind() {
+    this._element.addEventListener(`click`, this.onEdit.bind(this));
   }
 
   render() {

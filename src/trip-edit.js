@@ -5,7 +5,7 @@ import {makeDestination} from './format-destination';
 import {formatEditOffers} from './format-edit-offers';
 import {getAllImages} from './format-pictures';
 
-export class tripEdit {
+export class TripEdit {
   constructor(obj) {
     this._title = obj.title;
 
@@ -46,8 +46,8 @@ export class tripEdit {
 
   get template() {
     return (
-      `<article class="point">
-        <form action="" method="get">
+      `<article class="point" id="${this._id}">
+        <form class="point-edit" action="" method="get">
           <header class="point__header">
             <label class="point__date">
               choose day
@@ -128,11 +128,16 @@ export class tripEdit {
   }
 
   bind() {
-    this._element.querySelector(`.trip-point`)
-      .addEventListener(`click`, this.onEdit);
+    this._element.querySelector(`article > form`).addEventListener(`submit`, this.onSubmit);
+    this._element.querySelector(`article > form`).addEventListener(`reset`, () => {});
   }
 
-  onEdit() {
+  unbind() {
+    this._element.querySelector(`article > form`).removeEventListener(`submit`, this.onSubmit);
+    this._element.querySelector(`article > form`).removeEventListener(`reset`, () => {});
+  }
+
+  onSubmit() {
 
   }
 

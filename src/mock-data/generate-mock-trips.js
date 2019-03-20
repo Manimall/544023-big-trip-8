@@ -20,9 +20,10 @@ for (let currentPrice = MIN_PRICE; currentPrice <= MAX_PRICE; currentPrice += PR
 
 /**
  * Создаем объект (уникальное путешествие)
+ * @param {Number} id - id путешествия
  * @return {Object} - путешествие с определенными полями, заполенными данными по ТЗ
  */
-const mockTrip = () => {
+const mockTrip = (id) => {
   const tripType = getRandomElementFromArr(Object.keys(tripIcons)); // ищем первую часть названия - ключ
   const tripIcon = tripIcons[tripType]; // привязываем к ней иконку - значение по ключу
 
@@ -41,6 +42,7 @@ const mockTrip = () => {
     allOffers: new Set(generateOffers(tripOffers)),
     time: generateTime(),
     isFavorite: returnTrueOrFalse(),
+    id,
   };
 };
 
