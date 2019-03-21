@@ -36,11 +36,25 @@ const getFewRandomItemsFromArr = (arr, minItemsQuantity, maxItemsQuantity) => {
 };
 
 /**
- * Генерируем Строку из массива данных
- * @param {Array} layoutData - исходный массив данныx
- * @param {cb-function} cb - функция-коллбэк, изменяем исходный массив с данными
- * @return {String} - строка с заполненными данными
+ * Возвращаем true или false от функции getRandomNumber и сравниваем с медианой
+ * @return {boolean} - true или false
  */
-const makeStringFromData = (layoutData, cb) => layoutData.reduce(cb, ``);
+const returnTrueOrFalse = () => Math.random() > 0.5;
 
-export {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, makeStringFromData};
+
+/**
+ * Генерируем Строку из массива данных, который создаем с помощью функции
+ * @param {Array} layoutData - исходный массив данныx
+ * @param {function} generateFn - функция, изменяющая каждый элемент массива
+ * @return {String} - строка с заполненными и измененными с помощью функции данными
+ */
+const makeStringFromData = (layoutData, generateFn) => layoutData.reduce((acc, el) => acc + generateFn(el), ``);
+
+
+const createElement = (template) => {
+  const newEl = document.createElement(`div`);
+  newEl.innerHTML = template;
+  return newEl.firstChild;
+};
+
+export {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, makeStringFromData, createElement, returnTrueOrFalse};

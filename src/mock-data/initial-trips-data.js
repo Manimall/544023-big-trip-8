@@ -8,11 +8,13 @@ export const tripsData = [
     offers: [
       {
         name: `Upgrade to business`,
-        price: `20`
+        price: `20`,
+        currency: `€`
       },
       {
         name: `Order UBER`,
-        price: `20`
+        price: `20`,
+        currency: `€`
       }
     ]
   },
@@ -23,11 +25,13 @@ export const tripsData = [
     offers: [
       {
         name: `Upgrade to business`,
-        price: `20`
+        price: `20`,
+        currency: `€`
       },
       {
         name: `Select meal`,
-        price: `20`
+        price: `20`,
+        currency: `€`
       }
     ]
   },
@@ -38,7 +42,8 @@ export const tripsData = [
     offers: [
       {
         name: `Rent a car`,
-        price: `200`
+        price: `200`,
+        currency: `€`
       }
     ]
   },
@@ -49,7 +54,8 @@ export const tripsData = [
     offers: [
       {
         name: `Add breakfast`,
-        price: `20`
+        price: `20`,
+        currency: `€`
       }
     ]
   }

@@ -1,21 +1,46 @@
-import {makeStringFromData, getRandomNumber} from './helpers';
+import {getRandomNumber, makeStringFromData} from './helpers';
 import {filtersData} from './mock-data/filters-data';
 import {makeFilter} from './generate-filter';
-import {makeTrip, generateFullTrip} from './generate-trip';
 import {insertRandomTripsToHtml} from './render-random-trips';
+
+import {TripEdit} from './trip-edit';
+import {Trip} from './trip';
+import {mockTrip} from './mock-data/generate-mock-trips';
 
 const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
 const MIN_TRIP_COUNT = 3; // необходимое по заданию кол-во событий
 
 const filterListWrapper = document.querySelector(`.trip-filter`); // контэйнер для вставки фильтров
-const tripListWrapper = document.querySelector(`.trip-day__items`); // контэйнер для вставки событий
+const tripListWrapper = document.querySelector(`.trip-day__items`); // контэйнер для вставки путешествий
 
-// Генерируем разметку для всех путешествий
-// документация к функции makeStringFromData описана в helpers.js
-const trips = makeStringFromData(generateFullTrip(INITIAL_TRIP_COUNT), makeTrip);
 
-// добавляем на страницу маршруты путешествий
-tripListWrapper.insertAdjacentHTML(`afterbegin`, trips);
+const generateTrips = (amount) => {
+  const points = new Array(amount)
+                      .fill(null)
+                      .map((el, id) => mockTrip(id));
+
+  points.forEach((item) => {
+
+    const trip = new Trip(item);
+    const tripEdit = new TripEdit(item);
+
+    trip.onEdit = () => {
+      tripEdit.render();
+      tripListWrapper.replaceChild(tripEdit.element, trip.element);
+      trip.unrender();
+    };
+
+    tripEdit.onSubmit = () => {
+      trip.render();
+      tripListWrapper.replaceChild(trip.element, tripEdit.element);
+      tripEdit.unrender();
+    };
+
+    tripListWrapper.appendChild(trip.render());
+  });
+};
+
+generateTrips(INITIAL_TRIP_COUNT);
 
 
 // Заполняем разметку фильтра данными из массива фильтров

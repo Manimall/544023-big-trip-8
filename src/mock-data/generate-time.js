@@ -24,14 +24,18 @@ const generateTime = () => {
 
   // дата начала события и окончания события
   const timeStart = new Date(getRandomNumber(dateNow.getTime(), dateNow.getTime() + MS_IN_WEEK));
-  const timeEnd = new Date(getRandomNumber(timeStart.getTime(), timeStart.getTime() + MAX_TRIP_DURATION)); // от 1часа до 24 часов
+  const timeEnd = new Date(getRandomNumber(timeStart.getTime(), timeStart.getTime() + MAX_TRIP_DURATION)); // + (от 1 часа до 24 часов) от timeSatrt
+
+  // устанавливаем секунды указанных дат
+  const formatedTimeStart = timeStart.setSeconds(0, 0);
+  const formatedTimeEnd = timeEnd.setSeconds(0, 0);
 
   // разница между start и end в миллисекундах
-  const difference = timeEnd - timeStart;
+  const difference = formatedTimeEnd - formatedTimeStart;
   const minutes = difference / MS_IN_MINUTE;
 
   const resultHours = Math.floor(minutes / MINUTES_IN_HOUR);
-  const resultMinutes = Math.floor(minutes % MINUTES_IN_HOUR);
+  const resultMinutes = minutes % MINUTES_IN_HOUR;
 
   const interval = {
     hours: resultHours,
