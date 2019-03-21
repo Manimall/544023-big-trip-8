@@ -1,5 +1,5 @@
 const getAllImages = (pictures) => {
-  pictures = [...pictures].map((picture) => {
+  const picturesLayout = [...pictures].map((picture) => {
     return `
       <img src="${picture}" class="point__destination-image" alt="picture from place"></img>
     `.trim();
@@ -7,7 +7,7 @@ const getAllImages = (pictures) => {
 
   return `
     <div class="point__destination-images">
-      ${pictures}
+      ${picturesLayout}
     </div>
   `;
 };
