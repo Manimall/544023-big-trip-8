@@ -70,6 +70,7 @@ const tripAllPictures = new Set([
   `http://picsum.photos/300/150?r=${Math.random()}`,
 ]);
 
+// валюта для путешествий
 const tripPriceCurrency = `€`;
 
 export {tripIcons, tripCities, tripOffers, tripDescription, tripTypes, tripPriceCurrency, tripAllPictures};

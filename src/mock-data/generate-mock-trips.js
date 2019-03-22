@@ -1,4 +1,4 @@
-import {tripIcons, tripCities, tripDescription, tripOffers, tripPriceCurrency, tripAllPictures, tripTypes} from './trip-constants';
+import * as constants from './trip-constants';
 import {getRandomElementFromArr, getFewRandomItemsFromArr, returnTrueOrFalse} from '../helpers';
 import {generateOffers} from './generate-offers';
 import {generateTime} from './generate-time';
@@ -24,31 +24,31 @@ for (let currentPrice = MIN_PRICE; currentPrice <= MAX_PRICE; currentPrice += PR
  * @return {Object} - путешествие с определенными полями, заполенными данными по ТЗ
  */
 const mockTrip = (id) => {
-  const tripType = getRandomElementFromArr(Object.keys(tripIcons)); // ищем первую часть названия - ключ
-  const tripIcon = tripIcons[tripType]; // привязываем к ней иконку - значение по ключу
-  const city = getRandomElementFromArr([...tripCities]);
+  const tripType = getRandomElementFromArr(Object.keys(constants.tripIcons)); // ищем первую часть названия - ключ
+  const tripIcon = constants.tripIcons[tripType]; // привязываем к ней иконку - значение по ключу
+  const city = getRandomElementFromArr([...constants.tripCities]);
 
-  const InitialOffers = getFewRandomItemsFromArr(tripOffers, MIN_OFFERS, MAX_OFFERS);
+  const InitialOffers = getFewRandomItemsFromArr(constants.tripOffers, MIN_OFFERS, MAX_OFFERS);
 
   return {
     city,
-    type: getRandomElementFromArr(tripTypes),
+    type: getRandomElementFromArr(constants.tripTypes),
     title: `${tripType} to ${city}`,
     icon: tripIcon,
-    description: getFewRandomItemsFromArr(tripDescription, MIN_DESCRIPTION_SENTENCE_QUANTITY, MAX_DESCRIPTION_SENTENCE_QUANTITY),
+    description: getFewRandomItemsFromArr(constants.tripDescription, MIN_DESCRIPTION_SENTENCE_QUANTITY, MAX_DESCRIPTION_SENTENCE_QUANTITY),
     picture: `http://picsum.photos/300/150?r=${Math.random()}`,
-    pictures: tripAllPictures,
+    pictures: constants.tripAllPictures,
     price: `${getRandomElementFromArr(prices)}`,
-    fullPrice: `${getRandomElementFromArr(prices)} ${tripPriceCurrency}`,
-    priceCurrency: tripPriceCurrency,
+    fullPrice: `${getRandomElementFromArr(prices)} ${constants.tripPriceCurrency}`,
+    priceCurrency: constants.tripPriceCurrency,
     offers: new Set(generateOffers(InitialOffers)), // изначальное кол-во оффер по заданию
-    allOffers: new Set(generateOffers(tripOffers)), // все офферы
+    allOffers: new Set(generateOffers(constants.tripOffers)), // все офферы
     time: generateTime(),
     isFavorite: returnTrueOrFalse(),
-    types: tripTypes,
-    cities: tripCities,
+    types: constants.tripTypes,
+    cities: constants.tripCities,
     id,
   };
 };
 
-export {mockTrip, tripPriceCurrency};
+export {mockTrip};

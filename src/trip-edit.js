@@ -1,12 +1,15 @@
 import {formatTimeOutput} from './mock-data/generate-time';
-import {createElement} from './helpers';
 import {formatTravelWay} from './format-travel-ways';
 import {makeDestination} from './format-destination';
 import {formatEditOffers} from './format-edit-offers';
 import {getAllImages} from './format-pictures';
 
-export class TripEdit {
+import {Component} from './component';
+
+export class TripEdit extends Component {
   constructor(obj) {
+    super();
+
     this._title = obj.title;
 
     this._id = obj.id;
@@ -36,10 +39,6 @@ export class TripEdit {
 
     this._state = {};
     this._element = null;
-  }
-
-  get element() {
-    return this._element;
   }
 
   get template() {
@@ -119,12 +118,6 @@ export class TripEdit {
     );
   }
 
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
   bind() {
     this._element.querySelector(`article > form`).addEventListener(`submit`, this.onSubmit);
     this._element.querySelector(`article > form`).addEventListener(`reset`, () => {});
@@ -138,11 +131,4 @@ export class TripEdit {
   onSubmit() {
 
   }
-
-  unrender() {
-    this.unbind();
-    this._element.remove();
-    this._element = null;
-  }
-
 }
