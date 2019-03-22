@@ -20,6 +20,7 @@ const renderInput = (el, selectedIcon) => {
   );
 };
 
+
 const getFullTravelWayLayout = (firstGroup, secondGroup) => {
   return (
     `<div class="travel-way__select">

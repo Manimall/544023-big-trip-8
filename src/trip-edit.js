@@ -1,10 +1,11 @@
 import {formatTimeOutput} from './mock-data/generate-time';
-import {formatTravelWay} from './format-travel-ways';
-import {makeDestination} from './format-destination';
-import {formatEditOffers} from './format-edit-offers';
-import {getAllImages} from './format-pictures';
+import {formatTravelWay} from './parts-of-trip-edit-template/format-travel-ways';
+import {makeDestination} from './parts-of-trip-edit-template/format-destination';
+import {formatEditOffers} from './parts-of-trip-edit-template/format-edit-offers';
+import {getAllImages} from './parts-of-trip-edit-template/format-pictures';
 
 import {Component} from './component';
+
 
 export class TripEdit extends Component {
   constructor(obj) {

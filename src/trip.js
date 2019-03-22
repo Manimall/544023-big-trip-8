@@ -1,7 +1,8 @@
-import {getOffersLayout} from './format-offers';
+import {getOffersLayout} from './parts-of-trip-template/format-offers';
 import {formatTimeOutput} from './mock-data/generate-time';
 
 import {Component} from './component';
+
 
 export class Trip extends Component {
   constructor(obj) {
