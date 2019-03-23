@@ -1,6 +1,6 @@
-import {mockTrip} from './mock-data/generate-mock-trips';
-import {getOffersLayout} from './format-offers';
-import {formatTimeOutput} from './mock-data/generate-time';
+import {mockTrip} from '../mock-data/generate-mock-trips';
+import {getOffersLayout} from '../parts-of-trip-template/format-offers';
+import {formatTimeOutput} from '../mock-data/generate-time';
 
 /**
  * Создаем массив, превращаем (мапируем) его в массив путешествий

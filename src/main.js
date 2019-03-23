@@ -1,8 +1,6 @@
 import {getRandomNumber, makeStringFromData} from './helpers';
 import {filtersData} from './mock-data/filters-data';
 import {makeFilter} from './generate-filter';
-import {insertRandomTripsToHtml} from './render-random-trips';
-
 import {TripEdit} from './trip-edit';
 import {Trip} from './trip';
 import {mockTrip} from './mock-data/generate-mock-trips';
@@ -49,6 +47,7 @@ const filters = makeStringFromData(filtersData, makeFilter);
 // добавляем на страницу фильтры
 filterListWrapper.insertAdjacentHTML(`afterbegin`, filters);
 
+
 /**
  * Добавляем функцию-обработчик события для переключения фильтров,
  * удаляем все ранее созданные путешествия и добавляем случайное кол-во новых
@@ -58,7 +57,8 @@ const addFilterClickHandler = (evt) => {
   const clickedFilter = evt.target.classList.contains(`trip-filter__item`);
   if (clickedFilter) {
     tripListWrapper.innerHTML = ``;
-    insertRandomTripsToHtml(tripListWrapper, getRandomNumber(MIN_TRIP_COUNT, INITIAL_TRIP_COUNT));
+    const randomTripsNumber = getRandomNumber(MIN_TRIP_COUNT, INITIAL_TRIP_COUNT);
+    generateTrips(randomTripsNumber);
   }
 };
 

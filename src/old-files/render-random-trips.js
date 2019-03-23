@@ -1,7 +1,7 @@
 // import {getRandomNumber} from './helpers';
 // import {tripsData} from './mock-data/initial-trips-data';
 import {makeTrip} from './generate-trip';
-import {mockTrip} from './mock-data/generate-mock-trips';
+import {mockTrip} from '../mock-data/generate-mock-trips';
 
 /**
  * Добавляем разметку нескольких (сучайное кол-во) путешествий

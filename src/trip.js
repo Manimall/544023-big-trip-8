@@ -1,9 +1,13 @@
-import {getOffersLayout} from './format-offers';
+import {getOffersLayout} from './parts-of-trip-template/format-offers';
 import {formatTimeOutput} from './mock-data/generate-time';
-import {createElement} from './helpers';
 
-export class Trip {
+import {Component} from './component';
+
+
+export class Trip extends Component {
   constructor(obj) {
+    super();
+
     this._title = obj.title;
 
     this._id = obj.id;
@@ -47,10 +51,6 @@ export class Trip {
     );
   }
 
-  get element() {
-    return this._element;
-  }
-
   onEdit() {
 
   }
@@ -61,17 +61,5 @@ export class Trip {
 
   unbind() {
     this._element.addEventListener(`click`, this.onEdit);
-  }
-
-  render() {
-    this._element = createElement(this.template);
-    this.bind();
-    return this._element;
-  }
-
-  unrender() {
-    this.unbind();
-    this._element.remove();
-    this._element = null;
   }
 }
