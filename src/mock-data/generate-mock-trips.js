@@ -30,8 +30,6 @@ const mockTrip = (id) => {
 
   const InitialOffers = getFewRandomItemsFromArr(constants.tripOffers, MIN_OFFERS, MAX_OFFERS);
 
-  const tripPrice = getRandomElementFromArr(prices);
-
   return {
     city,
     type: getRandomElementFromArr(constants.tripTypes),
@@ -40,8 +38,8 @@ const mockTrip = (id) => {
     description: getFewRandomItemsFromArr(constants.tripDescription, MIN_DESCRIPTION_SENTENCE_QUANTITY, MAX_DESCRIPTION_SENTENCE_QUANTITY),
     picture: `http://picsum.photos/300/150?r=${Math.random()}`,
     pictures: constants.tripAllPictures,
-    price: `${tripPrice}`,
-    fullPrice: `${tripPrice} ${constants.tripPriceCurrency}`,
+    price: `${getRandomElementFromArr(prices)}`,
+    fullPrice: `${getRandomElementFromArr(prices)} ${constants.tripPriceCurrency}`,
     priceCurrency: constants.tripPriceCurrency,
     offers: new Set(generateOffers(InitialOffers)), // изначальное кол-во оффер по заданию
     allOffers: new Set(generateOffers(constants.tripOffers)), // все офферы

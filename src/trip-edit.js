@@ -38,52 +38,8 @@ export class TripEdit extends Component {
     this._type = obj.type;
     this._types = obj.types;
 
-    // непонятная хрень
+    this._state = {};
     this._element = null;
-
-    // привязка методов
-    this.onSubmit = this.onSubmit.bind(this);
-    this._onPriceChange = this._onPriceChange.bind(this);
-  }
-
-  update(obj) {
-    this._title = obj.title;
-    this._city = obj.city;
-    this._icon = obj.icon;
-    this._description = obj.description;
-    this._picture = obj.picture;
-    this._price = obj.price;
-    this._priceCurrency = obj.priceCurrency;
-    this._fullPrice = obj.fullPrice;
-    this._isFavorite = obj.isFavorite;
-    this._offers = obj.offers;
-    this._time = obj.time;
-    this._type = obj.type;
-  }
-
-  _onPriceChange(evt) {
-    evt.preventDefault();
-
-    const priceEntered = evt.target.value;
-    if (priceEntered.match(/^\d{2,3}$/)) {
-      this._price = priceEntered;
-    }
-  }
-
-  _getNewTripData() {
-    return {
-      title: this._title,
-      city: this._city,
-      icon: this._icon,
-      description: this._description,
-      picture: this._picture,
-      price: this._price,
-      priceCurrency: this._priceCurrency,
-      fullPrice: this._fullPrice,
-      isFavorite: this._isFavorite,
-      time: this._time,
-      type: this._type,
-    };
   }
 
   get template() {
@@ -166,16 +122,14 @@ export class TripEdit extends Component {
   bind() {
     this._element.querySelector(`article > form`).addEventListener(`submit`, this.onSubmit);
     this._element.querySelector(`article > form`).addEventListener(`reset`, () => {});
-    this._element.querySelector(`input[name="price"]`).addEventListener(`change`, this._onPriceChange);
   }
 
   unbind() {
     this._element.querySelector(`article > form`).removeEventListener(`submit`, this.onSubmit);
     this._element.querySelector(`article > form`).removeEventListener(`reset`, () => {});
-    this._element.querySelector(`input[name="price"]`).removeEventListener(`change`, this._onPriceChange);
   }
 
   onSubmit() {
-    this.update(this._getNewTripData());
+
   }
 }
