@@ -28,7 +28,10 @@ const generateTrips = (amount) => {
       trip.unrender();
     };
 
-    tripEdit.onSubmit = () => {
+    tripEdit.onSubmit = (newObj) => {
+      Object.assign(item, newObj);
+
+      trip.update(item);
       trip.render();
       tripListWrapper.replaceChild(trip.element, tripEdit.element);
       tripEdit.unrender();
