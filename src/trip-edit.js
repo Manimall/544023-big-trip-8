@@ -175,6 +175,7 @@ export class TripEdit extends Component {
     this._element.querySelector(`input[name="price"]`).removeEventListener(`change`, this._onPriceChange);
   }
 
+  // not working
   onSubmit() {
     this.update(this._getNewTripData());
   }
