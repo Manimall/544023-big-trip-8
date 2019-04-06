@@ -7,24 +7,17 @@ import {Component} from './component';
 export class Trip extends Component {
   constructor(obj) {
     super();
-
     this._title = obj.title;
-
     this._id = obj.id;
-
     this._icon = obj.icon;
     this._description = obj.description;
     this._picture = obj.picture;
-
     this._price = obj.price;
     this._priceCurrency = obj.priceCurrency;
     this._fullPrice = obj.fullPrice;
-
     this._isFavorite = obj.isFavorite;
-
     this._offers = obj.offers;
     this._time = obj.time;
-
     this._element = null;
 
     this._state = {};

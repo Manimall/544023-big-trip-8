@@ -537,7 +537,7 @@ input[type=radio]:checked + .trip-sorting__item {
   background-color: #F6F6F6;
   border-radius: 32px;
   margin-right: 7px;
-  margin-bottom: 6px;
+  margin-bottom: 11px;
   cursor: pointer;
 }
 .point__offers-label:hover {

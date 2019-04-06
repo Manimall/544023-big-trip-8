@@ -32,7 +32,8 @@ const mockTrip = (id) => {
   const tripIcon = tripInfo.icon; // привязываем к ней иконку - значение по ключу
   const city = getRandomElementFromArr([...constants.tripCities]);
 
-  const InitialOffers = getFewRandomItemsFromArr(constants.tripOffers, MIN_OFFERS, MAX_OFFERS);
+  const allOffers = generateOffers(constants.tripOffers);
+  const InitialOffers = getFewRandomItemsFromArr(allOffers, MIN_OFFERS, MAX_OFFERS);
 
   const tripPrice = getRandomElementFromArr(prices);
 
@@ -49,8 +50,8 @@ const mockTrip = (id) => {
     price: `${tripPrice}`,
     fullPrice: `${tripPrice} ${constants.tripPriceCurrency}`,
     priceCurrency: constants.tripPriceCurrency,
-    offers: new Set(generateOffers(InitialOffers)), // изначальное кол-во оффер по заданию
-    allOffers: new Set(generateOffers(constants.tripOffers)), // все офферы
+    offers: new Set(InitialOffers), // изначальное кол-во оффер по заданию
+    allOffers: new Set(allOffers), // все офферы
     time: generateTime(),
     isFavorite: returnTrueOrFalse(),
     id,
