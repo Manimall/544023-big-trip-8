@@ -289,7 +289,7 @@ input[type=radio]:checked + .trip-sorting__item {
 
 
 .trip-point {
-  align-items: flex-start;
+  align-items: baseline;
   display: flex;
   margin-bottom: 80px;
   position: relative;
@@ -339,11 +339,12 @@ input[type=radio]:checked + .trip-sorting__item {
   list-style: none;
   margin: 0;
   padding: 0;
-  width: 230px;
+  /* width: 230px; */
 }
 
 .trip-point__offer {
   background: none;
+  text-align: left;
   border: 0;
   color: #199cfa;
   cursor: pointer;
@@ -393,10 +394,10 @@ input[type=radio]:checked + .trip-sorting__item {
   padding: 0 15px;
 }
 .point__date {
-  display: none;
+  /* display: none;  //wtf??? */
   font-size: 0;
   width: 55px;
-  margin-right: 5px;
+  margin-right: 20px;
 }
 .point__input {
   font-size: 14px;
@@ -413,6 +414,7 @@ input[type=radio]:checked + .trip-sorting__item {
 .point__input::placeholder {
   font-weight: 100;
 }
+.point__input["date-end"]
 .point__input:hover {
   opacity: 0.6;
 }
@@ -420,8 +422,8 @@ input[type=radio]:checked + .trip-sorting__item {
   position: relative;
   padding: 0 2px 6px;
   display: flex;
-  width: 235px;
-  margin-right: 5px;
+  width: 160px;
+  margin-right: 25px;
   margin-top: 4px;
   border-bottom: 1px solid #0D8AE4;
 }

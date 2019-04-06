@@ -20,12 +20,27 @@ export class Trip extends Component {
     this._priceCurrency = obj.priceCurrency;
     this._fullPrice = obj.fullPrice;
 
+    this._isFavorite = obj.isFavorite;
+
     this._offers = obj.offers;
     this._time = obj.time;
 
-    this._state = {};
     this._element = null;
 
+    this._state = {};
+  }
+
+  update(obj) {
+    this._title = obj.title;
+    this._icon = obj.icon;
+    this._description = obj.description;
+    this._picture = obj.picture;
+    this._price = obj.price;
+    this._priceCurrency = obj.priceCurrency;
+    this._fullPrice = obj.fullPrice;
+    this._offers = obj.offers;
+    this._time = obj.time;
+    this._isFavorite = obj.isFavorite;
   }
 
   get template() {
@@ -44,9 +59,10 @@ export class Trip extends Component {
           </span>
         </p>
         <p class="trip-point__price">${this._fullPrice}</p>
-        <ul class="trip-point__offers">
+        ${this._offers.size !== 0 ?
+        `<ul class="trip-point__offers">
           ${getOffersLayout(this._offers).join(``)}
-        </ul>
+        </ul>` : ``}
       </article>`
     );
   }

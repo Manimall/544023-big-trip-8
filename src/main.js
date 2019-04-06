@@ -32,6 +32,7 @@ const generateTrips = (amount) => {
       Object.assign(item, newObj);
 
       trip.update(item);
+
       trip.render();
       tripListWrapper.replaceChild(trip.element, tripEdit.element);
       tripEdit.unrender();

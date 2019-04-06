@@ -4,6 +4,10 @@ import {makeDestination} from './parts-of-trip-edit-template/format-destination'
 import {formatEditOffers} from './parts-of-trip-edit-template/format-edit-offers';
 import {getAllImages} from './parts-of-trip-edit-template/format-pictures';
 
+import {MIN_PRICE, MAX_PRICE} from './mock-data/generate-mock-trips';
+import {tripTypes, tripCities} from './mock-data/trip-constants';
+import {KeyCodes} from './helpers';
+
 import {Component} from './component';
 
 
@@ -15,7 +19,6 @@ export class TripEdit extends Component {
 
     this._id = obj.id;
 
-    this._cities = obj.cities;
     this._city = obj.city;
 
     this._icon = obj.icon;
@@ -36,14 +39,18 @@ export class TripEdit extends Component {
     this._time = obj.time;
 
     this._type = obj.type;
-    this._types = obj.types;
+
+    this._tripInfo = obj.tripInfo;
 
     // непонятная хрень
     this._element = null;
 
     // привязка методов
-    this.onSubmit = this.onSubmit.bind(this);
+    this._onSubmitBtnClick = this._onSubmitBtnClick.bind(this);
     this._onPriceChange = this._onPriceChange.bind(this);
+    this._onKeyDownFormPress = this._onKeyDownFormPress.bind(this);
+    this._onTravelTypeChange = this._onTravelTypeChange.bind(this);
+    this._onTravelCityChange = this._onTravelCityChange.bind(this);
   }
 
   update(obj) {
@@ -59,14 +66,25 @@ export class TripEdit extends Component {
     this._offers = obj.offers;
     this._time = obj.time;
     this._type = obj.type;
+    this._tripInfo = obj.tripInfo;
   }
 
   _onPriceChange(evt) {
     evt.preventDefault();
 
-    const priceEntered = evt.target.value;
+    let priceEntered = evt.target.value;
     if (priceEntered.match(/^\d{2,3}$/)) {
+      if (+priceEntered < MIN_PRICE) {
+        priceEntered = MIN_PRICE;
+      }
+      if (+priceEntered > MAX_PRICE) {
+        priceEntered = MAX_PRICE;
+      }
+      priceEntered = +priceEntered;
       this._price = priceEntered;
+      this._fullPrice = `${this._price} ${this._priceCurrency}`;
+
+      this.partialUpdate();
     }
   }
 
@@ -83,9 +101,47 @@ export class TripEdit extends Component {
       isFavorite: this._isFavorite,
       time: this._time,
       type: this._type,
+      tripInfo: this._tripInfo,
     };
   }
 
+  _onTravelTypeChange({target}) {
+    [this._icon, this._tripInfoName] = target.nextElementSibling.textContent.trim().split(` `);
+    this._tripInfo = tripTypes.find((el) => {
+      if (el.name.toLowerCase() === this._tripInfoName) {
+        return el;
+      } else {
+        return false;
+      }
+    });
+
+    this._type = this._tripInfo.name;
+    this._city = this._element.querySelector(`.point__destination-input`).value;
+
+    this.partialUpdate();
+    this._getTripTitle();
+  }
+
+  _onTravelCityChange({target}) {
+    // проверяем есть ли данный город в списке возможных городов
+    const cityArr = [...tripCities].filter((item) => item.name === this._city);
+    if (cityArr.length !== 0) {
+      this._city = target.value;
+    }
+
+    this.partialUpdate();
+    this._getTripTitle();
+  }
+
+  _getTripTitle() {
+    const titleFirstPart = this._element.querySelector(`.point__destination-label`).textContent;
+    const titleSecondPart = this._city;
+
+    this._title = `${titleFirstPart} ${titleSecondPart}`;
+    return this._title;
+  }
+
+  // TODO point date
   get template() {
     return (
       `<article class="point" id="${this._id}">
@@ -93,7 +149,12 @@ export class TripEdit extends Component {
           <header class="point__header">
             <label class="point__date">
               choose day
-              <input class="point__input" type="text" placeholder="MAR 18" name="day">
+
+              <input class="point__input"
+                     type="text"
+                     placeholder="MAR 18"
+                     name="day"
+              >
             </label>
 
             <div class="travel-way">
@@ -101,25 +162,29 @@ export class TripEdit extends Component {
 
               <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle">
 
-              ${formatTravelWay(this._types, this._icon)}
+              ${formatTravelWay(tripTypes, this._icon)}
 
             </div>
 
-            ${makeDestination(this._cities, this._type, this._city)}
+            ${makeDestination(tripCities, this._tripInfo, this._city)}
 
-            <label class="point__time">
+
+            <div class="point__time">
               choose time
-
-              <input class="point__input" type="text"
-              value="${formatTimeOutput(this._time.start.getHours())}:${formatTimeOutput(this._time.start.getMinutes())}
-                        &nbsp;&mdash;
-                    ${formatTimeOutput(this._time.end.getHours())}:${formatTimeOutput(this._time.end.getMinutes())}"
-              name="time"
-              placeholder="${formatTimeOutput(this._time.start.getHours())}:${formatTimeOutput(this._time.start.getMinutes())}
-                              &nbsp;&mdash;
-                          ${formatTimeOutput(this._time.end.getHours())}:${formatTimeOutput(this._time.end.getMinutes())}"
+              <input class="point__input"
+                      type="text"
+                      value="${formatTimeOutput(this._time.start.getHours())}:${formatTimeOutput(this._time.start.getMinutes())}"
+                      name="date-start"
+                      placeholder="${formatTimeOutput(this._time.start.getHours())}:${formatTimeOutput(this._time.start.getMinutes())}"
               >
-            </label>
+
+              <input class="point__input"
+                     type="text"
+                     value="${formatTimeOutput(this._time.end.getHours())}:${formatTimeOutput(this._time.end.getMinutes())}"
+                     name="date-end"
+                     placeholder="${formatTimeOutput(this._time.end.getHours())}:${formatTimeOutput(this._time.end.getMinutes())}"
+              >
+            </div>
 
             <label class="point__price">
               write price
@@ -164,19 +229,40 @@ export class TripEdit extends Component {
   }
 
   bind() {
-    this._element.querySelector(`article > form`).addEventListener(`submit`, this.onSubmit);
+    this._element.querySelector(`article > form`).addEventListener(`submit`, this._onSubmitBtnClick);
+    this._element.querySelector(`article > form`).addEventListener(`keydown`, this._onKeyDownFormPress);
     this._element.querySelector(`article > form`).addEventListener(`reset`, () => {});
     this._element.querySelector(`input[name="price"]`).addEventListener(`change`, this._onPriceChange);
+    this._element.querySelector(`.travel-way__select`).addEventListener(`change`, this._onTravelTypeChange);
+    this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onTravelCityChange);
   }
 
   unbind() {
-    this._element.querySelector(`article > form`).removeEventListener(`submit`, this.onSubmit);
+    this._element.querySelector(`article > form`).removeEventListener(`submit`, this._onSubmitBtnClick);
+    this._element.querySelector(`article > form`).addEventListener(`keydown`, this._onKeyDownFormPress);
     this._element.querySelector(`article > form`).removeEventListener(`reset`, () => {});
     this._element.querySelector(`input[name="price"]`).removeEventListener(`change`, this._onPriceChange);
+    this._element.querySelector(`.travel-way__select`).removeEventListener(`change`, this._onTravelTypeChange);
+    this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onTravelCityChange);
   }
 
-  // not working
   onSubmit() {
+
+  }
+
+  _onSubmitBtnClick(evt) {
+    evt.preventDefault();
+
+    if (typeof this.onSubmit === `function`) {
+      this.onSubmit(this._getNewTripData());
+    }
+
     this.update(this._getNewTripData());
+  }
+
+  _onKeyDownFormPress(evt) {
+    if (evt.which === KeyCodes.ENTER) {
+      this._onSubmitBtnClick(evt);
+    }
   }
 }
