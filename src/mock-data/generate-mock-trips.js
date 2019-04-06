@@ -27,7 +27,7 @@ const mockTrip = (id) => {
   // const tripType = getRandomElementFromArr(Object.keys(constants.tripIcons)); // ищем первую часть названия - ключ
 
   const tripInfo = getRandomElementFromArr(constants.tripTypes);
-  const tripType = tripInfo.name;
+  const tripType = tripInfo.transport ? `${tripInfo.name} to` : `${tripInfo.name} in`;
 
   const tripIcon = tripInfo.icon; // привязываем к ней иконку - значение по ключу
   const city = getRandomElementFromArr([...constants.tripCities]);
@@ -36,10 +36,11 @@ const mockTrip = (id) => {
 
   const tripPrice = getRandomElementFromArr(prices);
 
+
   return {
     city,
     type: tripType,
-    title: `${tripType} to ${city}`,
+    title: `${tripType} ${city}`,
     icon: tripIcon,
     tripInfo,
     description: getFewRandomItemsFromArr(constants.tripDescription, MIN_DESCRIPTION_SENTENCE_QUANTITY, MAX_DESCRIPTION_SENTENCE_QUANTITY),
