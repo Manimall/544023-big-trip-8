@@ -51,6 +51,7 @@ export class TripEdit extends Component {
     this._onKeyDownFormPress = this._onKeyDownFormPress.bind(this);
     this._onTravelTypeChange = this._onTravelTypeChange.bind(this);
     this._onTravelCityChange = this._onTravelCityChange.bind(this);
+    this._onOffersAdd = this._onOffersAdd.bind(this);
   }
 
   update(obj) {
@@ -67,6 +68,15 @@ export class TripEdit extends Component {
     this._time = obj.time;
     this._type = obj.type;
     this._tripInfo = obj.tripInfo;
+  }
+
+  _processOffers() {
+    const renderedOffers = [...this._allOffers].map((offer) => {
+      return [...this._offers].find((el) => el.name === offer.name) ?
+        Object.assign({chosen: true}, offer) :
+        offer;
+    });
+    return formatEditOffers(renderedOffers);
   }
 
   _onPriceChange(evt) {
@@ -102,18 +112,13 @@ export class TripEdit extends Component {
       time: this._time,
       type: this._type,
       tripInfo: this._tripInfo,
+      offers: this._offers,
     };
   }
 
   _onTravelTypeChange({target}) {
     [this._icon, this._tripInfoName] = target.nextElementSibling.textContent.trim().split(` `);
-    this._tripInfo = tripTypes.find((el) => {
-      if (el.name.toLowerCase() === this._tripInfoName) {
-        return el;
-      } else {
-        return false;
-      }
-    });
+    this._tripInfo = tripTypes.find((el) => el.name.toLowerCase() === this._tripInfoName);
 
     this._type = this._tripInfo.name;
     this._city = this._element.querySelector(`.point__destination-input`).value;
@@ -123,9 +128,8 @@ export class TripEdit extends Component {
   }
 
   _onTravelCityChange({target}) {
-    // проверяем есть ли данный город в списке возможных городов
-    const cityArr = [...tripCities].filter((item) => item.name === this._city);
-    if (cityArr.length !== 0) {
+    const cityArr = [...tripCities].filter((item) => item === target.value);
+    if (cityArr.length) {
       this._city = target.value;
     }
 
@@ -139,6 +143,31 @@ export class TripEdit extends Component {
 
     this._title = `${titleFirstPart} ${titleSecondPart}`;
     return this._title;
+  }
+
+  _onOffersAdd({target}) {
+    const clickedOffer = target.nextElementSibling;
+
+    const offerName = clickedOffer.querySelector(`.point__offer-service`).textContent.trim();
+    const offerPrice = clickedOffer.querySelector(`.point__offer-price`).textContent.trim();
+    const offerCurrency = this._priceCurrency;
+
+    const offerToAdd = {
+      name: offerName,
+      price: offerPrice,
+      currency: offerCurrency
+    };
+
+    if (this._offers.has(offerToAdd.name)) {
+      return;
+    } else {
+      this._offers.add(offerToAdd);
+    }
+
+    // пересчитываем сумму самого Трипа
+    this._price = +this._price + (+offerPrice);
+    this._fullPrice = `${this._price} ${this._priceCurrency}`;
+    this.partialUpdate();
   }
 
   // TODO point date
@@ -205,9 +234,9 @@ export class TripEdit extends Component {
 
           <section class="point__details">
             <section class="point__offers">
-              <h3 class="point__details-title">offers</h3>
+              <h3 class="point__details-title">Available offers</h3>
 
-              ${formatEditOffers(this._allOffers)}
+              ${this._processOffers()}
 
             </section>
             <section class="point__destination">
@@ -235,6 +264,7 @@ export class TripEdit extends Component {
     this._element.querySelector(`input[name="price"]`).addEventListener(`change`, this._onPriceChange);
     this._element.querySelector(`.travel-way__select`).addEventListener(`change`, this._onTravelTypeChange);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onTravelCityChange);
+    this._element.querySelector(`.point__offers-wrap`).addEventListener(`change`, this._onOffersAdd);
   }
 
   unbind() {
@@ -244,6 +274,7 @@ export class TripEdit extends Component {
     this._element.querySelector(`input[name="price"]`).removeEventListener(`change`, this._onPriceChange);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`change`, this._onTravelTypeChange);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onTravelCityChange);
+    this._element.querySelector(`.point__offers-wrap`).removeEventListener(`change`, this._onOffersAdd);
   }
 
   onSubmit() {

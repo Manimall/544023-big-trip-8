@@ -1,4 +1,3 @@
-
 const formatEditOffers = (offers) => {
   const getAllOffers = [...offers].reduce((acc, offer) => {
     acc += `
@@ -7,6 +6,7 @@ const formatEditOffers = (offers) => {
             id="${offer.name}"
             name="offer"
             value="${offer.name}"
+            ${offer.chosen ? `checked` : ``}
       >
       <label for="${offer.name}" class="point__offers-label">
         <span class="point__offer-service">
