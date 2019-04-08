@@ -149,20 +149,15 @@ export class TripEdit extends Component {
     if (![...this._offers].find((el) => el.name === offerToAdd.name)) {
       this._offers.add(offerToAdd);
 
-      this._price = +this._price + offerPrice;
+      this._price = +this._price + offerToAdd.price;
       this._fullPrice = `${this._price} ${this._priceCurrency}`;
     }
 
     if (!target.checked) {
-      target.removeAttribute(`checked`);
-      const deleteElIndex = [...this._offers].findIndex((el) => el.name === offerToAdd.name);
+      const filteredArr = [...this._offers].filter((el) => el.name !== offerToAdd.name);
+      this._offers = new Set(filteredArr);
 
-      const offersArr = [...this._offers];
-      offersArr.splice(deleteElIndex, 1);
-
-      this._offers = new Set(offersArr);
-
-      this._price = +this._price - offerPrice;
+      this._price = +this._price - offerToAdd.price;
       if (this._price < MIN_PRICE) {
         this._price = MIN_PRICE;
       }
@@ -262,7 +257,6 @@ export class TripEdit extends Component {
   bind() {
     this._element.querySelector(`article > form`).addEventListener(`submit`, this._onSubmitBtnClick);
     this._element.querySelector(`article > form`).addEventListener(`keydown`, this._onKeyDownFormPress);
-    this._element.querySelector(`article > form`).addEventListener(`reset`, () => {});
     this._element.querySelector(`input[name="price"]`).addEventListener(`change`, this._onPriceChange);
     this._element.querySelector(`.travel-way__select`).addEventListener(`change`, this._onTravelTypeChange);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onTravelCityChange);
@@ -272,7 +266,6 @@ export class TripEdit extends Component {
   unbind() {
     this._element.querySelector(`article > form`).removeEventListener(`submit`, this._onSubmitBtnClick);
     this._element.querySelector(`article > form`).addEventListener(`keydown`, this._onKeyDownFormPress);
-    this._element.querySelector(`article > form`).removeEventListener(`reset`, () => {});
     this._element.querySelector(`input[name="price"]`).removeEventListener(`change`, this._onPriceChange);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`change`, this._onTravelTypeChange);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onTravelCityChange);
