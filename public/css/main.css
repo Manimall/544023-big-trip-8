@@ -298,7 +298,7 @@ input[type=radio]:checked + .trip-sorting__item {
 }
 
 .trip-point__title {
-  flex-basis: 248px;
+  flex-basis: 230px;
   flex-shrink: 0;
   flex-grow: 0;
   font-weight: 500;
@@ -313,7 +313,7 @@ input[type=radio]:checked + .trip-sorting__item {
 .trip-point__schedule {
   display: flex;
   flex-direction: column;
-  flex-basis: 178px;
+  flex-basis: 160px;
   flex-shrink: 0;
   flex-grow: 0;
   margin: 0;
@@ -414,7 +414,7 @@ input[type=radio]:checked + .trip-sorting__item {
 .point__input::placeholder {
   font-weight: 100;
 }
-.point__input["date-end"]
+.point__input[name="date-end"],
 .point__input:hover {
   opacity: 0.6;
 }
@@ -633,4 +633,23 @@ input[type=radio]:checked + .trip-sorting__item {
 .statistic__item {
   margin-bottom: 95px;
   width: 900px;
+}
+
+.trip-point__favorite-wrap {
+  margin-right: 33px;
+  align-self: flex-start;
+  padding-top: 7px;
+}
+
+.trip-point__favorite {
+  font-size: 0;
+  display: flex;
+  width: 28px;
+  height: 28px;
+  background: url("../img/trip-star.svg") no-repeat;
+  cursor: pointer;
+}
+
+.trip-point__favorite--active {
+  background-image: url("../img/star--check.svg");
 }

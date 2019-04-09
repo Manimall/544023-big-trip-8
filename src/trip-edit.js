@@ -18,28 +18,29 @@ export class TripEdit extends Component {
     this._id = obj.id;
     this._city = obj.city;
     this._icon = obj.icon;
-    this._description = obj.description;
+    this._description = [...obj.description];
     this._picture = obj.picture;
-    this._pictures = obj.pictures;
+    this._pictures = new Set([...obj.pictures]);
     this._price = obj.price;
     this._priceCurrency = obj.priceCurrency;
     this._fullPrice = obj.fullPrice;
     this._isFavorite = obj.isFavorite;
-    this._offers = obj.offers;
-    this._allOffers = obj.allOffers;
+    this._offers = new Set([...obj.offers]);
+    this._allOffers = new Set([...obj.allOffers]);
     this._time = obj.time;
     this._type = obj.type;
-    this._tripInfo = obj.tripInfo;
+    this._tripInfo = Object.assign({}, obj.tripInfo);
 
-    // непонятная хрень
-    this._element = null;
+    this._initialData = obj;
 
     this._onSubmitBtnClick = this._onSubmitBtnClick.bind(this);
+    this._onKeydownEsc = this._onKeydownEsc.bind(this);
     this._onPriceChange = this._onPriceChange.bind(this);
     this._onKeyDownFormPress = this._onKeyDownFormPress.bind(this);
     this._onTravelTypeChange = this._onTravelTypeChange.bind(this);
     this._onTravelCityChange = this._onTravelCityChange.bind(this);
     this._onOffersAddAndDelete = this._onOffersAddAndDelete.bind(this);
+    this._onFavoriteChange = this._onFavoriteChange.bind(this);
   }
 
   update(obj) {
@@ -52,10 +53,10 @@ export class TripEdit extends Component {
     this._priceCurrency = obj.priceCurrency;
     this._fullPrice = obj.fullPrice;
     this._isFavorite = obj.isFavorite;
-    this._offers = obj.offers;
+    this._offers = new Set([...obj.offers]);
     this._time = obj.time;
     this._type = obj.type;
-    this._tripInfo = obj.tripInfo;
+    this._tripInfo = Object.assign({}, obj.tripInfo);
   }
 
   _processOffers() {
@@ -167,6 +168,44 @@ export class TripEdit extends Component {
     this.partialUpdate();
   }
 
+  _onFavoriteChange({target}) {
+    this._isFavorite = target.checked;
+  }
+
+  // _setUpFlatpickr() {
+  //   flatpickr(this._element.querySelector(`.card__date`), {
+  //     altInput: true,
+  //     altFormat: `j F Y`,
+  //     dateFormat: `j F Y`,
+  //     onChange: (selectedDates) => {
+  //       this._dueDate = selectedDates[0];
+  //       this._updateElement();
+  //     },
+  //   });
+  //   flatpickr(this._element.querySelector(`.card__time`), {
+  //     enableTime: true,
+  //     noCalendar: true,
+  //     altInput: true,
+  //     altFormat: `h:i K`,
+  //     dateFormat: `h:i K`
+  //   });
+  // }
+
+  // const dateStart = flatpickr(this._element.querySelector(`input[name="date-start"]`), {
+  //   [`time_24hr`]: true,
+  //   enableTime: true,
+  //   altInput: true,
+  //   dateFormat: `Z`,
+  //   altFormat: `H:i`,
+  //   defaultDate: moment(this._timeStart).format(),
+  //   onClose: (dateStr) => {
+  //     this._state.timeStart = Date.parse(dateStr);
+  //   },
+  //   onChange: (selectedDates) => {
+  //     dateEnd.set(`minDate`, selectedDates[0]);
+  //   }
+  // });
+
   // TODO point date
   get template() {
     return (
@@ -261,6 +300,8 @@ export class TripEdit extends Component {
     this._element.querySelector(`.travel-way__select`).addEventListener(`change`, this._onTravelTypeChange);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onTravelCityChange);
     this._element.querySelector(`.point__offers-wrap`).addEventListener(`change`, this._onOffersAddAndDelete);
+    this._element.querySelector(`input[name="favorite"]`).addEventListener(`change`, this._onFavoriteChange);
+    document.addEventListener(`keydown`, this._onKeydownEsc);
   }
 
   unbind() {
@@ -270,9 +311,15 @@ export class TripEdit extends Component {
     this._element.querySelector(`.travel-way__select`).removeEventListener(`change`, this._onTravelTypeChange);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onTravelCityChange);
     this._element.querySelector(`.point__offers-wrap`).removeEventListener(`change`, this._onOffersAddAndDelete);
+    this._element.querySelector(`input[name="favorite"]`).removeEventListener(`change`, this._onFavoriteChange);
+    document.removeEventListener(`keydown`, this._onKeydownEsc);
   }
 
   onSubmit() {
+
+  }
+
+  onKeyEsc() {
 
   }
 
@@ -286,9 +333,19 @@ export class TripEdit extends Component {
     this.update(this._getNewTripData());
   }
 
+  _onKeydownEsc(evt) {
+    if ((typeof this.onKeyEsc === `function`) && (evt.which === KeyCodes.ESC)) {
+      this.onKeyEsc();
+
+      this.update(this._initialData);
+    }
+  }
+
   _onKeyDownFormPress(evt) {
     if (evt.which === KeyCodes.ENTER) {
       this._onSubmitBtnClick(evt);
     }
   }
+
+
 }

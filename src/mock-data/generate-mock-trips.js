@@ -1,7 +1,9 @@
 import * as constants from './trip-constants';
-import {getRandomElementFromArr, getFewRandomItemsFromArr, returnTrueOrFalse} from '../helpers';
+import {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, returnTrueOrFalse} from '../helpers';
 import {generateOffers} from './generate-offers';
 import {generateTime} from './generate-time';
+
+import moment from 'moment';
 
 const MIN_DESCRIPTION_SENTENCE_QUANTITY = 1;
 const MAX_DESCRIPTION_SENTENCE_QUANTITY = 3;
@@ -37,6 +39,14 @@ const mockTrip = (id) => {
 
   const tripPrice = getRandomElementFromArr(prices);
 
+  // генерируем время
+  const timeStart = getRandomNumber(moment().valueOf(), moment().valueOf() + generateTime().timeConstants.MS_IN_WEEK);
+  const timeEnd = getRandomNumber(timeStart, timeStart + generateTime().timeConstants.MAX_TRIP_DURATION);
+
+  const tripTime = {
+    timeStart,
+    timeEnd,
+  };
 
   return {
     city,
@@ -52,8 +62,9 @@ const mockTrip = (id) => {
     priceCurrency: constants.tripPriceCurrency,
     offers: new Set(InitialOffers), // изначальное кол-во оффер по заданию
     allOffers: new Set(allOffers), // все офферы
-    time: generateTime(),
+    time: generateTime().timeObj,
     isFavorite: returnTrueOrFalse(),
+    tripTime,
     id,
   };
 };

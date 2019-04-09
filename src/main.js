@@ -38,6 +38,12 @@ const generateTrips = (amount) => {
       tripEdit.unrender();
     };
 
+    tripEdit.onKeyEsc = () => {
+      trip.render();
+      tripListWrapper.replaceChild(trip.element, tripEdit.element);
+      tripEdit.unrender();
+    };
+
     tripListWrapper.appendChild(trip.render());
   });
 };
