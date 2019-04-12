@@ -1,4 +1,3 @@
-import {formatTimeOutput} from './mock-data/generate-time';
 import {formatTravelWay} from './parts-of-trip-edit-template/format-travel-ways';
 import {makeDestination} from './parts-of-trip-edit-template/format-destination';
 import {formatEditOffers} from './parts-of-trip-edit-template/format-edit-offers';
@@ -7,6 +6,9 @@ import {getAllImages} from './parts-of-trip-edit-template/format-pictures';
 import {MIN_PRICE, MAX_PRICE} from './mock-data/generate-mock-trips';
 import {tripTypes, tripCities} from './mock-data/trip-constants';
 import {KeyCodes} from './helpers';
+
+import moment from 'moment';
+import flatpickr from 'flatpickr';
 
 import {Component} from './component';
 
@@ -30,6 +32,7 @@ export class TripEdit extends Component {
     this._time = obj.time;
     this._type = obj.type;
     this._tripInfo = Object.assign({}, obj.tripInfo);
+    this._newTime = obj.tripTime;
 
     this._initialData = obj;
 
@@ -57,6 +60,7 @@ export class TripEdit extends Component {
     this._time = obj.time;
     this._type = obj.type;
     this._tripInfo = Object.assign({}, obj.tripInfo);
+    this._newTime = obj.tripTime;
   }
 
   _processOffers() {
@@ -102,6 +106,7 @@ export class TripEdit extends Component {
       type: this._type,
       tripInfo: this._tripInfo,
       offers: this._offers,
+      tripTime: this._newTime,
     };
   }
 
@@ -172,55 +177,99 @@ export class TripEdit extends Component {
     this._isFavorite = target.checked;
   }
 
-  // _setUpFlatpickr() {
-  //   flatpickr(this._element.querySelector(`.card__date`), {
-  //     altInput: true,
-  //     altFormat: `j F Y`,
-  //     dateFormat: `j F Y`,
-  //     onChange: (selectedDates) => {
-  //       this._dueDate = selectedDates[0];
-  //       this._updateElement();
-  //     },
-  //   });
-  //   flatpickr(this._element.querySelector(`.card__time`), {
-  //     enableTime: true,
-  //     noCalendar: true,
-  //     altInput: true,
-  //     altFormat: `h:i K`,
-  //     dateFormat: `h:i K`
-  //   });
-  // }
+  _setUpTimePicker() {
+    const timeStart = flatpickr(this._element.querySelector(`input[name="date-start"]`), {
+      [`time_24hr`]: true,
+      enableTime: true,
+      altInput: true,
+      dateFormat: `Z`,
+      altFormat: `H:i`,
+      defaultDate: moment(this._newTime.timeStart).format(),
+      onClose: (dateStr) => {
+        this._newTime.timeStart = Date.parse(dateStr);
+      },
+      onChange: (selectedDates) => {
+        timeEnd.set(`minDate`, selectedDates[0]);
+      }
+    });
 
-  // const dateStart = flatpickr(this._element.querySelector(`input[name="date-start"]`), {
-  //   [`time_24hr`]: true,
-  //   enableTime: true,
-  //   altInput: true,
-  //   dateFormat: `Z`,
-  //   altFormat: `H:i`,
-  //   defaultDate: moment(this._timeStart).format(),
-  //   onClose: (dateStr) => {
-  //     this._state.timeStart = Date.parse(dateStr);
-  //   },
-  //   onChange: (selectedDates) => {
-  //     dateEnd.set(`minDate`, selectedDates[0]);
-  //   }
-  // });
+    const timeEnd = flatpickr(this._element.querySelector(`input[name="date-end"]`), {
+      [`time_24hr`]: true,
+      enableTime: true,
+      altInput: true,
+      dateFormat: `Z`,
+      altFormat: `H:i`,
+      defaultDate: moment(this._newTime.timeEnd).format(),
+      onClose: (dateStr) => {
+        this._newTime.timeEnd = Date.parse(dateStr);
+      },
+      onChange: (selectedDates) => {
+        timeStart.set(`maxDate`, selectedDates[0]);
+      }
+    });
+  }
 
-  // TODO point date
+  _getDay() {
+    return moment(this._newTime.dayNow).format(`MMM YY`);
+  }
+
+  _onDayChange() {
+    let dayToChange = flatpickr(this._element.querySelector(`input[name="day"]`), {
+      altInput: true,
+      altFormat: `M j`,
+      dateFormat: `M j`,
+      defaultDate: this._newTime.dayNow,
+      onChange: (selectedDates) => {
+        let updatedDateStart = Date.parse(selectedDates[0]);
+        if (updatedDateStart < this._newTime.timeStart) {
+          dayToChange.setDate(this._newTime.timeStart);
+        } else {
+          dayToChange.setDate(selectedDates[0]);
+          this._newTime.dayNow = moment(selectedDates[0]).valueOf();
+        }
+      }
+    });
+  }
+
+  _getTimeLayout() {
+    return (
+      `choose time
+      <input class="point__input"
+              type="text"
+              value=""
+              name="date-start"
+              placeholder=""
+      >
+
+      <input class="point__input"
+              type="text"
+              value=""
+              name="date-end"
+              placeholder=""
+      >`
+    );
+  }
+
+  _getDayLayout() {
+    return `<label class="point__date">
+      choose day
+
+      <input class="point__input"
+              type="text"
+              placeholder="${this._getDay()}"
+              name="day"
+              value="${this._getDay()}"
+      >
+    </label>`;
+  }
+
   get template() {
     return (
       `<article class="point" id="${this._id}">
         <form class="point-edit" action="" method="get">
           <header class="point__header">
-            <label class="point__date">
-              choose day
 
-              <input class="point__input"
-                     type="text"
-                     placeholder="MAR 18"
-                     name="day"
-              >
-            </label>
+            ${this._getDayLayout()}
 
             <div class="travel-way">
               <label class="travel-way__label" for="travel-way__toggle">${this._icon}</label>
@@ -235,20 +284,7 @@ export class TripEdit extends Component {
 
 
             <div class="point__time">
-              choose time
-              <input class="point__input"
-                      type="text"
-                      value="${formatTimeOutput(this._time.start.getHours())}:${formatTimeOutput(this._time.start.getMinutes())}"
-                      name="date-start"
-                      placeholder="${formatTimeOutput(this._time.start.getHours())}:${formatTimeOutput(this._time.start.getMinutes())}"
-              >
-
-              <input class="point__input"
-                     type="text"
-                     value="${formatTimeOutput(this._time.end.getHours())}:${formatTimeOutput(this._time.end.getMinutes())}"
-                     name="date-end"
-                     placeholder="${formatTimeOutput(this._time.end.getHours())}:${formatTimeOutput(this._time.end.getMinutes())}"
-              >
+              ${this._getTimeLayout()}
             </div>
 
             <label class="point__price">
@@ -301,6 +337,8 @@ export class TripEdit extends Component {
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onTravelCityChange);
     this._element.querySelector(`.point__offers-wrap`).addEventListener(`change`, this._onOffersAddAndDelete);
     this._element.querySelector(`input[name="favorite"]`).addEventListener(`change`, this._onFavoriteChange);
+    this._setUpTimePicker();
+    this._onDayChange();
     document.addEventListener(`keydown`, this._onKeydownEsc);
   }
 
@@ -312,6 +350,9 @@ export class TripEdit extends Component {
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onTravelCityChange);
     this._element.querySelector(`.point__offers-wrap`).removeEventListener(`change`, this._onOffersAddAndDelete);
     this._element.querySelector(`input[name="favorite"]`).removeEventListener(`change`, this._onFavoriteChange);
+    flatpickr(this._element.querySelector(`input[name="date-start"]`)).destroy();
+    flatpickr(this._element.querySelector(`input[name="date-end"]`)).destroy();
+    flatpickr(this._element.querySelector(`input[name="day"]`)).destroy();
     document.removeEventListener(`keydown`, this._onKeydownEsc);
   }
 

@@ -20,6 +20,21 @@ for (let currentPrice = MIN_PRICE; currentPrice <= MAX_PRICE; currentPrice += PR
   prices.push(currentPrice);
 }
 
+// генерируем время
+const generateNewTime = () => {
+  const dayNow = moment().valueOf();
+  const timeStart = getRandomNumber(dayNow, dayNow + generateTime().timeConstants.MS_IN_WEEK);
+  const timeEnd = getRandomNumber(timeStart, timeStart + generateTime().timeConstants.MAX_TRIP_DURATION);
+
+  const tripTime = {
+    dayNow,
+    timeStart,
+    timeEnd,
+  };
+
+  return tripTime;
+};
+
 /**
  * Создаем объект (уникальное путешествие)
  * @param {Number} id - id путешествия
@@ -39,15 +54,6 @@ const mockTrip = (id) => {
 
   const tripPrice = getRandomElementFromArr(prices);
 
-  // генерируем время
-  const timeStart = getRandomNumber(moment().valueOf(), moment().valueOf() + generateTime().timeConstants.MS_IN_WEEK);
-  const timeEnd = getRandomNumber(timeStart, timeStart + generateTime().timeConstants.MAX_TRIP_DURATION);
-
-  const tripTime = {
-    timeStart,
-    timeEnd,
-  };
-
   return {
     city,
     type: tripType,
@@ -64,9 +70,9 @@ const mockTrip = (id) => {
     allOffers: new Set(allOffers), // все офферы
     time: generateTime().timeObj,
     isFavorite: returnTrueOrFalse(),
-    tripTime,
+    tripTime: generateNewTime(),
     id,
   };
 };
 
-export {mockTrip, MIN_PRICE, MAX_PRICE};
+export {mockTrip, MIN_PRICE, MAX_PRICE, generateNewTime};

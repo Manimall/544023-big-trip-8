@@ -1,9 +1,8 @@
 import {getOffersLayout} from './parts-of-trip-template/format-offers';
-// import {formatTimeOutput} from './mock-data/generate-time';
-
-import {Component} from './component';
 
 import moment from 'moment';
+
+import {Component} from './component';
 
 
 export class Trip extends Component {
@@ -42,14 +41,13 @@ export class Trip extends Component {
   }
 
   _getTripDuration() {
-    const duration = moment.duration(moment(this._newTime.timeEnd).diff(moment(this._newTime.timeStart)));
+    const duration = moment.duration(moment(this._newTime.timeEnd).set({second: 0, millisecond: 0}).diff(moment(this._newTime.timeStart).set({second: 0, millisecond: 0})));
     const days = duration.days();
     return days > 0 ? `${days}D ${duration.hours()}H ${duration.minutes()}M` : `${duration.hours()}H ${duration.minutes()}M`;
-    const smth = this.getDate(this._newTime.timeEnd); // нечитаемый код.....
   }
 
   _getTimeStr() {
-    return `${moment(this._newTime.timeStart).format(`H:mm`)}&nbsp;&mdash;&nbsp;${moment(this._newTime.timeEnd).format(`H:mm`)}`;
+    return `${moment(this._newTime.timeStart).set({second: 0, millisecond: 0}).format(`H:mm`)}&nbsp;&mdash;&nbsp;${moment(this._newTime.timeEnd).set({second: 0, millisecond: 0}).format(`H:mm`)}`;
   }
 
   _getTripTimeLayout() {
