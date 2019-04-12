@@ -221,8 +221,8 @@ export class TripEdit extends Component {
       defaultDate: this._newTime.dayNow,
       onChange: (selectedDates) => {
         let updatedDateStart = Date.parse(selectedDates[0]);
-        if (updatedDateStart < this._newTime.timeStart) {
-          dayToChange.setDate(this._newTime.timeStart);
+        if (updatedDateStart < moment().valueOf()) {
+          dayToChange.setDate(moment().valueOf());
         } else {
           dayToChange.setDate(selectedDates[0]);
           this._newTime.dayNow = moment(selectedDates[0]).valueOf();
