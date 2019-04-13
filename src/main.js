@@ -64,26 +64,25 @@ renderTrips(generatedTrips); // отренедеренные путешеств�
 
 
 const getFilterEvents = (filterName, trips) => {
-  let tripsCopyArr = trips.slice();
   const fnFilter = {
-    'filter-everything': () => {
-      return trips;
+    'filter-everything': (data) => {
+      return data;
     },
-    'filter-future': () => {
-      return trips.filter((el) => el.tripTime.timeStart > Date.now());
+    'filter-future': (data) => {
+      return data.filter((el) => el.tripTime.timeStart > Date.now());
     },
-    'filter-past': () => {
-      return trips.filter((el) =>el.tripTime.timeEnd < Date.now());
+    'filter-past': (data) => {
+      return data.filter((el) =>el.tripTime.timeEnd < Date.now());
     },
-    'filter-in-descending': () => {
-      return tripsCopyArr.sort((a, b) => a.tripTime.timeStart - b.tripTime.timeStart);
+    'filter-in-descending': (data) => {
+      return data.sort((a, b) => a.tripTime.timeStart - b.tripTime.timeStart);
     },
-    'filter-in-ascending': () => {
-      return tripsCopyArr.sort((a, b) => a.tripTime.timeStart - b.tripTime.timeStart).reverse();
+    'filter-in-ascending': (data) => {
+      return data.sort((a, b) => a.tripTime.timeStart - b.tripTime.timeStart).reverse();
     }
   };
 
-  return fnFilter[filterName]();
+  return fnFilter[filterName]([...trips]);
 };
 
 const renderFilters = (filterArr) => {
