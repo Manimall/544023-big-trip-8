@@ -1,5 +1,5 @@
 import {Component} from './component';
-import {createElementControl} from '../helpers';
+import {createControlElement} from '../helpers';
 
 export class Sorting extends Component {
   constructor(obj) {
@@ -10,8 +10,8 @@ export class Sorting extends Component {
   }
 
   render() {
-    this._element = createElementControl(this.template, `sorting__element`);
-    this._bind();
+    this._element = createControlElement(this.template, `sorting__element`);
+    this.bind();
 
     return this._element;
   }

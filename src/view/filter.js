@@ -1,5 +1,5 @@
 import {Component} from './component';
-import {createElementControl} from '../helpers';
+import {createControlElement} from '../helpers';
 
 export class Filter extends Component {
   constructor(obj) {
@@ -11,17 +11,22 @@ export class Filter extends Component {
   }
 
   render() {
-    this._element = createElementControl(this.template, `filter__element`);
-    this._bind();
+    this._element = createControlElement(this.template, `trip-filter__element`);
+    this.bind();
 
     return this._element;
   }
 
+  get id() {
+    this._id = `filter-${this._name}`;
+    return this._id;
+  }
+
   get template() {
     return (
-      `<input type="radio" id="filter-${this._name}" name="filter" value="${this._name}" ${this._checked ? `checked` : ``}>
+      `<input type="radio" id="${this._id}" name="filter" value="${this._name}" ${this._checked ? `checked` : ``}>
       <label class="trip-filter__item" for="filter-${this._name}">${this._name.charAt(0).toUpperCase() + this._name.substr(1)}</label>`
-    );
+    ).trim();
   }
 
   onFilter() {

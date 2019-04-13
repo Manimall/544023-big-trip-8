@@ -137,6 +137,7 @@ a.view-switch__item--active:link {
 
 
 .trip-filter {
+  display: flex;
   margin-top: 8px;
   margin-bottom: 16px;
 }
