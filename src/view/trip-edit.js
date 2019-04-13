@@ -1,11 +1,11 @@
-import {formatTravelWay} from './parts-of-trip-edit-template/format-travel-ways';
-import {makeDestination} from './parts-of-trip-edit-template/format-destination';
-import {formatEditOffers} from './parts-of-trip-edit-template/format-edit-offers';
-import {getAllImages} from './parts-of-trip-edit-template/format-pictures';
+import {formatTravelWay} from '../parts-of-trip-edit-template/format-travel-ways';
+import {makeDestination} from '../parts-of-trip-edit-template/format-destination';
+import {formatEditOffers} from '../parts-of-trip-edit-template/format-edit-offers';
+import {getAllImages} from '../parts-of-trip-edit-template/format-pictures';
 
-import {MIN_PRICE, MAX_PRICE} from './mock-data/generate-mock-trips';
-import {tripTypes, tripCities} from './mock-data/trip-constants';
-import {KeyCodes} from './helpers';
+import {MIN_PRICE, MAX_PRICE} from '../mock-data/generate-mock-trips';
+import {tripTypes, tripCities} from '../mock-data/trip-constants';
+import {KeyCodes} from '../helpers';
 
 import moment from 'moment';
 import flatpickr from 'flatpickr';

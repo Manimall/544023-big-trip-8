@@ -1,5 +1,5 @@
 import {Component} from './component';
-import {createElementControl} from './helpers';
+import {createElementControl} from '../helpers';
 
 export class Filter extends Component {
   constructor(obj) {

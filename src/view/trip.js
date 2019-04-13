@@ -1,4 +1,4 @@
-import {getOffersLayout} from './parts-of-trip-template/format-offers';
+import {getOffersLayout} from '../parts-of-trip-template/format-offers';
 
 import moment from 'moment';
 

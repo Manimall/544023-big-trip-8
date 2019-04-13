@@ -1,8 +1,8 @@
 import {getRandomNumber, makeStringFromData} from './helpers';
 import {filtersData} from './mock-data/trip-constants';
-import {makeFilter} from './generate-filter';
-import {TripEdit} from './trip-edit';
-import {Trip} from './trip';
+import {makeFilter} from './old-files/generate-filter';
+import {TripEdit} from './view/trip-edit';
+import {Trip} from './view/trip';
 import {mockTrip} from './mock-data/generate-mock-trips';
 
 const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
