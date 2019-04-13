@@ -23,7 +23,7 @@ for (let currentPrice = MIN_PRICE; currentPrice <= MAX_PRICE; currentPrice += PR
 // генерируем время
 const generateNewTime = () => {
   const dayNow = moment().valueOf();
-  const timeStart = getRandomNumber(dayNow, dayNow + generateTime().timeConstants.MS_IN_WEEK);
+  const timeStart = getRandomNumber(dayNow - generateTime().timeConstants.MS_IN_WEEK, dayNow + generateTime().timeConstants.MS_IN_WEEK);
   const timeEnd = getRandomNumber(timeStart, timeStart + generateTime().timeConstants.MAX_TRIP_DURATION);
 
   const tripTime = {

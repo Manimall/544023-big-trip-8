@@ -87,6 +87,14 @@ const filtersData = [
   {
     name: `past`,
     checked: false
+  },
+  {
+    name: `in-descending`,
+    checked: false
+  },
+  {
+    name: `in-ascending`,
+    checked: false
   }
 ];
 

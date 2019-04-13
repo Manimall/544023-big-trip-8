@@ -1,4 +1,3 @@
-import {getRandomNumber} from './helpers';
 import {filtersData, sortingData, statData} from './mock-data/trip-constants';
 import {TripEdit} from './view/trip-edit';
 import {Trip} from './view/trip';
@@ -65,15 +64,22 @@ renderTrips(generatedTrips); // отренедеренные путешеств�
 
 
 const getFilterEvents = (filterName, trips) => {
+  let tripsCopyArr = trips.slice();
   const fnFilter = {
     'filter-everything': () => {
       return trips;
     },
     'filter-future': () => {
-      return trips.filter((it) => it.tripTime.timeStart > Date.now());
+      return trips.filter((el) => el.tripTime.timeStart > Date.now());
     },
     'filter-past': () => {
-      return trips.filter((it) => it.tripTime.timeEnd < Date.now());
+      return trips.filter((el) =>el.tripTime.timeEnd < Date.now());
+    },
+    'filter-in-descending': () => {
+      return tripsCopyArr.sort((a, b) => a.tripTime.timeStart - b.tripTime.timeStart);
+    },
+    'filter-in-ascending': () => {
+      return tripsCopyArr.sort((a, b) => a.tripTime.timeStart - b.tripTime.timeStart).reverse();
     }
   };
 
@@ -85,9 +91,10 @@ const renderFilters = (filterArr) => {
     const filter = new Filter(item);
     filterListWrapper.appendChild(filter.render());
 
+    filterListWrapper.addEventListener(`click`, filter.onFilter);
+
     filter.onFilter = () => {
-      const filteredEvents = getFilterEvents(filter.id, generatedTrips);
-      renderTrips(filteredEvents);
+      filter._checked = !filter._checked;
     };
   });
 };
@@ -97,15 +104,15 @@ renderFilters(filtersData); // отрендеренные фильтры
 
 /**
  * Добавляем функцию-обработчик события для переключения фильтров,
- * удаляем все ранее созданные путешествия и добавляем случайное кол-во новых
- * @param {evt} evt - событие, на котором ловим клик
+ * Меняем данные на основании функции getFilterEvents и заново рендерим их
+ * @param {target} evt - событие, на котором ловим клик
  */
-const addFilterClickHandler = (evt) => {
-  const clickedFilter = evt.target.classList.contains(`trip-filter__item`);
+const addFilterClickHandler = ({target}) => {
+  const clickedFilter = target.classList.contains(`trip-filter__item`);
   if (clickedFilter) {
     tripListWrapper.innerHTML = ``;
-    const randomTripsNumber = getRandomNumber(MIN_TRIP_COUNT, INITIAL_TRIP_COUNT);
-    generateTrips(randomTripsNumber);
+    const filteredEvents = getFilterEvents(target.previousElementSibling.id, generatedTrips);
+    renderTrips(filteredEvents);
   }
 };
 
