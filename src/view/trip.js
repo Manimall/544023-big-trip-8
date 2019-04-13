@@ -41,9 +41,13 @@ export class Trip extends Component {
   }
 
   _getTripDuration() {
-    const duration = moment.duration(moment(this._newTime.timeEnd).set({second: 0, millisecond: 0}).diff(moment(this._newTime.timeStart).set({second: 0, millisecond: 0})));
+    let duration = moment.duration(moment(this._newTime.timeEnd).set({second: 0, millisecond: 0}).diff(moment(this._newTime.timeStart).set({second: 0, millisecond: 0})));
     const days = duration.days();
-    return days > 0 ? `${days}D ${duration.hours()}H ${duration.minutes()}M` : `${duration.hours()}H ${duration.minutes()}M`;
+    if (days > 0) {
+      this._newTime.timeEnd = moment(moment(this._newTime.timeEnd).subtract(days, `days`)).valueOf();
+      duration = moment.duration(moment(this._newTime.timeEnd).set({second: 0, millisecond: 0}).diff(moment(this._newTime.timeStart).set({second: 0, millisecond: 0})));
+    }
+    return duration.days() > 0 ? `${days}D ${duration.hours()}H ${duration.minutes()}M` : `${duration.hours()}H ${duration.minutes()}M`;
   }
 
   _getTimeStr() {
