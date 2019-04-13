@@ -49,7 +49,7 @@
     <label class="trip-sorting__item trip-sorting__item--time" for="sorting-time">Time</label>
 
     <input type="radio" name="trip-sorting" id="sorting-favorite" value="favorite">
-    <label class="trip-sorting__item trip-sorting__item--favorite" for="sorting-time">Favorite</label>
+    <label class="trip-sorting__item trip-sorting__item--favorite" for="sorting-favorite">Favorite</label>
 
     <input type="radio" name="trip-sorting" id="sorting-price" value="price">
     <label class="trip-sorting__item trip-sorting__item--price" for="sorting-price">Price</label>
@@ -70,6 +70,20 @@
     </section>
   </section>
 </main>
+
+<section class="statistic content-wrap" id="stats">
+  <div class="statistic__item statistic__item--money">
+    <canvas class="statistic__money" width="900"></canvas>
+  </div>
+
+  <div class="statistic__item statistic__item--transport">
+    <canvas class="statistic__transport" width="900"></canvas>
+  </div>
+
+  <div class="statistic__item statistic__item--time-spend">
+    <canvas class="statistic__time-spend" width="900"></canvas>
+  </div>
+</section>
 
 
 <script src="bundle.js"></script>

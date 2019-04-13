@@ -57,9 +57,16 @@ const createElement = (template) => {
   return newEl.firstChild;
 };
 
+const createElementControl = (template, className) => {
+  const newElement = document.createElement(`div`);
+  newElement.classList.add(className);
+  newElement.innerHTML = template;
+  return newElement;
+};
+
 const KeyCodes = {
   ESC: 27,
   ENTER: 13
 };
 
-export {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, makeStringFromData, createElement, returnTrueOrFalse, KeyCodes};
+export {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, makeStringFromData, createElement, returnTrueOrFalse, KeyCodes, createElementControl};

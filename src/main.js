@@ -17,6 +17,12 @@ const generateTrips = (amount) => {
                       .fill(null)
                       .map((el, id) => mockTrip(id));
 
+  return points;
+};
+
+const generatedTrips = generateTrips(INITIAL_TRIP_COUNT);
+
+const renderTrips = (points) => {
   points.forEach((item) => {
 
     const trip = new Trip(item);
@@ -48,7 +54,7 @@ const generateTrips = (amount) => {
   });
 };
 
-generateTrips(INITIAL_TRIP_COUNT);
+renderTrips(generatedTrips);
 
 
 // Заполняем разметку фильтра данными из массива фильтров

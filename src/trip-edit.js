@@ -214,7 +214,7 @@ export class TripEdit extends Component {
   }
 
   _onDayChange() {
-    let dayToChange = flatpickr(this._element.querySelector(`input[name="day"]`), {
+    flatpickr(this._element.querySelector(`input[name="day"]`), {
       altInput: true,
       altFormat: `M j`,
       dateFormat: `M j`,
@@ -222,11 +222,11 @@ export class TripEdit extends Component {
       onChange: (selectedDates) => {
         let updatedDateStart = Date.parse(selectedDates[0]);
         if (updatedDateStart < moment().valueOf()) {
-          dayToChange.setDate(moment().valueOf());
+          this._newTime.dayNow = moment().valueOf();
         } else {
-          dayToChange.setDate(selectedDates[0]);
           this._newTime.dayNow = moment(selectedDates[0]).valueOf();
         }
+        this.partialUpdate();
       }
     });
   }
