@@ -73,4 +73,31 @@ const tripAllPictures = new Set([
 // валюта для путешествий
 const tripPriceCurrency = `€`;
 
-export {tripIcons, tripCities, tripOffers, tripDescription, tripTypes, tripPriceCurrency, tripAllPictures};
+// Данные фильтров (Массив обьектов). Каждый объект включает в себя 2 поля:
+// name (string) - название фильтра, checked (boolean) - определяет, включен или отключен данный фильтр
+const filtersData = [
+  {
+    name: `everything`,
+    checked: true
+  },
+  {
+    name: `future`,
+    checked: false
+  },
+  {
+    name: `past`,
+    checked: false
+  }
+];
+
+// сортировка (массив из inputs value)
+const sortingData = [`event`, `time`, `price`, `offers`];
+
+// данные для статистики
+const statData = [
+  {selector: `.statistic__money`, selectorParent: `.statistic__item--money`, title: `MONEY`, unit: `€`, method: `getPointsMoney`},
+  {selector: `.statistic__transport`, selectorParent: `.statistic__item--transport`, title: `TRANSPORT`, unit: `x`, method: `getPointsTransport`},
+  {selector: `.statistic__time-spend`, selectorParent: `.statistic__item--time-spend`, title: `TIME-SPEND`, unit: `H`, method: `getPointsTimeSpend`}
+];
+
+export {tripIcons, tripCities, tripOffers, tripDescription, tripTypes, tripPriceCurrency, tripAllPictures, filtersData, sortingData, statData};

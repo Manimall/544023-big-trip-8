@@ -1,5 +1,5 @@
 import {getRandomNumber, makeStringFromData} from './helpers';
-import {filtersData} from './mock-data/filters-data';
+import {filtersData} from './mock-data/trip-constants';
 import {makeFilter} from './generate-filter';
 import {TripEdit} from './trip-edit';
 import {Trip} from './trip';
