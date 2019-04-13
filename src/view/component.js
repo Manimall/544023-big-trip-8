@@ -30,7 +30,7 @@ export class Component {
     this._element = null;
   }
 
-  partialUpdate() {
+  _partialUpdate() {
     this.unbind();
     const oldElement = this._element;
     this.render();

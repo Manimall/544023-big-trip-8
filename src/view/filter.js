@@ -5,12 +5,13 @@ export class Filter extends Component {
   constructor(obj) {
     super();
     this._name = obj.name;
+    this._checked = obj.checked;
 
     this._onFilterClick = this._onFilterClick.bind(this);
   }
 
   render() {
-    this._element = createElementControl(this.template, `filter_element`);
+    this._element = createElementControl(this.template, `filter__element`);
     this._bind();
 
     return this._element;
@@ -18,8 +19,8 @@ export class Filter extends Component {
 
   get template() {
     return (
-      `<input type="radio" id="filter-${this.name}" name="filter" value="${this.name}" ${this.checked ? `checked` : ``}>
-      <label class="trip-filter__item" for="filter-${this.name}">${this.name.charAt(0).toUpperCase() + this.name.substr(1)}</label>`
+      `<input type="radio" id="filter-${this._name}" name="filter" value="${this._name}" ${this._checked ? `checked` : ``}>
+      <label class="trip-filter__item" for="filter-${this._name}">${this._name.charAt(0).toUpperCase() + this._name.substr(1)}</label>`
     );
   }
 
@@ -28,7 +29,7 @@ export class Filter extends Component {
   }
 
   _onFilterClick() {
-    if (typeof this.onSubmit === `function`) {
+    if (typeof this.onFilter === `function`) {
       this.onFilter();
     }
   }

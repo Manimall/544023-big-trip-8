@@ -87,7 +87,7 @@ export class TripEdit extends Component {
       this._price = priceEntered;
       this._fullPrice = `${this._price} ${this._priceCurrency}`;
 
-      this.partialUpdate();
+      this._partialUpdate();
     }
   }
 
@@ -117,7 +117,7 @@ export class TripEdit extends Component {
     this._type = this._tripInfo.name;
     this._city = this._element.querySelector(`.point__destination-input`).value;
 
-    this.partialUpdate();
+    this._partialUpdate();
     this._getTripTitle();
   }
 
@@ -127,7 +127,7 @@ export class TripEdit extends Component {
       this._city = target.value;
     }
 
-    this.partialUpdate();
+    this._partialUpdate();
     this._getTripTitle();
   }
 
@@ -170,7 +170,7 @@ export class TripEdit extends Component {
       this._fullPrice = `${this._price} ${this._priceCurrency}`;
     }
 
-    this.partialUpdate();
+    this._partialUpdate();
   }
 
   _onFavoriteChange({target}) {
@@ -226,7 +226,7 @@ export class TripEdit extends Component {
         } else {
           this._newTime.dayNow = moment(selectedDates[0]).valueOf();
         }
-        this.partialUpdate();
+        this._partialUpdate();
       }
     });
   }
