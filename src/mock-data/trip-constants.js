@@ -88,18 +88,10 @@ const filtersData = [
     name: `past`,
     checked: false
   },
-  {
-    name: `in-descending`,
-    checked: false
-  },
-  {
-    name: `in-ascending`,
-    checked: false
-  }
 ];
 
 // сортировка (массив из inputs value)
-const sortingData = [`event`, `time`, `price`, `offers`];
+const sortingData = [`event`, `time`, `favorite`, `price`, `offers`];
 
 // данные для статистики
 const statData = [

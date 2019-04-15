@@ -60,9 +60,11 @@ const createElement = (template) => {
   return newEl.firstChild;
 };
 
-const createControlElement = (template, className) => {
+const createControlElement = (template, className = ``) => {
   const newElement = document.createElement(`div`);
-  newElement.classList.add(className);
+  if (className !== ``) {
+    newElement.classList.add(className);
+  }
   newElement.innerHTML = template;
   return newElement;
 };

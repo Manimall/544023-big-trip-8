@@ -225,10 +225,10 @@ export class TripEdit extends Component {
           this._newTime.dayNow = moment().valueOf();
         } else {
           this._newTime.dayNow = moment(selectedDates[0]).valueOf();
-        }
-        this._newTime.timeStart = moment(this._newTime.dayNow).valueOf();
-        if (this._newTime.timeEnd < this._newTime.timeStart) {
-          this._newTime.timeStart = this._newTime.timeEnd;
+          this._newTime.timeStart = moment(this._newTime.dayNow).valueOf();
+          if (this._newTime.timeEnd < this._newTime.timeStart) {
+            this._newTime.timeStart = this._newTime.timeEnd;
+          }
         }
         this._partialUpdate();
       }

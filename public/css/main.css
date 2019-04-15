@@ -191,6 +191,7 @@ input[type=radio]:checked + .trip-filter__item {
   box-sizing: border-box;
   margin-top: 24px;
   padding-left: 160px;
+  display: flex;
 }
 
 .trip-sorting input[type=radio] {
@@ -206,8 +207,13 @@ input[type=radio]:checked + .trip-filter__item {
   font-weight: 900;
   text-transform: uppercase;
   margin-left: -16px;
-  padding: 8px 16px;
+  padding: 8px 14px;
+  padding-right: 30px;
   cursor: pointer;
+}
+
+.sorting--active {
+  color: blue;
 }
 
 .trip-sorting__item:hover {
@@ -222,23 +228,23 @@ input[type=radio]:checked + .trip-sorting__item {
 }
 
 .trip-sorting__item--event {
-  margin-right: 168px;
+  margin-right: 150px;
 }
 
 .trip-sorting__item--time {
-  margin-right: 45px;
-}
-
-.trip-sorting__item--favorite {
-  margin-right: 20px;
-}
-
-.trip-sorting__item--price {
   margin-right: 48px;
 }
 
+.trip-sorting__item--favorite {
+  margin-right: 32px;
+}
+
+.trip-sorting__item--price {
+  margin-right: 50px;
+}
+
 .trip-sorting__item--offers {
-  cursor: inherit;
+  /* cursor: inherit; */
 }
 .trip-sorting__item--offers:hover {
   opacity: 1;
@@ -642,7 +648,7 @@ input[type=radio]:checked + .trip-sorting__item {
 }
 
 .trip-point__favorite-wrap {
-  margin-right: 63px;
+  margin-right: 82px;
   align-self: flex-start;
   padding-top: 7px;
 }

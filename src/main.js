@@ -1,12 +1,13 @@
-import {filtersData, sortingData, statData} from './mock-data/trip-constants';
+import {filtersData, sortingData} from './mock-data/trip-constants';
 import {TripEdit} from './view/trip-edit';
 import {Trip} from './view/trip';
 // import {Sorting} from './view/sorting';
 import {Filter} from './view/filter';
 import {mockTrip} from './mock-data/generate-mock-trips';
+import {Sorting} from './view/sorting';
+import moment from 'moment';
 
 const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
-const MIN_TRIP_COUNT = 3; // необходимое по заданию кол-во событий
 
 const controls = document.querySelector(`.trip-controls`);
 
@@ -18,8 +19,9 @@ const tripListWrapper = document.querySelector(`.trip-day__items`); // конт�
 // const statBtn = controls.querySelector(`a[href*=stats]`); // борд со статистикой
 
 const boardTable = document.querySelector(`#table`);
-const boardDays = boardTable.querySelector(`.trip-points`);
-// const formSorting = boardTable.querySelector(`.trip-sorting`);
+// const boardDays = boardTable.querySelector(`.trip-points`);
+
+const sortingListWrapper = boardTable.querySelector(`.trip-sorting`); // контэйнер для вставки элементов сортировки
 
 
 const generateTrips = (amount) => {
@@ -74,12 +76,6 @@ const getFilterEvents = (filterName, trips) => {
     'filter-past': (data) => {
       return data.filter((el) =>el.tripTime.timeEnd < Date.now());
     },
-    'filter-in-descending': (data) => {
-      return data.sort((a, b) => a.tripTime.timeStart - b.tripTime.timeStart);
-    },
-    'filter-in-ascending': (data) => {
-      return data.sort((a, b) => a.tripTime.timeStart - b.tripTime.timeStart).reverse();
-    }
   };
 
   return fnFilter[filterName]([...trips]);
@@ -90,31 +86,64 @@ const renderFilters = (filterArr) => {
     const filter = new Filter(item);
     filterListWrapper.appendChild(filter.render());
 
-    filterListWrapper.addEventListener(`click`, filter.onFilter);
-
-    filter.onFilter = () => {
-      filter._checked = !filter._checked;
+    filter.onFilter = ({target}) => {
+      const clickedFilter = target.classList.contains(`trip-filter__item`);
+      if (clickedFilter && !target.previousElementSibling.disabled) {
+        tripListWrapper.innerHTML = ``;
+        const filteredEvents = getFilterEvents(target.previousElementSibling.id, generatedTrips);
+        renderTrips(filteredEvents);
+      }
     };
   });
 };
 
 renderFilters(filtersData); // отрендеренные фильтры
 
+const renderSorting = (sortingArr) => {
+  return sortingArr.map((item) => {
+    const sortingEl = new Sorting(item);
+    sortingListWrapper.appendChild(sortingEl.render());
 
-/**
- * Добавляем функцию-обработчик события для переключения фильтров,
- * Меняем данные на основании функции getFilterEvents и заново рендерим их
- * @param {target} evt - событие, на котором ловим клик
- */
-const addFilterClickHandler = ({target}) => {
-  const clickedFilter = target.classList.contains(`trip-filter__item`);
-  if (clickedFilter) {
-    tripListWrapper.innerHTML = ``;
-    const filteredEvents = getFilterEvents(target.previousElementSibling.id, generatedTrips);
-    renderTrips(filteredEvents);
-  }
+    sortingEl.onSorting = ({target}) => {
+      if (target.classList.contains(`trip-sorting__item`) && !target.previousElementSibling.disabled) {
+        sortingEl.correctTemplate();
+        console.log(sortingListWrapper.replaceChild(sortingEl.element, target.parentNode));
+        sortingListWrapper.replaceChild(sortingEl.element, target.parentNode);
+        sortingEl.unrender();
+
+        tripListWrapper.innerHTML = ``;
+        const sortingEvents = getSortingEvents(target.previousElementSibling.id, generatedTrips);
+        renderTrips(sortingEvents);
+      }
+    };
+  });
 };
 
-// устанавливаем обработчик события на контейнер секции с фильтрами
-filterListWrapper.addEventListener(`click`, addFilterClickHandler);
+renderSorting(sortingData); // отрендеренные элементы сортировки
 
+
+const getDuration = (obj) => {
+  return moment.duration(moment(obj.timeEnd).diff(moment(obj.timeStart)));
+};
+
+const getSortingEvents = (sortingName, trips) => {
+  let tripsCopyArr = [...trips];
+  const fnSorting = {
+    'sorting-event': () => {
+      return tripsCopyArr;
+    },
+    'sorting-time': () => {
+      return tripsCopyArr.sort((a, b) => getDuration(a.tripTime) - getDuration(b.tripTime)).reverse();
+    },
+    'sorting-price': () => {
+      return tripsCopyArr.sort((a, b) => a.price - b.price).reverse();
+    },
+    'sorting-favorite': () => {
+      return tripsCopyArr.sort((a, b) => b.isFavorite - a.isFavorite);
+    },
+    'sorting-offers': () => {
+      return tripsCopyArr.sort((a, b) => b.offers.size - a.offers.size);
+    },
+  };
+  return fnSorting[sortingName]();
+};

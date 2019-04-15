@@ -6,12 +6,13 @@ export class Filter extends Component {
     super();
     this._name = obj.name;
     this._checked = obj.checked;
+    this._classListName = `trip-filter__element`;
 
     this._onFilterClick = this._onFilterClick.bind(this);
   }
 
   render() {
-    this._element = createControlElement(this.template, `trip-filter__element`);
+    this._element = createControlElement(this.template, this._classListName);
     this.bind();
 
     return this._element;
@@ -33,9 +34,9 @@ export class Filter extends Component {
 
   }
 
-  _onFilterClick() {
+  _onFilterClick(evt) {
     if (typeof this.onFilter === `function`) {
-      this.onFilter();
+      this.onFilter(evt);
     }
   }
 
