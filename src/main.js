@@ -106,7 +106,7 @@ const renderSorting = (sortingArr) => {
 
     sortingEl.onSorting = ({target}) => {
       if (target.classList.contains(`trip-sorting__item`) && !target.previousElementSibling.disabled) {
-        if (sortingEl.direction) {
+        if (sortingEl.isAsc) {
           tripListWrapper.innerHTML = ``;
 
           const reversedSortingEvents = getSortingEvents(target.previousElementSibling.id, generatedTrips).reverse();
@@ -116,6 +116,12 @@ const renderSorting = (sortingArr) => {
 
           const sortingEvents = getSortingEvents(target.previousElementSibling.id, generatedTrips);
           renderTrips(sortingEvents);
+        }
+
+        const allInputs = sortingListWrapper.querySelectorAll(`input[name="sorting"]`);
+        const checkedInput = [...allInputs].find((el) => el.checked === true);
+        if (checkedInput) {
+          checkedInput.removeAttribute(`checked`);
         }
       }
     };

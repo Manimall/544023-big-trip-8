@@ -4,10 +4,11 @@ import {createControlElement} from '../helpers';
 export class Sorting extends Component {
   constructor(obj) {
     super();
-    this._name = obj;
+    this._name = obj.name;
     this._classListName = `trip-sorting__element`;
+    this._checked = obj.checked;
 
-    this._direction = true;
+    this._isAsc = true;
     this._onSortingClick = this._onSortingClick.bind(this);
   }
 
@@ -18,31 +19,32 @@ export class Sorting extends Component {
     return this._element;
   }
 
-  get direction() {
-    return this._direction;
+  get isAsc() {
+    return this._isAsc;
   }
 
-  set direction(value) {
-    this._direction = value;
+  set isAsc(value) {
+    this._isAsc = value;
   }
 
   get template() {
     return (
-      `<input type="radio" id="sorting-${this._name}" name="sorting" value="${this._name}" ${(this._name === `event`) ? `checked` : ``}>
+      `<input type="radio" id="sorting-${this._name}" name="sorting" value="${this._name}" ${this._checked ? `checked` : ``}>
       <label class="trip-sorting__item trip-sorting__item--${this._name}" for="sorting-${this._name}">
         ${this._name}
 
-        <span class="sorting-up ${(this._direction) ? `sorting--active` : ``}">&#11014;</span>
-        <span class="sorting-down ${(!this._direction) ? `sorting--active` : ``}">&#11015;</span>
+        <span class="sorting-up ${(this._isAsc) ? `sorting--active` : ``}">&#11014;</span>
+        <span class="sorting-down ${(!this._isAsc) ? `sorting--active` : ``}">&#11015;</span>
 
       </label>`.trim()
     );
   }
 
   _changeDirection() {
-    this._direction = !this._direction;
+    this._isAsc = !this._isAsc;
+
+    this._checked = true;
     this._partialUpdate();
-    this._element.querySelector(`input[name="sorting"]`).checked = true;
   }
 
   onSorting() {
@@ -52,7 +54,7 @@ export class Sorting extends Component {
   _onSortingClick(evt) {
     if (typeof this.onSorting === `function`) {
       this.onSorting(evt);
-      this._changeDirection();
+      this._changeDirection(evt);
     }
   }
 

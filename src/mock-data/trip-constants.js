@@ -91,7 +91,28 @@ const filtersData = [
 ];
 
 // сортировка (массив из inputs value)
-const sortingData = [`event`, `time`, `favorite`, `price`, `offers`];
+const sortingData = [
+  {
+    name: `event`,
+    checked: false
+  },
+  {
+    name: `time`,
+    checked: false
+  },
+  {
+    name: `favorite`,
+    checked: false
+  },
+  {
+    name: `price`,
+    checked: false
+  },
+  {
+    name: `offers`,
+    checked: false
+  },
+];
 
 // данные для статистики
 const statData = [
