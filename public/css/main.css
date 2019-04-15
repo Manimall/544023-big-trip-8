@@ -665,3 +665,21 @@ input[type=radio]:checked + .trip-sorting__item {
 .trip-point__favorite--active {
   background-image: url("../img/star--check.svg");
 }
+
+.trip-sorting__element {
+  position: relative;
+}
+
+input[type=radio]:checked + .sorting-up,
+input[type=radio]:checked + .sorting-down {
+  position: absolute;
+  top: 0;
+}
+
+input[type=radio]:checked + .sorting-up {
+  left: 56%;
+}
+
+input[type=radio]:checked + .sorting-down {
+  right: 30%;
+}

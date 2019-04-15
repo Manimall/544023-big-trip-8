@@ -105,14 +105,17 @@ const renderSorting = (sortingArr) => {
     sortingListWrapper.appendChild(sortingEl.render());
 
     sortingEl.onSorting = ({target}) => {
-      if (target.classList.contains(`trip-sorting__item`) && !target.previousElementSibling.disabled) {
-        sortingEl.correctTemplate();
-        console.log(sortingListWrapper.replaceChild(sortingEl.element, target.parentNode));
-        sortingListWrapper.replaceChild(sortingEl.element, target.parentNode);
-        sortingEl.unrender();
-
+      if (target.name === `sorting` && !target.disabled) {
         tripListWrapper.innerHTML = ``;
-        const sortingEvents = getSortingEvents(target.previousElementSibling.id, generatedTrips);
+        if (target.checked) {
+          sortingEl.changeChecked();
+          sortingEl.correctTemplate();
+
+          sortingEl.element.replaceWith(sortingEl.updatedElement);
+
+          sortingEl.unrender();
+        }
+        const sortingEvents = getSortingEvents(target.id, generatedTrips);
         renderTrips(sortingEvents);
       }
     };

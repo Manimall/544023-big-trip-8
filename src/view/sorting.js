@@ -6,6 +6,7 @@ export class Sorting extends Component {
     super();
     this._name = obj;
     this._classListName = `trip-sorting__element`;
+    this._checked = false;
 
     // свойство порядок
     this._direction = `ASC` || `DESC`;
@@ -22,27 +23,37 @@ export class Sorting extends Component {
   get template() {
     return (
       `<input type="radio" id="sorting-${this._name}" name="sorting" value="${this._name}" ${(this._name === `event`) ? `checked` : ``}>
-      <label class="trip-sorting__item trip-sorting__item--${this._name}" for="sorting-${this._name}">${this._name}</label>
-      `
+      <label class="trip-sorting__item trip-sorting__item--${this._name}" for="sorting-${this._name}">${this._name}</label>`.trim()
     );
-  }
-
-  onSorting() {
-
   }
 
   _addSortingDirection() {
     return (
-      `<span class="sorting-up ${(this._direction === `ASC`) ? `sorting--active` : ``}">&#11014;</span>
-      <span class="sorting-down ${(this._direction === `DESC`) ? `sorting--active` : ``}">&#11015;</span>`
+      `${this._checked ?
+        `<span class="sorting-up ${(this._direction === `ASC`) ? `sorting--active` : ``}">&#11014;</span>
+        <span class="sorting-down ${(this._direction === `DESC`) ? `sorting--active` : ``}">&#11015;</span>` :
+        ``
+      }`.trim()
     );
   }
 
   correctTemplate() {
     const selectedSort = this.template.concat(this._addSortingDirection());
-    this._element = createControlElement(selectedSort, this._classListName);
+    this._updatedElement = createControlElement(selectedSort, this._classListName);
     this.bind();
-    return this._element;
+    return this._updatedElement;
+  }
+
+  get updatedElement() {
+    return this._updatedElement;
+  }
+
+  changeChecked() {
+    this._checked = !this._checked;
+  }
+
+  onSorting() {
+
   }
 
   _onSortingClick(evt) {
@@ -52,11 +63,11 @@ export class Sorting extends Component {
   }
 
   bind() {
-    this._element.addEventListener(`click`, this._onSortingClick);
+    this._element.addEventListener(`change`, this._onSortingClick);
   }
 
   unbind() {
-    this._element.removeEventListener(`click`, this._onSortingClick);
+    this._element.removeEventListener(`change`, this._onSortingClick);
   }
 }
 
