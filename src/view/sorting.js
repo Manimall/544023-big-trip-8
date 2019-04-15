@@ -23,33 +23,12 @@ export class Sorting extends Component {
   get template() {
     return (
       `<input type="radio" id="sorting-${this._name}" name="sorting" value="${this._name}" ${(this._name === `event`) ? `checked` : ``}>
-      <label class="trip-sorting__item trip-sorting__item--${this._name}" for="sorting-${this._name}">${this._name}</label>`.trim()
+      <label class="trip-sorting__item trip-sorting__item--${this._name}" for="sorting-${this._name}">
+        ${this._name}
+        <span class="sorting-up ${(this._direction === `ASC`) ? `sorting--active` : ``}">&#11014;</span>
+        <span class="sorting-down ${(this._direction === `DESC`) ? `sorting--active` : ``}">&#11015;</span>
+      </label>`.trim()
     );
-  }
-
-  _addSortingDirection() {
-    return (
-      `${this._checked ?
-        `<span class="sorting-up ${(this._direction === `ASC`) ? `sorting--active` : ``}">&#11014;</span>
-        <span class="sorting-down ${(this._direction === `DESC`) ? `sorting--active` : ``}">&#11015;</span>` :
-        ``
-      }`.trim()
-    );
-  }
-
-  correctTemplate() {
-    const selectedSort = this.template.concat(this._addSortingDirection());
-    this._updatedElement = createControlElement(selectedSort, this._classListName);
-    this.bind();
-    return this._updatedElement;
-  }
-
-  get updatedElement() {
-    return this._updatedElement;
-  }
-
-  changeChecked() {
-    this._checked = !this._checked;
   }
 
   onSorting() {

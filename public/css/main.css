@@ -200,6 +200,7 @@ input[type=radio]:checked + .trip-filter__item {
 }
 
 .trip-sorting__item {
+  display: flex;
   border: solid 1px transparent;
   color: #b4b4b4;
   font-family: var(--font);
@@ -225,6 +226,7 @@ input[type=radio]:checked + .trip-sorting__item {
   border-radius: 18px;
   box-sizing: border-box;
   color: var(--text-color);
+  display: flex;
 }
 
 .trip-sorting__item--event {
@@ -670,16 +672,60 @@ input[type=radio]:checked + .trip-sorting__item {
   position: relative;
 }
 
-input[type=radio]:checked + .sorting-up,
-input[type=radio]:checked + .sorting-down {
+.sorting-up,
+.sorting-down {
+  display: none;
+}
+
+input[name="sorting"]:checked ~ .trip-sorting__item .sorting-up,
+input[name="sorting"]:checked ~ .trip-sorting__item .sorting-down {
+  display: block;
   position: absolute;
   top: 0;
+  cursor: pointer;
+  font-size: 24px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-input[type=radio]:checked + .sorting-up {
-  left: 56%;
+input[id="sorting-event"]:checked ~ .trip-sorting__item .sorting-up,
+input[id="sorting-event"]:checked ~ .trip-sorting__item .sorting-down {
+  display: none;
 }
 
-input[type=radio]:checked + .sorting-down {
-  right: 30%;
+input[name="sorting"]:checked ~ .trip-sorting__item .sorting-up {
+  left: 31%;
 }
+
+input[name="sorting"]:checked ~ .trip-sorting__item .sorting-down {
+  right: 47%;
+}
+
+input[name="sorting"]:checked ~ .trip-sorting__item--favorite .sorting-up {
+  left: 53%;
+}
+
+input[name="sorting"]:checked ~ .trip-sorting__item--favorite .sorting-down {
+  right: 28%;
+}
+
+
+
+input[name="sorting"]:checked ~ .trip-sorting__item--price .sorting-up {
+  left: 34%;
+}
+
+input[name="sorting"]:checked ~ .trip-sorting__item--price .sorting-down {
+  right: 46%;
+}
+
+
+input[name="sorting"]:checked ~ .trip-sorting__item--offers .sorting-up {
+  left: 64%;
+}
+
+input[name="sorting"]:checked ~ .trip-sorting__item--offers .sorting-down {
+  right: 7%;
+}
+
+

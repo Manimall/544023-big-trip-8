@@ -107,14 +107,7 @@ const renderSorting = (sortingArr) => {
     sortingEl.onSorting = ({target}) => {
       if (target.name === `sorting` && !target.disabled) {
         tripListWrapper.innerHTML = ``;
-        if (target.checked) {
-          sortingEl.changeChecked();
-          sortingEl.correctTemplate();
 
-          sortingEl.element.replaceWith(sortingEl.updatedElement);
-
-          sortingEl.unrender();
-        }
         const sortingEvents = getSortingEvents(target.id, generatedTrips);
         renderTrips(sortingEvents);
       }
