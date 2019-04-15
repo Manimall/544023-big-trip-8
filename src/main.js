@@ -105,13 +105,21 @@ const renderSorting = (sortingArr) => {
     sortingListWrapper.appendChild(sortingEl.render());
 
     sortingEl.onSorting = ({target}) => {
-      if (target.name === `sorting` && !target.disabled) {
-        tripListWrapper.innerHTML = ``;
+      if (target.classList.contains(`trip-sorting__item`) && !target.previousElementSibling.disabled) {
+        if (sortingEl.direction) {
+          tripListWrapper.innerHTML = ``;
 
-        const sortingEvents = getSortingEvents(target.id, generatedTrips);
-        renderTrips(sortingEvents);
+          const reversedSortingEvents = getSortingEvents(target.previousElementSibling.id, generatedTrips).reverse();
+          renderTrips(reversedSortingEvents);
+        } else {
+          tripListWrapper.innerHTML = ``;
+
+          const sortingEvents = getSortingEvents(target.previousElementSibling.id, generatedTrips);
+          renderTrips(sortingEvents);
+        }
       }
     };
+
   });
 };
 
@@ -129,16 +137,16 @@ const getSortingEvents = (sortingName, trips) => {
       return tripsCopyArr;
     },
     'sorting-time': () => {
-      return tripsCopyArr.sort((a, b) => getDuration(a.tripTime) - getDuration(b.tripTime)).reverse();
+      return tripsCopyArr.sort((a, b) => getDuration(a.tripTime) - getDuration(b.tripTime));
     },
     'sorting-price': () => {
-      return tripsCopyArr.sort((a, b) => a.price - b.price).reverse();
+      return tripsCopyArr.sort((a, b) => a.price - b.price);
     },
     'sorting-favorite': () => {
-      return tripsCopyArr.sort((a, b) => b.isFavorite - a.isFavorite);
+      return tripsCopyArr.sort((a, b) => a.isFavorite - b.isFavorite);
     },
     'sorting-offers': () => {
-      return tripsCopyArr.sort((a, b) => b.offers.size - a.offers.size);
+      return tripsCopyArr.sort((a, b) => a.offers.size - b.offers.size);
     },
   };
   return fnSorting[sortingName]();
