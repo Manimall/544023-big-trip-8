@@ -31,6 +31,8 @@ const generateTrips = (amount) => {
 const generatedTrips = generateTrips(INITIAL_TRIP_COUNT); // необходимое кол-во сгенерированных путешествий
 
 const renderTrips = (pointsArr) => {
+  tripListWrapper.innerHTML = ``;
+
   pointsArr.forEach((item) => {
 
     const trip = new Trip(item);
@@ -56,6 +58,11 @@ const renderTrips = (pointsArr) => {
       trip.render();
       tripListWrapper.replaceChild(trip.element, tripEdit.element);
       tripEdit.unrender();
+    };
+
+    tripEdit.onDelete = ({id}) => {
+      const narrowedArr = pointsArr.filter((el) => el.id !== id);
+      renderTrips(narrowedArr);
     };
 
     tripListWrapper.appendChild(trip.render());
@@ -157,3 +164,5 @@ const getSortingEvents = (sortingName, trips) => {
   };
   return fnSorting[sortingName]();
 };
+
+

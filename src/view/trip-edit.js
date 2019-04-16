@@ -44,6 +44,8 @@ export class TripEdit extends Component {
     this._onTravelCityChange = this._onTravelCityChange.bind(this);
     this._onOffersAddAndDelete = this._onOffersAddAndDelete.bind(this);
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
+
+    this._onDeleteBtnClick = this._onDeleteBtnClick.bind(this);
   }
 
   update(obj) {
@@ -341,6 +343,8 @@ export class TripEdit extends Component {
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onTravelCityChange);
     this._element.querySelector(`.point__offers-wrap`).addEventListener(`change`, this._onOffersAddAndDelete);
     this._element.querySelector(`input[name="favorite"]`).addEventListener(`change`, this._onFavoriteChange);
+    this._element.querySelector(`button[type=reset]`).addEventListener(`click`, this._onDeleteBtnClick);
+
     this._setUpTimePicker();
     this._onDayChange();
     document.addEventListener(`keydown`, this._onKeydownEsc);
@@ -354,6 +358,8 @@ export class TripEdit extends Component {
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onTravelCityChange);
     this._element.querySelector(`.point__offers-wrap`).removeEventListener(`change`, this._onOffersAddAndDelete);
     this._element.querySelector(`input[name="favorite"]`).removeEventListener(`change`, this._onFavoriteChange);
+    this._element.querySelector(`button[type=reset]`).removeEventListener(`click`, this._onDeleteBtnClick);
+
     flatpickr(this._element.querySelector(`input[name="date-start"]`)).destroy();
     flatpickr(this._element.querySelector(`input[name="date-end"]`)).destroy();
     flatpickr(this._element.querySelector(`input[name="day"]`)).destroy();
@@ -366,6 +372,17 @@ export class TripEdit extends Component {
 
   onKeyEsc() {
 
+  }
+
+  onDelete() {
+
+  }
+
+  _onDeleteBtnClick(evt) {
+    evt.preventDefault();
+    if (typeof this.onDelete === `function`) {
+      this.onDelete({id: this._id});
+    }
   }
 
   _onSubmitBtnClick(evt) {
