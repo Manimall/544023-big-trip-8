@@ -112,16 +112,16 @@ const renderSorting = (sortingArr) => {
     sortingListWrapper.appendChild(sortingEl.render());
 
     sortingEl.onSorting = ({target}) => {
-      if (target.classList.contains(`trip-sorting__item`) && !target.previousElementSibling.disabled) {
+      if (target.name === `sorting` && !target.disabled) {
         if (sortingEl.isAsc) {
           tripListWrapper.innerHTML = ``;
 
-          const reversedSortingEvents = getSortingEvents(target.previousElementSibling.id, generatedTrips).reverse();
+          const reversedSortingEvents = getSortingEvents(target.id, generatedTrips).reverse();
           renderTrips(reversedSortingEvents);
         } else {
           tripListWrapper.innerHTML = ``;
 
-          const sortingEvents = getSortingEvents(target.previousElementSibling.id, generatedTrips);
+          const sortingEvents = getSortingEvents(target.id, generatedTrips);
           renderTrips(sortingEvents);
         }
 

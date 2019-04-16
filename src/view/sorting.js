@@ -1,5 +1,6 @@
 import {Component} from './component';
 import {createControlElement} from '../helpers';
+import {debounce} from '../debounce';
 
 export class Sorting extends Component {
   constructor(obj) {
@@ -9,7 +10,8 @@ export class Sorting extends Component {
     this._checked = obj.checked;
 
     this._isAsc = true;
-    this._onSortingClick = this._onSortingClick.bind(this);
+
+    this._onSortingClick = debounce(this._onSortingClick.bind(this));
   }
 
   render() {

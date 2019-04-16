@@ -1,5 +1,6 @@
 import {Component} from './component';
 import {createControlElement} from '../helpers';
+import {debounce} from '../debounce';
 
 export class Filter extends Component {
   constructor(obj) {
