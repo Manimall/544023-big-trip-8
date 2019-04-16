@@ -111,3 +111,17 @@
     </section>
   </form>
 </article>
+
+<label class="point__time">
+  choose time
+
+  <input class="point__input" type="text"
+  value="${formatTimeOutput(this._time.start.getHours())}:${formatTimeOutput(this._time.start.getMinutes())}
+            &nbsp;&mdash;
+        ${formatTimeOutput(this._time.end.getHours())}:${formatTimeOutput(this._time.end.getMinutes())}"
+  name="time"
+  placeholder="${formatTimeOutput(this._time.start.getHours())}:${formatTimeOutput(this._time.start.getMinutes())}
+                  &nbsp;&mdash;
+              ${formatTimeOutput(this._time.end.getHours())}:${formatTimeOutput(this._time.end.getMinutes())}"
+  >
+</label>

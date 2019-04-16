@@ -42,16 +42,7 @@
 
 <main class="main content-wrap" id="table">
   <form class="trip-sorting">
-    <input type="radio" name="trip-sorting" id="sorting-event" value="event" checked>
-    <label class="trip-sorting__item trip-sorting__item--event" for="sorting-event">Event</label>
 
-    <input type="radio" name="trip-sorting" id="sorting-time" value="time">
-    <label class="trip-sorting__item trip-sorting__item--time" for="sorting-time">Time</label>
-
-    <input type="radio" name="trip-sorting" id="sorting-price" value="price">
-    <label class="trip-sorting__item trip-sorting__item--price" for="sorting-price">Price</label>
-
-    <span class="trip-sorting__item trip-sorting__item--offers">Offers</span>
   </form>
 
   <section class="trip-points">
@@ -67,6 +58,20 @@
     </section>
   </section>
 </main>
+
+<section class="statistic content-wrap visually-hidden" id="stats">
+  <div class="statistic__item statistic__item--money">
+    <canvas class="statistic__money" width="900"></canvas>
+  </div>
+
+  <div class="statistic__item statistic__item--transport">
+    <canvas class="statistic__transport" width="900"></canvas>
+  </div>
+
+  <div class="statistic__item statistic__item--time-spend">
+    <canvas class="statistic__time-spend" width="900"></canvas>
+  </div>
+</section>
 
 
 <script src="bundle.js"></script>

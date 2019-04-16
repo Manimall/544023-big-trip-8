@@ -1,5 +1,4 @@
-import {createElement} from './helpers';
-import moment from 'moment';
+import {createElement} from '../helpers';
 
 export class Component {
   constructor() {
@@ -31,15 +30,7 @@ export class Component {
     this._element = null;
   }
 
-  getDate(time) {
-    return moment.unix(time).format(`DD MMMM`);
-  }
-
-  getTime(time) {
-    return moment.unix(time).format(`LT`);
-  }
-
-  partialUpdate() {
+  _partialUpdate() {
     this.unbind();
     const oldElement = this._element;
     this.render();

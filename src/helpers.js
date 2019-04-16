@@ -50,6 +50,9 @@ const returnTrueOrFalse = () => Math.random() > 0.5;
  */
 const makeStringFromData = (layoutData, generateFn) => layoutData.reduce((acc, el) => acc + generateFn(el), ``);
 
+// Заполняем разметку фильтра данными из массива фильтров
+// const filters = makeStringFromData(filtersData, makeFilter);
+
 
 const createElement = (template) => {
   const newEl = document.createElement(`div`);
@@ -57,4 +60,18 @@ const createElement = (template) => {
   return newEl.firstChild;
 };
 
-export {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, makeStringFromData, createElement, returnTrueOrFalse};
+const createControlElement = (template, className = ``) => {
+  const newElement = document.createElement(`div`);
+  if (className !== ``) {
+    newElement.classList.add(className);
+  }
+  newElement.innerHTML = template;
+  return newElement;
+};
+
+const KeyCodes = {
+  ESC: 27,
+  ENTER: 13
+};
+
+export {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, makeStringFromData, createElement, returnTrueOrFalse, KeyCodes, createControlElement};
