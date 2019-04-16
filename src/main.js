@@ -15,14 +15,29 @@ const filterListWrapper = controls.querySelector(`.trip-filter`); // контэ�
 
 const tripListWrapper = document.querySelector(`.trip-day__items`); // контэйнер для вставки путешествий
 
-// const boardsBtn = controls.querySelector(`a[href*=table]`); // борд с путешествиями
-// const statBtn = controls.querySelector(`a[href*=stats]`); // борд со статистикой
+const boardsBtn = controls.querySelector(`a[href*=table]`); // борд с путешествиями
+const statBtn = controls.querySelector(`a[href*=stats]`); // борд со статистикой
 
 const boardTable = document.querySelector(`#table`);
-// const boardDays = boardTable.querySelector(`.trip-points`);
+const boardStat = document.querySelector(`#stats`);
 
 const sortingListWrapper = boardTable.querySelector(`.trip-sorting`); // контэйнер для вставки элементов сортировки
 
+statBtn.addEventListener(`click`, (etv) => {
+  etv.preventDefault();
+  statBtn.classList.add(`view-switch__item--active`);
+  boardsBtn.classList.remove(`view-switch__item--active`);
+  boardTable.classList.add(`visually-hidden`);
+  boardStat.classList.remove(`visually-hidden`);
+});
+
+boardsBtn.addEventListener(`click`, (etv) => {
+  etv.preventDefault();
+  boardsBtn.classList.add(`view-switch__item--active`);
+  statBtn.classList.remove(`view-switch__item--active`);
+  boardStat.classList.add(`visually-hidden`);
+  boardTable.classList.remove(`visually-hidden`);
+});
 
 const generateTrips = (amount) => {
   return new Array(amount).fill(null).map((el, id) => mockTrip(id));
@@ -61,8 +76,8 @@ const renderTrips = (pointsArr) => {
     };
 
     tripEdit.onDelete = ({id}) => {
-      const narrowedArr = pointsArr.filter((el) => el.id !== id);
-      renderTrips(narrowedArr);
+      const newTripPoints = pointsArr.filter((el) => el.id !== id);
+      renderTrips(newTripPoints);
     };
 
     tripListWrapper.appendChild(trip.render());
@@ -81,15 +96,23 @@ const getFilterEvents = (filterName, trips) => {
       return data.filter((el) => el.tripTime.timeStart > Date.now());
     },
     'filter-past': (data) => {
-      return data.filter((el) =>el.tripTime.timeEnd < Date.now());
+      return data.filter((el) => el.tripTime.timeEnd < Date.now());
     },
   };
 
   return fnFilter[filterName]([...trips]);
 };
 
+const removeCheckedInput = () => {
+  const allInputs = sortingListWrapper.querySelectorAll(`input[name="sorting"]`);
+  const checkedInput = [...allInputs].find((el) => el.checked === true);
+  if (checkedInput) {
+    checkedInput.removeAttribute(`checked`);
+  }
+};
+
 const renderFilters = (filterArr) => {
-  return filterArr.map((item) => {
+  return filterArr.forEach((item) => {
     const filter = new Filter(item);
     filterListWrapper.appendChild(filter.render());
 
@@ -99,6 +122,8 @@ const renderFilters = (filterArr) => {
         tripListWrapper.innerHTML = ``;
         const filteredEvents = getFilterEvents(target.previousElementSibling.id, generatedTrips);
         renderTrips(filteredEvents);
+
+        removeCheckedInput();
       }
     };
   });
@@ -107,29 +132,22 @@ const renderFilters = (filterArr) => {
 renderFilters(filtersData); // отрендеренные фильтры
 
 const renderSorting = (sortingArr) => {
-  return sortingArr.map((item) => {
+  return sortingArr.forEach((item) => {
     const sortingEl = new Sorting(item);
     sortingListWrapper.appendChild(sortingEl.render());
 
     sortingEl.onSorting = ({target}) => {
       if (target.name === `sorting` && !target.disabled) {
-        if (sortingEl.isAsc) {
-          tripListWrapper.innerHTML = ``;
 
-          const reversedSortingEvents = getSortingEvents(target.id, generatedTrips).reverse();
-          renderTrips(reversedSortingEvents);
-        } else {
-          tripListWrapper.innerHTML = ``;
+        tripListWrapper.innerHTML = ``;
 
-          const sortingEvents = getSortingEvents(target.id, generatedTrips);
-          renderTrips(sortingEvents);
-        }
+        const sortedEvents = sortingEl.isAsc ?
+          getSortingEvents(target.id, generatedTrips).reverse() :
+          getSortingEvents(target.id, generatedTrips);
 
-        const allInputs = sortingListWrapper.querySelectorAll(`input[name="sorting"]`);
-        const checkedInput = [...allInputs].find((el) => el.checked === true);
-        if (checkedInput) {
-          checkedInput.removeAttribute(`checked`);
-        }
+        renderTrips(sortedEvents);
+
+        removeCheckedInput();
       }
     };
 
