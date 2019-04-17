@@ -31,6 +31,11 @@ export class Filter extends Component {
     ).trim();
   }
 
+  _updateFilter() {
+    this._checked = true;
+    this._partialUpdate();
+  }
+
   onFilter() {
 
   }
@@ -38,6 +43,7 @@ export class Filter extends Component {
   _onFilterClick(evt) {
     if (typeof this.onFilter === `function`) {
       this.onFilter(evt);
+      this._updateFilter();
     }
   }
 

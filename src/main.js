@@ -103,12 +103,13 @@ const getFilterEvents = (filterName, trips) => {
   return fnFilter[filterName]([...trips]);
 };
 
-const removeCheckedInput = () => {
-  const allInputs = sortingListWrapper.querySelectorAll(`input[name="sorting"]`);
-  const checkedInput = [...allInputs].find((el) => el.checked === true);
-  if (checkedInput) {
-    checkedInput.removeAttribute(`checked`);
-  }
+const removeCheckedInput = (elem, parentWrapper, inputClass) => {
+  const allInputs = parentWrapper.querySelectorAll(inputClass);
+  [...allInputs].forEach((item) => {
+    if (elem !== item) {
+      item.removeAttribute(`checked`);
+    }
+  });
 };
 
 const renderFilters = (filterArr) => {
@@ -123,7 +124,8 @@ const renderFilters = (filterArr) => {
         const filteredEvents = getFilterEvents(target.previousElementSibling.id, generatedTrips);
         renderTrips(filteredEvents);
 
-        removeCheckedInput();
+        removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
+        removeCheckedInput(target.previousElementSibling, filterListWrapper, `input[name="filter"]`);
       }
     };
   });
@@ -147,7 +149,7 @@ const renderSorting = (sortingArr) => {
 
         renderTrips(sortedEvents);
 
-        removeCheckedInput();
+        removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
       }
     };
 
