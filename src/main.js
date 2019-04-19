@@ -48,19 +48,19 @@ api.getOffers()
 // console.log(offers);
 
 const makeRequest = async () => {
-  board.textContent = `Loading route...`;
+  tripListWrapper.textContent = `Loading route...`;
   try {
     [offers, destinations, points] =
     await Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()]);
     console.log([offers, destinations, points]);
     await initApp();
   } catch (err) {
-    board.textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
+    tripListWrapper.textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
   }
 };
 
 const initApp = () => {
-  board.textContent = ``;
+  tripListWrapper.textContent = ``;
   // renderTotalCost(model.events);
   renderFilters(filtersData);
   renderSorting(sortingData);

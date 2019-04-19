@@ -1,4 +1,5 @@
 import {getOffersLayout} from '../parts-of-trip-template/format-offers';
+import {tripTypes} from '../mock-data/trip-constants';
 
 import moment from 'moment';
 
@@ -8,26 +9,33 @@ import {Component} from './component';
 export class Trip extends Component {
   constructor(obj) {
     super();
-    this._title = obj.title;
-    this._id = obj.id;
-    this._icon = obj.icon;
-    this._description = [...obj.description];
-    this._picture = obj.picture;
-    this._price = obj.price;
-    this._priceCurrency = obj.priceCurrency;
-    this._fullPrice = obj.fullPrice;
+    this.data = obj;
+
+    this._type = obj.type;
+    this._city = obj.destination;
+    this._newTime = obj.newTime;
+    this._priceCurrency = `€`;
+    this._fullPrice = `${obj.price} ${this._priceCurrency}`;
     this._isFavorite = obj.isFavorite;
-    this._offers = new Set([...obj.offers]);
-    this._time = obj.time;
+    this.offers = new Set([...obj.offers]);
 
-    this._newTime = obj.tripTime;
+    this._tripInfo = Object.assign({}, Trip.findTripByTripName(obj));
+  }
 
-    this._state = {};
+  static findTripByTripName(obj) {
+    return tripTypes.find((el) => el.name.toLocaleLowerCase() === obj.type);
+  }
+
+  _getTripTitle() {
+    const tripType = this._tripInfo.transport ? `${this._tripInfo.name} to` : `${this._tripInfo.name} at`;
+    const tripDestination = this._city;
+    return `${tripType} ${tripDestination}`;
   }
 
   update(obj) {
-    this._title = obj.title;
-    this._icon = obj.icon;
+    this._city = obj.city;
+    // this._title = obj.title;
+    this._icon = this._tripInfo.icon;
     this._description = obj.description;
     this._picture = obj.picture;
     this._price = obj.price;
@@ -67,9 +75,9 @@ export class Trip extends Component {
 
   get template() {
     return (
-      `<article class="trip-point" id="${this._id}">
-        <i class="trip-icon">${this._icon}</i>
-        <h3 class="trip-point__title">${this._title}</h3>
+      `<article class="trip-point" id="${this.data.id}">
+        <i class="trip-icon">${this._tripInfo.icon}</i>
+        <h3 class="trip-point__title">${this._getTripTitle()}</h3>
         <p class="trip-point__schedule">
           ${this._getTripTimeLayout()}
         </p>
@@ -77,9 +85,9 @@ export class Trip extends Component {
           <span class="trip-point__favorite ${this._isFavorite ? `trip-point__favorite--active` : ``}">${this._isFavorite}</span>
         </div>
         <p class="trip-point__price">${this._fullPrice}</p>
-        ${this._offers.size !== 0 ?
+        ${this.offers.size !== 0 ?
         `<ul class="trip-point__offers">
-          ${getOffersLayout(this._offers).join(``)}
+          ${getOffersLayout(this.offers).join(``)}
         </ul>` : ``}
       </article>`
     );

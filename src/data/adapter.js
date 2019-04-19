@@ -2,6 +2,7 @@ export class Adapter {
   constructor(data) {
     this.id = data[`id`];
     this.type = data[`type`];
+    this.newTime = {};
     this.newTime.timeStart = data[`date_from`];
     this.newTime.timeEnd = data[`date_to`];
     this.price = data[`base_price`] || 0;

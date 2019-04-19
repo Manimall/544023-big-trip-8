@@ -1,7 +1,7 @@
 const getAllImages = (pictures) => {
   const picturesLayout = [...pictures].map((picture) => {
     return `
-      <img src="${picture}" class="point__destination-image" alt="picture from place"></img>
+      <img src="${picture.src}" class="point__destination-image" alt="${picture.description}"></img>
     `.trim();
   }).join(``);
 

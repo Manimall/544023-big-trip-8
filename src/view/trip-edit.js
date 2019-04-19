@@ -4,7 +4,7 @@ import {formatEditOffers} from '../parts-of-trip-edit-template/format-edit-offer
 import {getAllImages} from '../parts-of-trip-edit-template/format-pictures';
 
 import {MIN_PRICE, MAX_PRICE} from '../mock-data/generate-mock-trips';
-import {tripTypes, tripCities, POINT_DEFAULT} from '../mock-data/trip-constants';
+import {tripTypes, POINT_DEFAULT} from '../mock-data/trip-constants';
 
 import {KeyCodes} from '../helpers';
 
@@ -17,25 +17,27 @@ import {Component} from './component';
 export class TripEdit extends Component {
   constructor(offers, destinations, obj = POINT_DEFAULT) {
     super();
-    this._offers = offers;
-    this._destinations = destinations;
-
-    this._title = obj.title;
-    this._id = obj.id;
-    this._city = obj.city;
-    this._icon = obj.icon;
-    this._description = [...obj.description];
-    this._picture = obj.picture;
-    this._pictures = new Set([...obj.pictures]);
-    this._price = obj.price;
-    this._priceCurrency = obj.priceCurrency;
-    this._fullPrice = obj.fullPrice;
-    this._isFavorite = obj.isFavorite;
-    this._allOffers = new Set([...obj.offers]);
-    this._time = obj.time;
     this._type = obj.type;
-    this._tripInfo = Object.assign({}, obj.tripInfo);
-    this._newTime = obj.tripTime;
+
+    this._destinations = destinations; // доступные города
+    this._allOffers = [...this._getReferencedOffers(offers)]; // доступные офферы
+
+    this._id = obj.id;
+    this._city = obj.destination;
+
+    this._description = obj.description;
+    this._pictures = new Set([...obj.pictures]);
+    this._priceCurrency = `€`;
+    this._price = obj.price;
+    this._fullPrice = `${this._price} ${this._priceCurrency}`;
+    this._isFavorite = obj.isFavorite;
+    this._offers = new Set([...obj.offers]);
+    this._time = obj.time;
+
+    this._tripInfo = Object.assign({}, TripEdit.findTripByTripName(obj));
+    this._icon = this._tripInfo.icon;
+    // this._newTime = obj.tripTime;
+    this._newTime = obj.newTime;
 
     this._initialData = obj;
 
@@ -51,12 +53,23 @@ export class TripEdit extends Component {
     this._onDeleteBtnClick = this._onDeleteBtnClick.bind(this);
   }
 
+  static findTripByTripName(obj) {
+    return tripTypes.find((el) => el.name.toLocaleLowerCase() === obj.type);
+  }
+
+  _getReferencedOffers(offers) {
+    return [...offers].reduce((acc, item) => {
+      if (item.type === this._type) {
+        acc = item.offers;
+      }
+      return acc;
+    }, {});
+  }
+
   update(obj) {
-    this._title = obj.title;
-    this._city = obj.city;
-    this._icon = obj.icon;
+    this._city = obj.destination;
+    this._icon = this._tripInfo.icon;
     this._description = obj.description;
-    this._picture = obj.picture;
     this._price = obj.price;
     this._priceCurrency = obj.priceCurrency;
     this._fullPrice = obj.fullPrice;
@@ -98,7 +111,6 @@ export class TripEdit extends Component {
 
   _getNewTripData() {
     return {
-      title: this._title,
       city: this._city,
       icon: this._icon,
       description: this._description,
@@ -123,26 +135,26 @@ export class TripEdit extends Component {
     this._city = this._element.querySelector(`.point__destination-input`).value;
 
     this._partialUpdate();
-    this._getTripTitle();
+    // this._getTripTitle();
   }
 
   _onTravelCityChange({target}) {
-    const cityArr = [...tripCities].filter((item) => item === target.value);
+    const cityArr = [...this._destinations].filter((item) => item === target.value);
     if (cityArr.length) {
       this._city = target.value;
     }
 
     this._partialUpdate();
-    this._getTripTitle();
+    // this._getTripTitle();
   }
 
-  _getTripTitle() {
-    const titleFirstPart = this._element.querySelector(`.point__destination-label`).textContent;
-    const titleSecondPart = this._city;
+  // _getTripTitle() {
+  //   const titleFirstPart = this._element.querySelector(`.point__destination-label`).textContent;
+  //   const titleSecondPart = this._city;
 
-    this._title = `${titleFirstPart} ${titleSecondPart}`;
-    return this._title;
-  }
+  //   this._title = `${titleFirstPart} ${titleSecondPart}`;
+  //   return this._title;
+  // }
 
   _onOffersAddAndDelete({target}) {
     const clickedOffer = target.nextElementSibling;
@@ -215,7 +227,7 @@ export class TripEdit extends Component {
   }
 
   _getDay() {
-    return moment(this._newTime.dayNow).format(`MMM YY`);
+    return moment(this._newTime.timeStart).format(`MMM YY`);
   }
 
   _onDayChange() {
@@ -289,7 +301,7 @@ export class TripEdit extends Component {
 
             </div>
 
-            ${makeDestination(tripCities, this._tripInfo, this._city)}
+            ${makeDestination(this._destinations, this._tripInfo, this._city)}
 
 
             <div class="point__time">
