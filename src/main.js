@@ -1,10 +1,11 @@
 import {filtersData, sortingData} from './mock-data/trip-constants';
 import {TripEdit} from './view/trip-edit';
 import {Trip} from './view/trip';
-// import {Sorting} from './view/sorting';
+import {TotalCost} from './view/total-cost';
 import {Filter} from './view/filter';
 import {mockTrip} from './mock-data/generate-mock-trips';
 import {Sorting} from './view/sorting';
+import {Api} from './data/api';
 import moment from 'moment';
 
 const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
@@ -21,7 +22,55 @@ const statBtn = controls.querySelector(`a[href*=stats]`); // борд со ст�
 const boardTable = document.querySelector(`#table`);
 const boardStat = document.querySelector(`#stats`);
 
+const board = boardTable.querySelector(`.trip-points`);
+
 const sortingListWrapper = boardTable.querySelector(`.trip-sorting`); // контэйнер для вставки элементов сортировки
+
+let offers = [];
+let destinations = [];
+let points = [];
+
+
+const ServerConfig = {
+  AUTHORIZATION: `Basic dXNfckBgtXuzd27yZAo=${Math.random()}`,
+  MAIN_URL: `https://es8-demo-srv.appspot.com/big-trip`,
+};
+
+const api = new Api({mainUrl: ServerConfig.MAIN_URL, authorization: ServerConfig.AUTHORIZATION});
+
+
+// чекаем данные
+api.getOffers()
+  .then((offers) => {
+    console.log(offers);
+  });
+
+// console.log(offers);
+
+const makeRequest = async () => {
+  board.textContent = `Loading route...`;
+  try {
+    [offers, destinations, points] =
+    await Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()]);
+    console.log([offers, destinations, points]);
+    await initApp();
+  } catch (err) {
+    board.textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
+  }
+};
+
+const initApp = () => {
+  board.textContent = ``;
+  // renderTotalCost(model.events);
+  renderFilters(filtersData);
+  renderSorting(sortingData);
+  renderTrips(points);
+};
+
+makeRequest();
+
+// компонент с данными
+// const tripPointsData = new TripsModelData(ServerConfig);
 
 statBtn.addEventListener(`click`, (etv) => {
   etv.preventDefault();
@@ -39,11 +88,12 @@ boardsBtn.addEventListener(`click`, (etv) => {
   boardTable.classList.remove(`visually-hidden`);
 });
 
-const generateTrips = (amount) => {
-  return new Array(amount).fill(null).map((el, id) => mockTrip(id));
-};
+// const generateTrips = (amount) => {
+//   return new Array(amount).fill(null).map((el, id) => mockTrip(id));
+// };
 
-const generatedTrips = generateTrips(INITIAL_TRIP_COUNT); // необходимое кол-во сгенерированных путешествий
+// const generatedTrips = generateTrips(INITIAL_TRIP_COUNT); // необходимое кол-во сгенерированных путешествий
+
 
 const renderTrips = (pointsArr) => {
   tripListWrapper.innerHTML = ``;
@@ -51,7 +101,7 @@ const renderTrips = (pointsArr) => {
   pointsArr.forEach((item) => {
 
     const trip = new Trip(item);
-    const tripEdit = new TripEdit(item);
+    const tripEdit = new TripEdit(offers, destinations, item);
 
     trip.onEdit = () => {
       tripEdit.render();
@@ -84,7 +134,7 @@ const renderTrips = (pointsArr) => {
   });
 };
 
-renderTrips(generatedTrips); // отренедеренные путешествия
+// renderTrips(generatedTrips); // отренедеренные путешествия
 
 
 const getFilterEvents = (filterName, trips) => {
@@ -131,7 +181,7 @@ const renderFilters = (filterArr) => {
   });
 };
 
-renderFilters(filtersData); // отрендеренные фильтры
+// renderFilters(filtersData); // отрендеренные фильтры
 
 const renderSorting = (sortingArr) => {
   return sortingArr.forEach((item) => {
@@ -156,7 +206,7 @@ const renderSorting = (sortingArr) => {
   });
 };
 
-renderSorting(sortingData); // отрендеренные элементы сортировки
+// renderSorting(sortingData); // отрендеренные элементы сортировки
 
 
 const getDuration = (obj) => {

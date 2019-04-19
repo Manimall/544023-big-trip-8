@@ -5,7 +5,7 @@ const setOptions = (array) => {
 
 const makeDestination = (cities, selectedTripType, city) => {
 
-  const labelText = selectedTripType.transport ? `${selectedTripType.name} to` : `${selectedTripType.name} in`;
+  const labelText = selectedTripType.transport ? `${selectedTripType.name} to` : `${selectedTripType.name} at`;
 
   return (
     `<div class="point__destination-wrap">

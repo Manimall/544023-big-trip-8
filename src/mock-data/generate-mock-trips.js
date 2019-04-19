@@ -44,7 +44,7 @@ const mockTrip = (id) => {
   // const tripType = getRandomElementFromArr(Object.keys(constants.tripIcons)); // ищем первую часть названия - ключ
 
   const tripInfo = getRandomElementFromArr(constants.tripTypes);
-  const tripType = tripInfo.transport ? `${tripInfo.name} to` : `${tripInfo.name} in`;
+  const tripType = tripInfo.transport ? `${tripInfo.name} to` : `${tripInfo.name} at`;
 
   const tripIcon = tripInfo.icon; // привязываем к ней иконку - значение по ключу
   const city = getRandomElementFromArr([...constants.tripCities]);

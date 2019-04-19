@@ -4,7 +4,8 @@ import {formatEditOffers} from '../parts-of-trip-edit-template/format-edit-offer
 import {getAllImages} from '../parts-of-trip-edit-template/format-pictures';
 
 import {MIN_PRICE, MAX_PRICE} from '../mock-data/generate-mock-trips';
-import {tripTypes, tripCities} from '../mock-data/trip-constants';
+import {tripTypes, tripCities, POINT_DEFAULT} from '../mock-data/trip-constants';
+
 import {KeyCodes} from '../helpers';
 
 import moment from 'moment';
@@ -14,8 +15,11 @@ import {Component} from './component';
 
 
 export class TripEdit extends Component {
-  constructor(obj) {
+  constructor(offers, destinations, obj = POINT_DEFAULT) {
     super();
+    this._offers = offers;
+    this._destinations = destinations;
+
     this._title = obj.title;
     this._id = obj.id;
     this._city = obj.city;
@@ -27,8 +31,7 @@ export class TripEdit extends Component {
     this._priceCurrency = obj.priceCurrency;
     this._fullPrice = obj.fullPrice;
     this._isFavorite = obj.isFavorite;
-    this._offers = new Set([...obj.offers]);
-    this._allOffers = new Set([...obj.allOffers]);
+    this._allOffers = new Set([...obj.offers]);
     this._time = obj.time;
     this._type = obj.type;
     this._tripInfo = Object.assign({}, obj.tripInfo);
