@@ -53,7 +53,7 @@ export class Api {
   createPoint({point}) {
     return this._load({
       url: `points`,
-      method: Method.post,
+      method: Method.POST,
       body: JSON.stringify(point),
       headers: new Headers({'Content-Type': `application/json`})
     })
@@ -64,7 +64,7 @@ export class Api {
   updatePoint({id, data}) {
     return this._load({
       url: `points/${id}`,
-      method: Method.put,
+      method: Method.PUT,
       body: JSON.stringify(data),
       headers: new Headers({'Content-Type': `application/json`})
     })
@@ -79,7 +79,7 @@ export class Api {
   syncPoints({points}) {
     return this._load({
       url: `points/sync`,
-      method: Method.post,
+      method: Method.POST,
       body: JSON.stringify(points),
       headers: new Headers({'Content-Type': `application/json`})
     })

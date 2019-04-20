@@ -26,12 +26,12 @@ export class TripEdit extends Component {
 
     this._description = obj.description;
     this._pictures = new Set([...obj.pictures]);
+
     this._priceCurrency = `€`;
     this._price = obj.price;
     this._fullPrice = `${this._price} ${this._priceCurrency}`;
-    this._isFavorite = obj.isFavorite;
 
-    this._time = obj.time;
+    this._isFavorite = obj.isFavorite;
 
     this._allOffers = offers;
     this._offers = new Set([...obj.offers]);
@@ -69,21 +69,6 @@ export class TripEdit extends Component {
     }, []);
   }
 
-  update(obj) {
-    this._city = obj.destination;
-    this._icon = this._tripInfo.icon;
-    this._description = obj.description;
-    this._price = obj.price;
-    this._priceCurrency = obj.priceCurrency;
-    this._fullPrice = obj.fullPrice;
-    this._isFavorite = obj.isFavorite;
-    this._offers = new Set([...obj.offers]);
-    this._time = obj.time;
-    this._type = obj.type;
-    this._tripInfo = Object.assign({}, obj.tripInfo);
-    this._newTime = obj.tripTime;
-  }
-
   _onPriceChange(evt) {
     evt.preventDefault();
 
@@ -103,21 +88,29 @@ export class TripEdit extends Component {
     }
   }
 
+  update(obj) {
+    this._id = obj.id;
+    this._city = obj.destination;
+    this._type = obj.type;
+    this._description = obj.description;
+    this._pictures = new Set([...obj.pictures]);
+    this._isFavorite = obj.isFavorite;
+    this._newTime = obj.newTime;
+    this._price = obj.price;
+    this._offers = new Set([...obj.offers]);
+  }
+
   _getNewTripData() {
     return {
-      city: this._city,
-      icon: this._icon,
-      description: this._description,
-      picture: this._picture,
-      price: this._price,
-      priceCurrency: this._priceCurrency,
-      fullPrice: this._fullPrice,
-      isFavorite: this._isFavorite,
-      time: this._time,
+      id: this._id,
       type: this._type,
-      tripInfo: this._tripInfo,
-      offers: this._offers,
-      tripTime: this._newTime,
+      destination: this._city,
+      price: this._price,
+      description: this._description,
+      isFavorite: this._isFavorite,
+      newTime: Object.assign({}, this._newTime),
+      pictures: [...this._pictures],
+      offers: new Set([...this._offers]),
     };
   }
 
@@ -399,8 +392,6 @@ export class TripEdit extends Component {
     if (typeof this.onSubmit === `function`) {
       this.onSubmit(this._getNewTripData());
     }
-
-    this.update(this._getNewTripData());
   }
 
   _onKeydownEsc(evt) {
@@ -417,5 +408,34 @@ export class TripEdit extends Component {
     }
   }
 
+  blockToSave() {
+    const btnSave = this._element.querySelector(`.point__button--save`);
+    btnSave.disabled = true;
+    btnSave.textContent = `Saving...`;
+    this._element.querySelector(`button[type=reset]`).disabled = true;
+  }
+
+  unblockToSave() {
+    const btnSave = this._element.querySelector(`.point__button--save`);
+    btnSave.disabled = false;
+    btnSave.textContent = `Save`;
+    this._element.querySelector(`button[type=reset]`).disabled = false;
+  }
+
+  blockToDelete() {
+    const btnDelete = this._element.querySelector(`button[type=reset]`);
+    btnDelete.disabled = true;
+    btnDelete.textContent = `Deleting...`;
+    this._element.querySelector(`.point__button--save`).disabled = true;
+  }
+
+  shake() {
+    const ANIMATION_TIMEOUT = 600;
+    this._element.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._element.style.animation = ``;
+    }, ANIMATION_TIMEOUT);
+  }
 
 }

@@ -3,7 +3,8 @@ import {TripEdit} from './view/trip-edit';
 import {Trip} from './view/trip';
 import {TotalCost} from './view/total-cost';
 import {Filter} from './view/filter';
-import {mockTrip} from './mock-data/generate-mock-trips';
+import {Adapter} from './data/adapter';
+// import {mockTrip} from './mock-data/generate-mock-trips';
 import {Sorting} from './view/sorting';
 import {Api} from './data/api';
 import moment from 'moment';
@@ -40,10 +41,10 @@ const api = new Api({mainUrl: ServerConfig.MAIN_URL, authorization: ServerConfig
 
 
 // чекаем данные
-api.getOffers()
-  .then((offers) => {
-    console.log(offers);
-  });
+// api.getOffers()
+//   .then((offers) => {
+//     console.log(offers);
+//   });
 
 // console.log(offers);
 
@@ -94,6 +95,33 @@ boardsBtn.addEventListener(`click`, (etv) => {
 
 // const generatedTrips = generateTrips(INITIAL_TRIP_COUNT); // необходимое кол-во сгенерированных путешествий
 
+const updatePoint = (pointToUpdate, newPoint) => {
+  const index = pointToUpdate.id;
+  points[index] = Object.assign({}, newPoint);
+}
+
+const makeRequestUpdateData = async (newDataPoint, trip, tripEdit, container) => {
+  try {
+    tripEdit.blockToSave();
+    const newPoint = await api.updatePoint({id: newDataPoint.id, data: Adapter.toRAW(newDataPoint)});
+    updatePoint(newDataPoint, newPoint);
+    tripEdit.element.style.border = ``;
+    trip.update(newPoint);
+    trip.render();
+    container.replaceChild(trip.element, tripEdit.element);
+    tripEdit.unrender();
+    // updateTotalCost();
+  } catch (err) {
+    respondToError(tripEdit);
+  }
+};
+
+const respondToError = (elem) => {
+  elem.element.style.border = `2px solid rgb(191, 38, 65)`;
+  elem.shake();
+  elem.unblockToSave();
+};
+
 
 const renderTrips = (pointsArr) => {
   tripListWrapper.innerHTML = ``;
@@ -103,20 +131,16 @@ const renderTrips = (pointsArr) => {
     const trip = new Trip(item);
     const tripEdit = new TripEdit(offers, destinations, item);
 
+    // открываем карточку редактирования маршрута
     trip.onEdit = () => {
       tripEdit.render();
       tripListWrapper.replaceChild(tripEdit.element, trip.element);
       trip.unrender();
     };
 
+    // режактируем маршрут и сохраняем изменения
     tripEdit.onSubmit = (newObj) => {
-      Object.assign(item, newObj);
-
-      trip.update(item);
-
-      trip.render();
-      tripListWrapper.replaceChild(trip.element, tripEdit.element);
-      tripEdit.unrender();
+      makeRequestUpdateData(newObj, trip, tripEdit, tripListWrapper);
     };
 
     tripEdit.onKeyEsc = () => {
@@ -143,10 +167,10 @@ const getFilterEvents = (filterName, trips) => {
       return data;
     },
     'filter-future': (data) => {
-      return data.filter((el) => el.tripTime.timeStart > Date.now());
+      return data.filter((el) => el.newTime.timeStart > Date.now());
     },
     'filter-past': (data) => {
-      return data.filter((el) => el.tripTime.timeEnd < Date.now());
+      return data.filter((el) => el.newTime.timeEnd < Date.now());
     },
   };
 
@@ -171,7 +195,7 @@ const renderFilters = (filterArr) => {
       const clickedFilter = target.classList.contains(`trip-filter__item`);
       if (clickedFilter && !target.previousElementSibling.disabled) {
         tripListWrapper.innerHTML = ``;
-        const filteredEvents = getFilterEvents(target.previousElementSibling.id, generatedTrips);
+        const filteredEvents = getFilterEvents(target.previousElementSibling.id, points);
         renderTrips(filteredEvents);
 
         removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
@@ -194,8 +218,8 @@ const renderSorting = (sortingArr) => {
         tripListWrapper.innerHTML = ``;
 
         const sortedEvents = sortingEl.isAsc ?
-          getSortingEvents(target.id, generatedTrips).reverse() :
-          getSortingEvents(target.id, generatedTrips);
+          getSortingEvents(target.id, points).reverse() :
+          getSortingEvents(target.id, points);
 
         renderTrips(sortedEvents);
 
@@ -220,7 +244,7 @@ const getSortingEvents = (sortingName, trips) => {
       return tripsCopyArr;
     },
     'sorting-time': () => {
-      return tripsCopyArr.sort((a, b) => getDuration(a.tripTime) - getDuration(b.tripTime));
+      return tripsCopyArr.sort((a, b) => getDuration(a.newTime) - getDuration(b.newTime));
     },
     'sorting-price': () => {
       return tripsCopyArr.sort((a, b) => a.price - b.price);
