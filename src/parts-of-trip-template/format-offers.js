@@ -6,12 +6,9 @@
 const OFFER_CURRENCY = `€`;
 
 export const getOffersLayout = (offers) => [...offers].map((offer) => {
-  if (offer.accepted) {
-    return `
+  return `
     <li>
         <button class="trip-point__offer">${offer.title} +  ${OFFER_CURRENCY}&nbsp;${offer.price}</button>
     </li>
     `;
-  }
-  return ``;
 });

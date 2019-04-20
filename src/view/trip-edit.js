@@ -19,8 +19,7 @@ export class TripEdit extends Component {
     super();
     this._type = obj.type;
 
-    this._destinations = destinations; // доступные города
-    this._allOffers = [...this._getReferencedOffers(offers)]; // доступные офферы
+    this._destinations = destinations;
 
     this._id = obj.id;
     this._city = obj.destination;
@@ -31,15 +30,19 @@ export class TripEdit extends Component {
     this._price = obj.price;
     this._fullPrice = `${this._price} ${this._priceCurrency}`;
     this._isFavorite = obj.isFavorite;
-    this._offers = new Set([...obj.offers]);
+
     this._time = obj.time;
+
+    this._allOffers = offers;
+    this._offers = new Set([...obj.offers]);
 
     this._tripInfo = Object.assign({}, TripEdit.findTripByTripName(obj));
     this._icon = this._tripInfo.icon;
-    // this._newTime = obj.tripTime;
+
     this._newTime = obj.newTime;
 
     this._initialData = obj;
+
 
     this._onSubmitBtnClick = this._onSubmitBtnClick.bind(this);
     this._onKeydownEsc = this._onKeydownEsc.bind(this);
@@ -59,11 +62,11 @@ export class TripEdit extends Component {
 
   _getReferencedOffers(offers) {
     return [...offers].reduce((acc, item) => {
-      if (item.type === this._type) {
+      if (item.type === this._type.toLowerCase()) {
         acc = item.offers;
       }
       return acc;
-    }, {});
+    }, []);
   }
 
   update(obj) {
@@ -81,10 +84,10 @@ export class TripEdit extends Component {
     this._newTime = obj.tripTime;
   }
 
-  _processOffers() {
-    const renderedOffers = [...this._allOffers].map((offer) => {
-      return [...this._offers].find((el) => el.name === offer.name) ?
-        Object.assign({chosen: true}, offer) :
+  _processOffers(offersArr) {
+    const renderedOffers = [...offersArr].map((offer) => {
+      return [...this._offers].find((el) => el.title === offer.name) ?
+        Object.assign({accepted: true}, offer) :
         offer;
     });
     return formatEditOffers(renderedOffers);
@@ -134,8 +137,8 @@ export class TripEdit extends Component {
     this._type = this._tripInfo.name;
     this._city = this._element.querySelector(`.point__destination-input`).value;
 
+    this._processOffers([...this._getReferencedOffers(this._allOffers)]);
     this._partialUpdate();
-    // this._getTripTitle();
   }
 
   _onTravelCityChange({target}) {
@@ -145,16 +148,7 @@ export class TripEdit extends Component {
     }
 
     this._partialUpdate();
-    // this._getTripTitle();
   }
-
-  // _getTripTitle() {
-  //   const titleFirstPart = this._element.querySelector(`.point__destination-label`).textContent;
-  //   const titleSecondPart = this._city;
-
-  //   this._title = `${titleFirstPart} ${titleSecondPart}`;
-  //   return this._title;
-  // }
 
   _onOffersAddAndDelete({target}) {
     const clickedOffer = target.nextElementSibling;
@@ -169,7 +163,7 @@ export class TripEdit extends Component {
       currency: offerCurrency
     };
 
-    if (![...this._offers].find((el) => el.name === offerToAdd.name)) {
+    if (![...this._offers].find((el) => el.title === offerToAdd.name)) {
       this._offers.add(offerToAdd);
 
       this._price = +this._price + offerToAdd.price;
@@ -177,7 +171,7 @@ export class TripEdit extends Component {
     }
 
     if (!target.checked) {
-      const filteredArr = [...this._offers].filter((el) => el.name !== offerToAdd.name);
+      const filteredArr = [...this._offers].filter((el) => el.title !== offerToAdd.name);
       this._offers = new Set(filteredArr);
 
       this._price = +this._price - offerToAdd.price;
@@ -329,7 +323,7 @@ export class TripEdit extends Component {
             <section class="point__offers">
               <h3 class="point__details-title">Available offers</h3>
 
-              ${this._processOffers()}
+              ${this._processOffers(this._offers)}
 
             </section>
             <section class="point__destination">
