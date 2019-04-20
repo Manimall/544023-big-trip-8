@@ -23,7 +23,7 @@ export class Adapter {
       'base_price': +data.price,
       'destination': {name: data.destination, description: data.description, pictures: data.pictures},
       'is_favorite': data.isFavorite,
-      'offers': data.offers
+      'offers': [...data.offers],
     };
   }
 
