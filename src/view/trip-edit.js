@@ -152,7 +152,7 @@ export class TripEdit extends Component {
       accepted: true,
     };
 
-    const sameOffer = [...this._offers].find((el) => el.title === offerToAdd.name);
+    const sameOffer = [...this._offers].find((el) => (el.title || el.name) === offerToAdd.name);
 
     if (target.checked) {
       if (sameOffer) {

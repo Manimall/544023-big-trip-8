@@ -8,7 +8,7 @@ const OFFER_CURRENCY = `€`;
 export const getOffersLayout = (offers) => [...offers].map((offer) => {
   return `
     <li>
-        <button class="trip-point__offer">${offer.title} +  ${OFFER_CURRENCY}&nbsp;${offer.price}</button>
+        <button class="trip-point__offer">${offer.title || offer.name} +  ${OFFER_CURRENCY}&nbsp;${offer.price}</button>
     </li>
     `;
 });
