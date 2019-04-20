@@ -1,6 +1,6 @@
 
 const setOptions = (array) => {
-  return [...array].map((el) => `<option value="${el}"></option>`).join(``);
+  return [...array].map((el) => `<option value="${el.name}"></option>`).join(``);
 };
 
 const makeDestination = (cities, selectedTripType, city) => {

@@ -84,15 +84,6 @@ export class TripEdit extends Component {
     this._newTime = obj.tripTime;
   }
 
-  _processOffers(offersArr) {
-    const renderedOffers = [...offersArr].map((offer) => {
-      return [...this._offers].find((el) => el.title === offer.name) ?
-        Object.assign({accepted: true}, offer) :
-        offer;
-    });
-    return formatEditOffers(renderedOffers);
-  }
-
   _onPriceChange(evt) {
     evt.preventDefault();
 
@@ -135,16 +126,20 @@ export class TripEdit extends Component {
     this._tripInfo = tripTypes.find((el) => el.name.toLowerCase() === this._tripInfoName);
 
     this._type = this._tripInfo.name;
-    this._city = this._element.querySelector(`.point__destination-input`).value;
 
-    this._processOffers([...this._getReferencedOffers(this._allOffers)]);
+    this._offers = new Set([...this._getReferencedOffers(this._allOffers)]);
     this._partialUpdate();
   }
 
   _onTravelCityChange({target}) {
-    const cityArr = [...this._destinations].filter((item) => item === target.value);
-    if (cityArr.length) {
-      this._city = target.value;
+    const value = target.value;
+
+    for (let destination of this._destinations) {
+      if (destination.name === value) {
+        this._city = destination.name;
+        this._description = destination.description;
+        this._pictures = destination.pictures;
+      }
     }
 
     this._partialUpdate();
@@ -160,19 +155,23 @@ export class TripEdit extends Component {
     const offerToAdd = {
       name: offerName,
       price: +offerPrice,
-      currency: offerCurrency
+      currency: offerCurrency,
+      accepted: true,
     };
 
-    if (![...this._offers].find((el) => el.title === offerToAdd.name)) {
-      this._offers.add(offerToAdd);
+    const sameOffer = [...this._offers].find((el) => el.title === offerToAdd.name);
 
-      this._price = +this._price + offerToAdd.price;
-      this._fullPrice = `${this._price} ${this._priceCurrency}`;
+    if (target.checked) {
+      if (sameOffer) {
+        sameOffer.accepted = true;
+
+        this._price = +this._price + offerToAdd.price;
+        this._fullPrice = `${this._price} ${this._priceCurrency}`;
+      }
     }
 
     if (!target.checked) {
-      const filteredArr = [...this._offers].filter((el) => el.title !== offerToAdd.name);
-      this._offers = new Set(filteredArr);
+      sameOffer.accepted = false;
 
       this._price = +this._price - offerToAdd.price;
       if (this._price < MIN_PRICE) {
@@ -323,7 +322,7 @@ export class TripEdit extends Component {
             <section class="point__offers">
               <h3 class="point__details-title">Available offers</h3>
 
-              ${this._processOffers(this._offers)}
+              ${formatEditOffers(this._offers)}
 
             </section>
             <section class="point__destination">
