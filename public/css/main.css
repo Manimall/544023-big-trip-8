@@ -515,12 +515,15 @@ input[type=radio]:checked + .trip-sorting__item {
   background-color: #0D8AE4;
   color: #ffffff;
 }
-.point__button:not(:last-of-type) {
+/* .point__button:not(:last-of-type) {
+  margin-right: 5px;
+} */
+.point__button {
   margin-right: 5px;
 }
 .paint__favorite-wrap {
-  margin-left: auto;
-  margin-right: 40px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 .point__favorite {
   font-size: 0;
@@ -764,4 +767,12 @@ input[name="sorting"]:checked ~ .trip-sorting__item--offers .sorting-down {
 
 .point__offer-price {
   margin-left: 3px;
+}
+
+.point__button--reset {
+  background-color: #94fa9c;
+}
+
+.point button[type=reset] {
+  background-color: #f6ead9;
 }

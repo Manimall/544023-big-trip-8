@@ -54,6 +54,7 @@ export class TripEdit extends Component {
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
 
     this._onDeleteBtnClick = this._onDeleteBtnClick.bind(this);
+    this._onBtnResetClick = this._onBtnResetClick.bind(this);
   }
 
   _findTripByTripName() {
@@ -92,8 +93,8 @@ export class TripEdit extends Component {
     this._id = obj._id;
     this._city = obj._city;
     this._type = obj._type.toLowerCase();
-    this._description = obj._description;
-    this._pictures = new Set([...obj._pictures]);
+    this._description = obj._description || this._description;
+    this._pictures = (obj._pictures !== undefined) ? new Set([...obj._pictures]) : this._pictures;
     this._isFavorite = obj._isFavorite;
     this._newTime = obj._newTime;
     this._price = obj._price;
@@ -304,6 +305,7 @@ export class TripEdit extends Component {
 
             <div class="point__buttons">
               <button class="point__button point__button--save" type="submit">Save</button>
+              <button class="point__button point__button--reset" type="button">Reset</button>
               <button class="point__button" type="reset">Delete</button>
             </div>
 
@@ -347,6 +349,7 @@ export class TripEdit extends Component {
     this._element.querySelector(`.point__offers-wrap`).addEventListener(`change`, this._onOffersAddAndDelete);
     this._element.querySelector(`input[name="favorite"]`).addEventListener(`change`, this._onFavoriteChange);
     this._element.querySelector(`button[type=reset]`).addEventListener(`click`, this._onDeleteBtnClick);
+    this._element.querySelector(`.point__button--reset`).addEventListener(`click`, this._onBtnResetClick);
 
     this._setUpTimePicker();
     this._onDayChange();
@@ -362,6 +365,7 @@ export class TripEdit extends Component {
     this._element.querySelector(`.point__offers-wrap`).removeEventListener(`change`, this._onOffersAddAndDelete);
     this._element.querySelector(`input[name="favorite"]`).removeEventListener(`change`, this._onFavoriteChange);
     this._element.querySelector(`button[type=reset]`).removeEventListener(`click`, this._onDeleteBtnClick);
+    this._element.querySelector(`.point__button--reset`).removeEventListener(`click`, this._onBtnResetClick);
 
     flatpickr(this._element.querySelector(`input[name="date-start"]`)).destroy();
     flatpickr(this._element.querySelector(`input[name="date-end"]`)).destroy();
@@ -400,6 +404,11 @@ export class TripEdit extends Component {
     if ((typeof this.onKeyEsc === `function`) && (evt.which === KeyCodes.ESC)) {
       this.onKeyEsc();
     }
+  }
+
+  _onBtnResetClick(evt) {
+    evt.preventDefault();
+    return (typeof this.onKeyEsc === `function`) && this.onKeyEsc();
   }
 
   _onKeyDownFormPress(evt) {

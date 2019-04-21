@@ -16,7 +16,8 @@ export class Trip extends Component {
     this._city = obj.destination;
     this._newTime = obj.newTime;
     this._priceCurrency = `€`;
-    this._fullPrice = `${obj.price} ${this._priceCurrency}`;
+    this._price = obj.price;
+    this._fullPrice = `${this._price} ${this._priceCurrency}`;
     this._isFavorite = obj.isFavorite;
     this._offers = new Set([...obj.offers]);
 
