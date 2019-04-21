@@ -20,11 +20,12 @@ export class Trip extends Component {
     this._isFavorite = obj.isFavorite;
     this._offers = new Set([...obj.offers]);
 
-    this._tripInfo = Object.assign({}, Trip.findTripByTripName(obj));
+    this._tripInfo = Object.assign({}, this._findTripByTripName());
+    this._icon = this._tripInfo.icon;
   }
 
-  static findTripByTripName(obj) {
-    return tripTypes.find((el) => el.name.toLocaleLowerCase() === obj.type);
+  _findTripByTripName() {
+    return tripTypes.find((el) => el.name.toLowerCase() === this._type);
   }
 
   _filterOffers() {
@@ -48,6 +49,8 @@ export class Trip extends Component {
     this._newTime = obj.newTime;
     this._price = obj.price;
     this._offers = new Set([...obj.offers]);
+    this._tripInfo = this._findTripByTripName();
+    this._icon = this._tripInfo.icon;
   }
 
   _getTripDuration() {
@@ -78,7 +81,7 @@ export class Trip extends Component {
   get template() {
     return (
       `<article class="trip-point" id="${this._id}">
-        <i class="trip-icon">${this._tripInfo.icon}</i>
+        <i class="trip-icon">${this._icon}</i>
         <h3 class="trip-point__title">${this._getTripTitle()}</h3>
         <p class="trip-point__schedule">
           ${this._getTripTimeLayout()}

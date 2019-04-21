@@ -100,11 +100,11 @@ const updatePoint = (pointToUpdate, newPoint) => {
   points[index] = Object.assign({}, newPoint);
 }
 
-const makeRequestUpdateData = async (newDataPoint, trip, tripEdit, container) => {
+const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
   try {
     tripEdit.blockToSave();
-    const newPoint = await api.updatePoint({id: newDataPoint.id, data: Adapter.toRAW(newDataPoint)});
-    updatePoint(newDataPoint, newPoint);
+    const newPoint = await api.updatePoint({id: newData.id, data: Adapter.toRAW(newData)});
+    updatePoint(newData, newPoint);
     tripEdit.element.style.border = ``;
     trip.update(newPoint);
     trip.render();
@@ -146,6 +146,7 @@ const renderTrips = (pointsArr) => {
     tripEdit.onKeyEsc = () => {
       trip.render();
       tripListWrapper.replaceChild(trip.element, tripEdit.element);
+      tripEdit.resetTrip(trip);
       tripEdit.unrender();
     };
 

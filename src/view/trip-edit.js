@@ -36,7 +36,7 @@ export class TripEdit extends Component {
     this._allOffers = offers;
     this._offers = new Set([...obj.offers]);
 
-    this._tripInfo = Object.assign({}, TripEdit.findTripByTripName(obj));
+    this._tripInfo = Object.assign({}, this._findTripByTripName());
     this._icon = this._tripInfo.icon;
 
     this._newTime = obj.newTime;
@@ -56,8 +56,8 @@ export class TripEdit extends Component {
     this._onDeleteBtnClick = this._onDeleteBtnClick.bind(this);
   }
 
-  static findTripByTripName(obj) {
-    return tripTypes.find((el) => el.name.toLocaleLowerCase() === obj.type);
+  _findTripByTripName() {
+    return tripTypes.find((el) => el.name.toLowerCase() === this._type);
   }
 
   _getReferencedOffers(offers) {
@@ -88,22 +88,24 @@ export class TripEdit extends Component {
     }
   }
 
-  update(obj) {
-    this._id = obj.id;
-    this._city = obj.destination;
-    this._type = obj.type;
-    this._description = obj.description;
-    this._pictures = new Set([...obj.pictures]);
-    this._isFavorite = obj.isFavorite;
-    this._newTime = obj.newTime;
-    this._price = obj.price;
-    this._offers = new Set([...obj.offers]);
+  resetTrip(obj) {
+    this._id = obj._id;
+    this._city = obj._city;
+    this._type = obj._type.toLowerCase();
+    this._description = obj._description;
+    this._pictures = new Set([...obj._pictures]);
+    this._isFavorite = obj._isFavorite;
+    this._newTime = obj._newTime;
+    this._price = obj._price;
+    this._offers = new Set([...obj._offers]);
+    this._tripInfo = obj._tripInfo;
+    this._icon = obj._icon;
   }
 
   _getNewTripData() {
     return {
       id: this._id,
-      type: this._type,
+      type: this._type.toLowerCase(),
       destination: this._city,
       price: this._price,
       description: this._description,
@@ -397,8 +399,6 @@ export class TripEdit extends Component {
   _onKeydownEsc(evt) {
     if ((typeof this.onKeyEsc === `function`) && (evt.which === KeyCodes.ESC)) {
       this.onKeyEsc();
-
-      this.update(this._initialData);
     }
   }
 
