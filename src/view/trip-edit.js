@@ -128,10 +128,8 @@ export class TripEdit extends Component {
   }
 
   _onTravelCityChange({target}) {
-    const value = target.value;
-
     for (let destination of this._destinations) {
-      if (destination.name === value) {
+      if (destination.name === target.value) {
         this._city = destination.name;
         this._description = destination.description;
         this._pictures = destination.pictures;
