@@ -1,5 +1,7 @@
 // данные для путешествий
 
+import moment from 'moment';
+
 // иконки для путешествий
 const tripIcons = {
   [`Taxi`]: `🚕`,
@@ -121,4 +123,19 @@ const statData = [
   {selector: `.statistic__time-spend`, selectorParent: `.statistic__item--time-spend`, title: `TIME-SPEND`, unit: `H`, method: `getPointsTimeSpend`}
 ];
 
-export {tripIcons, tripCities, tripOffers, tripDescription, tripTypes, tripPriceCurrency, tripAllPictures, filtersData, sortingData, statData};
+const POINT_DEFAULT = {
+  id: null,
+  type: `taxi`,
+  destination: ``,
+  price: 0,
+  newTime: {
+    timeStart: moment().valueOf(),
+    timeEnd: moment().valueOf()
+  },
+  pictures: [],
+  offers: [],
+  description: ``,
+  isFavorite: false,
+};
+
+export {tripIcons, tripCities, tripOffers, tripDescription, tripTypes, tripPriceCurrency, tripAllPictures, filtersData, sortingData, statData, POINT_DEFAULT};

@@ -1,22 +1,24 @@
+const OFFER_CURRENCY = `€`;
+
 const formatEditOffers = (offers) => {
   const getAllOffers = [...offers].reduce((acc, offer) => {
     acc += `
       <input class="point__offers-input visually-hidden"
             type="checkbox"
-            id="${offer.name}"
+            id="${offer.title || offer.name}"
             name="offer"
-            value="${offer.name}"
-            ${offer.chosen ? `checked` : ``}
+            value="${offer.title || offer.name}"
+            ${offer.accepted ? `checked` : ``}
       >
-      <label for="${offer.name}" class="point__offers-label">
+      <label for="${offer.title || offer.name}" class="point__offers-label">
         <span class="point__offer-service">
-          ${offer.name}
+          ${offer.title || offer.name}
         </span>
-          + ${offer.currency}
+          + ${OFFER_CURRENCY}
         <span class="point__offer-price">
           ${offer.price}
         </span>
-      </label>`;
+      </label>`.trim();
     return acc;
   }, ``);
 

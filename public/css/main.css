@@ -84,6 +84,7 @@ a:hover {
 
 .trip-icon {
   background: #fff;
+  flex: 0 0 auto;
   border-radius: 50%;
   box-sizing: border-box;
   font-style: normal;
@@ -213,8 +214,8 @@ input[type=radio]:checked + .trip-filter__item {
   cursor: pointer;
 }
 
-.sorting--active {
-  color: blue;
+.sorting--active svg {
+  fill: blue;
 }
 
 .trip-sorting__item:hover {
@@ -342,9 +343,10 @@ input[type=radio]:checked + .trip-sorting__item {
 }
 
 .trip-point__price {
-  flex-basis: 90px;
+  flex-basis: 80px;
   margin: 0;
   padding: 0;
+  min-width: 80px;
   margin-right: 15px;
   padding-top: 10px;
 }
@@ -353,7 +355,7 @@ input[type=radio]:checked + .trip-sorting__item {
   list-style: none;
   margin: 0;
   padding: 0;
-  /* width: 230px; */
+  min-width: 370px;
 }
 
 .trip-point__offer {
@@ -513,12 +515,15 @@ input[type=radio]:checked + .trip-sorting__item {
   background-color: #0D8AE4;
   color: #ffffff;
 }
-.point__button:not(:last-of-type) {
+/* .point__button:not(:last-of-type) {
+  margin-right: 5px;
+} */
+.point__button {
   margin-right: 5px;
 }
 .paint__favorite-wrap {
-  margin-left: auto;
-  margin-right: 40px;
+  margin-left: 20px;
+  margin-right: 20px;
 }
 .point__favorite {
   font-size: 0;
@@ -650,7 +655,7 @@ input[type=radio]:checked + .trip-sorting__item {
 }
 
 .trip-point__favorite-wrap {
-  margin-right: 82px;
+  margin-right: 78px;
   align-self: flex-start;
   padding-top: 7px;
 }
@@ -679,7 +684,11 @@ input[type=radio]:checked + .trip-sorting__item {
 
 input[name="sorting"]:checked ~ .trip-sorting__item .sorting-up,
 input[name="sorting"]:checked ~ .trip-sorting__item .sorting-down {
-  display: block;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   top: 0;
   cursor: pointer;
@@ -694,19 +703,19 @@ input[id="sorting-event"]:checked ~ .trip-sorting__item .sorting-down {
 }
 
 input[name="sorting"]:checked ~ .trip-sorting__item .sorting-up {
-  left: 31%;
+  left: 30%;
 }
 
 input[name="sorting"]:checked ~ .trip-sorting__item .sorting-down {
-  right: 47%;
+  right: 45%;
 }
 
 input[name="sorting"]:checked ~ .trip-sorting__item--favorite .sorting-up {
-  left: 53%;
+  left: 52%;
 }
 
 input[name="sorting"]:checked ~ .trip-sorting__item--favorite .sorting-down {
-  right: 28%;
+  right: 27%;
 }
 
 
@@ -716,16 +725,54 @@ input[name="sorting"]:checked ~ .trip-sorting__item--price .sorting-up {
 }
 
 input[name="sorting"]:checked ~ .trip-sorting__item--price .sorting-down {
-  right: 46%;
+  right: 43%;
 }
 
 
 input[name="sorting"]:checked ~ .trip-sorting__item--offers .sorting-up {
-  left: 64%;
+  left: 63%;
 }
 
 input[name="sorting"]:checked ~ .trip-sorting__item--offers .sorting-down {
-  right: 7%;
+  right: 4%;
 }
 
 
+/* shake animation */
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-5px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(5px);
+  }
+}
+.shake {
+  animation: shake 0.6s;
+}
+
+.point__offer-price {
+  margin-left: 3px;
+}
+
+.point__button--reset {
+  background-color: #94fa9c;
+}
+
+.point button[type=reset] {
+  background-color: #f6ead9;
+}

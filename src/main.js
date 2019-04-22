@@ -1,49 +1,75 @@
-import {filtersData, sortingData} from './mock-data/trip-constants';
+import {filtersData, sortingData, statData} from './mock-data/trip-constants';
 import {TripEdit} from './view/trip-edit';
 import {Trip} from './view/trip';
-// import {Sorting} from './view/sorting';
+import {Stat} from './view/stat';
+import {TotalCost} from './view/total-cost';
 import {Filter} from './view/filter';
-import {mockTrip} from './mock-data/generate-mock-trips';
+import {Adapter} from './data/adapter';
 import {Sorting} from './view/sorting';
+import {Api} from './data/api';
 import moment from 'moment';
 
-const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
-
+const boardTotalCost = document.querySelector(`.trip`);
 const controls = document.querySelector(`.trip-controls`);
-
 const filterListWrapper = controls.querySelector(`.trip-filter`); // контэйнер для вставки фильтров
-
 const tripListWrapper = document.querySelector(`.trip-day__items`); // контэйнер для вставки путешествий
-
 const boardsBtn = controls.querySelector(`a[href*=table]`); // борд с путешествиями
 const statBtn = controls.querySelector(`a[href*=stats]`); // борд со статистикой
-
 const boardTable = document.querySelector(`#table`);
 const boardStat = document.querySelector(`#stats`);
+const buttonNewEvent = controls.querySelector(`.trip-controls__new-event`);
+
+// const board = boardTable.querySelector(`.trip-points`);
 
 const sortingListWrapper = boardTable.querySelector(`.trip-sorting`); // контэйнер для вставки элементов сортировки
 
-statBtn.addEventListener(`click`, (etv) => {
-  etv.preventDefault();
+
+const stat = new Stat();
+const cost = new TotalCost();
+
+const ServerConfig = {
+  AUTHORIZATION: `Basic dXNfckBgtXuzd27yZAo=${Math.random()}`,
+  MAIN_URL: `https://es8-demo-srv.appspot.com/big-trip`,
+};
+
+const api = new Api({mainUrl: ServerConfig.MAIN_URL, authorization: ServerConfig.AUTHORIZATION});
+
+
+// переключаемся с данных на статистику
+const toggleToStat = () => {
   statBtn.classList.add(`view-switch__item--active`);
   boardsBtn.classList.remove(`view-switch__item--active`);
   boardTable.classList.add(`visually-hidden`);
   boardStat.classList.remove(`visually-hidden`);
-});
+};
 
-boardsBtn.addEventListener(`click`, (etv) => {
-  etv.preventDefault();
+const toggleToTable = () => {
   boardsBtn.classList.add(`view-switch__item--active`);
   statBtn.classList.remove(`view-switch__item--active`);
   boardStat.classList.add(`visually-hidden`);
   boardTable.classList.remove(`visually-hidden`);
-});
-
-const generateTrips = (amount) => {
-  return new Array(amount).fill(null).map((el, id) => mockTrip(id));
 };
 
-const generatedTrips = generateTrips(INITIAL_TRIP_COUNT); // необходимое кол-во сгенерированных путешествий
+statBtn.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  filterListWrapper.classList.add(`visually-hidden`);
+  if (!evt.target.classList.contains(`view-switch__item--active`)) {
+    toggleToStat();
+  }
+});
+
+boardsBtn.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  filterListWrapper.classList.remove(`visually-hidden`);
+  if (!evt.target.classList.contains(`view-switch__item--active`)) {
+    toggleToTable();
+  }
+});
+
+
+let offers = [];
+let destinations = [];
+let points = [];
 
 const renderTrips = (pointsArr) => {
   tripListWrapper.innerHTML = ``;
@@ -51,64 +77,170 @@ const renderTrips = (pointsArr) => {
   pointsArr.forEach((item) => {
 
     const trip = new Trip(item);
-    const tripEdit = new TripEdit(item);
+    const tripEdit = new TripEdit(offers, destinations, item);
 
+    // открываем карточку редактирования маршрута
     trip.onEdit = () => {
       tripEdit.render();
       tripListWrapper.replaceChild(tripEdit.element, trip.element);
       trip.unrender();
     };
 
+    // режактируем маршрут и сохраняем изменения
     tripEdit.onSubmit = (newObj) => {
-      Object.assign(item, newObj);
-
-      trip.update(item);
-
-      trip.render();
-      tripListWrapper.replaceChild(trip.element, tripEdit.element);
-      tripEdit.unrender();
+      makeRequestUpdateData(newObj, trip, tripEdit, tripListWrapper);
     };
 
     tripEdit.onKeyEsc = () => {
       trip.render();
       tripListWrapper.replaceChild(trip.element, tripEdit.element);
+      tripEdit.resetTrip(trip);
       tripEdit.unrender();
     };
 
     tripEdit.onDelete = ({id}) => {
-      const newTripPoints = pointsArr.filter((el) => el.id !== id);
-      renderTrips(newTripPoints);
+      makeRequestDeleteData(id, tripEdit);
     };
 
     tripListWrapper.appendChild(trip.render());
   });
 };
 
-renderTrips(generatedTrips); // отренедеренные путешествия
+const makeRequest = async () => {
+  tripListWrapper.textContent = `Loading route...`;
+  try {
+    [offers, destinations, points] =
+    await Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()]);
+    initApp();
+    initStat();
+  } catch (err) {
+    tripListWrapper.textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
+  }
+};
+
+const renderTotalCost = (arrPoints) => {
+  cost.getCostTrip(arrPoints);
+  boardTotalCost.appendChild(cost.render());
+};
+
+const updateTotalCost = () => {
+  cost.unrender();
+  renderTotalCost(points);
+};
+
+const initApp = () => {
+  tripListWrapper.textContent = ``;
+  renderTotalCost(points);
+  renderFilters(filtersData);
+  renderSorting(sortingData);
+  renderTrips(points);
+};
+
+const initStat = () => {
+  const data = {
+    events: points,
+    stat: statData
+  };
+  stat.config = data;
+  stat.render();
+};
+
+makeRequest(); // получаем данные с сервера
+
+
+const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
+  try {
+    tripEdit.blockToSave();
+    const newPoint = await api.updatePoint({id: newData.id, data: Adapter.toRAW(newData)});
+    points[newPoint.id] = newPoint;
+    tripEdit.element.style.border = ``;
+    trip.update(newPoint);
+    trip.render();
+    container.replaceChild(trip.element, tripEdit.element);
+    tripEdit.unrender();
+    updateTotalCost();
+  } catch (err) {
+    respondToError(tripEdit);
+  }
+};
+
+
+const makeRequestDeleteData = async (id, tripEdit) => {
+  try {
+    tripEdit.blockToDelete();
+    await api.deletePoint({id});
+    const newTrips = await api.getPoints();
+    tripEdit.unrender();
+    renderTrips(newTrips);
+    updateTotalCost();
+  } catch (err) {
+    respondToError(tripEdit);
+  }
+};
+
+
+const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
+  try {
+    newTripToRender.blockToSave();
+    await api.createPoint({point: Adapter.toRAW(newDataPoint)});
+    const newTrips = await api.getPoints();
+    newTripToRender.unrender();
+    renderTrips(newTrips);
+    updateTotalCost();
+  } catch (err) {
+    respondToError(newTripToRender);
+  }
+};
+
+buttonNewEvent.addEventListener(`click`, () => {
+  toggleToTable();
+  const newPoint = new TripEdit(offers, destinations);
+
+  tripListWrapper.insertBefore(newPoint.render(), tripListWrapper.firstChild);
+
+  newPoint.onSubmit = (newObj) => {
+    makeRequestInsertData(newObj, newPoint);
+  };
+
+  newPoint.onKeyEsc = () => {
+    newPoint.unrender();
+  };
+});
+
+
+const respondToError = (elem) => {
+  elem.element.style.border = `2px solid rgb(191, 38, 65)`;
+  elem.shake();
+  elem.unblockToSave();
+};
+
+
+// renderTrips(generatedTrips); // отренедеренные путешествия
 
 
 const getFilterEvents = (filterName, trips) => {
   const fnFilter = {
-    'filter-everything': (data) => {
-      return data;
+    'filter-everything': (obj) => {
+      return obj;
     },
-    'filter-future': (data) => {
-      return data.filter((el) => el.tripTime.timeStart > Date.now());
+    'filter-future': (obj) => {
+      return obj.filter((el) => el.newTime.timeStart > Date.now());
     },
-    'filter-past': (data) => {
-      return data.filter((el) => el.tripTime.timeEnd < Date.now());
+    'filter-past': (obj) => {
+      return obj.filter((el) => el.newTime.timeEnd < Date.now());
     },
   };
 
   return fnFilter[filterName]([...trips]);
 };
 
-const removeCheckedInput = () => {
-  const allInputs = sortingListWrapper.querySelectorAll(`input[name="sorting"]`);
-  const checkedInput = [...allInputs].find((el) => el.checked === true);
-  if (checkedInput) {
-    checkedInput.removeAttribute(`checked`);
-  }
+const removeCheckedInput = (elem, parentWrapper, inputClass) => {
+  const allInputs = parentWrapper.querySelectorAll(inputClass);
+  [...allInputs].forEach((item) => {
+    if (elem !== item) {
+      item.removeAttribute(`checked`);
+    }
+  });
 };
 
 const renderFilters = (filterArr) => {
@@ -120,16 +252,17 @@ const renderFilters = (filterArr) => {
       const clickedFilter = target.classList.contains(`trip-filter__item`);
       if (clickedFilter && !target.previousElementSibling.disabled) {
         tripListWrapper.innerHTML = ``;
-        const filteredEvents = getFilterEvents(target.previousElementSibling.id, generatedTrips);
+        const filteredEvents = getFilterEvents(target.previousElementSibling.id, points);
         renderTrips(filteredEvents);
 
-        removeCheckedInput();
+        removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
+        removeCheckedInput(target.previousElementSibling, filterListWrapper, `input[name="filter"]`);
       }
     };
   });
 };
 
-renderFilters(filtersData); // отрендеренные фильтры
+// renderFilters(filtersData); // отрендеренные фильтры
 
 const renderSorting = (sortingArr) => {
   return sortingArr.forEach((item) => {
@@ -142,19 +275,19 @@ const renderSorting = (sortingArr) => {
         tripListWrapper.innerHTML = ``;
 
         const sortedEvents = sortingEl.isAsc ?
-          getSortingEvents(target.id, generatedTrips).reverse() :
-          getSortingEvents(target.id, generatedTrips);
+          getSortingEvents(target.id, points).reverse() :
+          getSortingEvents(target.id, points);
 
         renderTrips(sortedEvents);
 
-        removeCheckedInput();
+        removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
       }
     };
 
   });
 };
 
-renderSorting(sortingData); // отрендеренные элементы сортировки
+// renderSorting(sortingData); // отрендеренные элементы сортировки
 
 
 const getDuration = (obj) => {
@@ -168,7 +301,7 @@ const getSortingEvents = (sortingName, trips) => {
       return tripsCopyArr;
     },
     'sorting-time': () => {
-      return tripsCopyArr.sort((a, b) => getDuration(a.tripTime) - getDuration(b.tripTime));
+      return tripsCopyArr.sort((a, b) => getDuration(a.newTime) - getDuration(b.newTime));
     },
     'sorting-price': () => {
       return tripsCopyArr.sort((a, b) => a.price - b.price);
@@ -182,5 +315,3 @@ const getSortingEvents = (sortingName, trips) => {
   };
   return fnSorting[sortingName]();
 };
-
-

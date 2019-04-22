@@ -11,7 +11,7 @@ const MAX_DESCRIPTION_SENTENCE_QUANTITY = 3;
 const MIN_OFFERS = 0;
 const MAX_OFFERS = 3;
 
-const MAX_PRICE = 500;
+const MAX_PRICE = 1300;
 const MIN_PRICE = 20;
 const PRICE_STEP = 10;
 
@@ -44,7 +44,7 @@ const mockTrip = (id) => {
   // const tripType = getRandomElementFromArr(Object.keys(constants.tripIcons)); // ищем первую часть названия - ключ
 
   const tripInfo = getRandomElementFromArr(constants.tripTypes);
-  const tripType = tripInfo.transport ? `${tripInfo.name} to` : `${tripInfo.name} in`;
+  const tripType = tripInfo.transport ? `${tripInfo.name} to` : `${tripInfo.name} at`;
 
   const tripIcon = tripInfo.icon; // привязываем к ней иконку - значение по ключу
   const city = getRandomElementFromArr([...constants.tripCities]);
