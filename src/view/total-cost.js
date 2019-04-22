@@ -14,8 +14,8 @@ export class TotalCost extends Component {
     );
   }
 
-  getCostTrip(data) {
-    this._cost = data.reduce((acc, point) => acc + TotalCost.getPricePoint(point), 0);
+  getCostTrip(obj) {
+    this._cost = obj.reduce((acc, point) => acc + TotalCost.getPricePoint(point), 0);
     return this._cost;
   }
 

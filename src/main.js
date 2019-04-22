@@ -1,36 +1,31 @@
-import {filtersData, sortingData} from './mock-data/trip-constants';
+import {filtersData, sortingData, statData} from './mock-data/trip-constants';
 import {TripEdit} from './view/trip-edit';
 import {Trip} from './view/trip';
+import {Stat} from './view/stat';
 import {TotalCost} from './view/total-cost';
 import {Filter} from './view/filter';
 import {Adapter} from './data/adapter';
-// import {mockTrip} from './mock-data/generate-mock-trips';
 import {Sorting} from './view/sorting';
 import {Api} from './data/api';
 import moment from 'moment';
 
-const INITIAL_TRIP_COUNT = 7; // необходимое по заданию кол-во событий
-
+const boardTotalCost = document.querySelector(`.trip`);
 const controls = document.querySelector(`.trip-controls`);
-
 const filterListWrapper = controls.querySelector(`.trip-filter`); // контэйнер для вставки фильтров
-
 const tripListWrapper = document.querySelector(`.trip-day__items`); // контэйнер для вставки путешествий
-
 const boardsBtn = controls.querySelector(`a[href*=table]`); // борд с путешествиями
 const statBtn = controls.querySelector(`a[href*=stats]`); // борд со статистикой
-
 const boardTable = document.querySelector(`#table`);
 const boardStat = document.querySelector(`#stats`);
+const buttonNewEvent = controls.querySelector(`.trip-controls__new-event`);
 
-const board = boardTable.querySelector(`.trip-points`);
+// const board = boardTable.querySelector(`.trip-points`);
 
 const sortingListWrapper = boardTable.querySelector(`.trip-sorting`); // контэйнер для вставки элементов сортировки
 
-let offers = [];
-let destinations = [];
-let points = [];
 
+const stat = new Stat();
+const cost = new TotalCost();
 
 const ServerConfig = {
   AUTHORIZATION: `Basic dXNfckBgtXuzd27yZAo=${Math.random()}`,
@@ -40,65 +35,88 @@ const ServerConfig = {
 const api = new Api({mainUrl: ServerConfig.MAIN_URL, authorization: ServerConfig.AUTHORIZATION});
 
 
-// чекаем данные
-// api.getOffers()
-//   .then((offers) => {
-//     console.log(offers);
-//   });
+// переключаемся с данных на статистику
+const toggleToStat = () => {
+  statBtn.classList.add(`view-switch__item--active`);
+  boardsBtn.classList.remove(`view-switch__item--active`);
+  boardTable.classList.add(`visually-hidden`);
+  boardStat.classList.remove(`visually-hidden`);
+};
 
-// console.log(offers);
+const toggleToTable = () => {
+  boardsBtn.classList.add(`view-switch__item--active`);
+  statBtn.classList.remove(`view-switch__item--active`);
+  boardStat.classList.add(`visually-hidden`);
+  boardTable.classList.remove(`visually-hidden`);
+};
+
+statBtn.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  filterListWrapper.classList.add(`visually-hidden`);
+  if (!evt.target.classList.contains(`view-switch__item--active`)) {
+    toggleToStat();
+  }
+});
+
+boardsBtn.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  filterListWrapper.classList.remove(`visually-hidden`);
+  if (!evt.target.classList.contains(`view-switch__item--active`)) {
+    toggleToTable();
+  }
+});
+
+
+let offers = [];
+let destinations = [];
+let points = [];
 
 const makeRequest = async () => {
   tripListWrapper.textContent = `Loading route...`;
   try {
     [offers, destinations, points] =
     await Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()]);
-    console.log([offers, destinations, points]);
-    await initApp();
+    initApp();
+    initStat();
   } catch (err) {
     tripListWrapper.textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
   }
 };
 
+const renderTotalCost = (arrPoints) => {
+  cost.getCostTrip(arrPoints);
+  boardTotalCost.appendChild(cost.render());
+};
+
+const updateTotalCost = () => {
+  cost.unrender();
+  renderTotalCost(points);
+};
+
 const initApp = () => {
   tripListWrapper.textContent = ``;
-  // renderTotalCost(model.events);
+  renderTotalCost(points);
   renderFilters(filtersData);
   renderSorting(sortingData);
   renderTrips(points);
 };
 
-makeRequest();
+const initStat = () => {
+  const data = {
+    events: points,
+    stat: statData
+  };
+  stat.config = data;
+  stat.render();
+};
 
-// компонент с данными
-// const tripPointsData = new TripsModelData(ServerConfig);
+makeRequest(); // получаем данные с сервера
 
-statBtn.addEventListener(`click`, (etv) => {
-  etv.preventDefault();
-  statBtn.classList.add(`view-switch__item--active`);
-  boardsBtn.classList.remove(`view-switch__item--active`);
-  boardTable.classList.add(`visually-hidden`);
-  boardStat.classList.remove(`visually-hidden`);
-});
-
-boardsBtn.addEventListener(`click`, (etv) => {
-  etv.preventDefault();
-  boardsBtn.classList.add(`view-switch__item--active`);
-  statBtn.classList.remove(`view-switch__item--active`);
-  boardStat.classList.add(`visually-hidden`);
-  boardTable.classList.remove(`visually-hidden`);
-});
-
-// const generateTrips = (amount) => {
-//   return new Array(amount).fill(null).map((el, id) => mockTrip(id));
-// };
-
-// const generatedTrips = generateTrips(INITIAL_TRIP_COUNT); // необходимое кол-во сгенерированных путешествий
 
 const updatePoint = (pointToUpdate, newPoint) => {
   const index = pointToUpdate.id;
   points[index] = Object.assign({}, newPoint);
-}
+};
 
 const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
   try {
@@ -110,11 +128,55 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
     trip.render();
     container.replaceChild(trip.element, tripEdit.element);
     tripEdit.unrender();
-    // updateTotalCost();
+    updateTotalCost();
   } catch (err) {
     respondToError(tripEdit);
   }
 };
+
+
+const makeRequestDeleteData = async (id, tripEdit) => {
+  try {
+    tripEdit.blockToDelete();
+    await api.deletePoint({id});
+    const newTrips = await api.getPoints();
+    tripEdit.unrender();
+    renderTrips(newTrips);
+    updateTotalCost();
+  } catch (err) {
+    respondToError(tripEdit);
+  }
+};
+
+
+const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
+  try {
+    newTripToRender.blockToSave();
+    await api.createPoint({point: Adapter.toRAW(newDataPoint)});
+    const newTrips = await api.getPoints();
+    newTripToRender.unrender();
+    renderTrips(newTrips);
+    updateTotalCost();
+  } catch (err) {
+    respondToError(newTripToRender);
+  }
+};
+
+buttonNewEvent.addEventListener(`click`, () => {
+  toggleToTable();
+  const newPoint = new TripEdit(offers, destinations);
+
+  tripListWrapper.insertBefore(newPoint.render(), tripListWrapper.firstChild);
+
+  newPoint.onSubmit = (newObj) => {
+    makeRequestInsertData(newObj, newPoint);
+  };
+
+  newPoint.onKeyEsc = () => {
+    newPoint.unrender();
+  };
+});
+
 
 const respondToError = (elem) => {
   elem.element.style.border = `2px solid rgb(191, 38, 65)`;
@@ -151,8 +213,7 @@ const renderTrips = (pointsArr) => {
     };
 
     tripEdit.onDelete = ({id}) => {
-      const newTripPoints = pointsArr.filter((el) => el.id !== id);
-      renderTrips(newTripPoints);
+      makeRequestDeleteData(id, tripEdit);
     };
 
     tripListWrapper.appendChild(trip.render());
@@ -164,14 +225,14 @@ const renderTrips = (pointsArr) => {
 
 const getFilterEvents = (filterName, trips) => {
   const fnFilter = {
-    'filter-everything': (data) => {
-      return data;
+    'filter-everything': (obj) => {
+      return obj;
     },
-    'filter-future': (data) => {
-      return data.filter((el) => el.newTime.timeStart > Date.now());
+    'filter-future': (obj) => {
+      return obj.filter((el) => el.newTime.timeStart > Date.now());
     },
-    'filter-past': (data) => {
-      return data.filter((el) => el.newTime.timeEnd < Date.now());
+    'filter-past': (obj) => {
+      return obj.filter((el) => el.newTime.timeEnd < Date.now());
     },
   };
 
@@ -259,5 +320,3 @@ const getSortingEvents = (sortingName, trips) => {
   };
   return fnSorting[sortingName]();
 };
-
-

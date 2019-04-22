@@ -74,15 +74,15 @@ export class TripEdit extends Component {
     evt.preventDefault();
 
     let priceEntered = evt.target.value;
-    if (priceEntered.match(/^\d{2,3}$/)) {
+    if (priceEntered.match(/^\d{3,4}$/)) {
       if (+priceEntered < MIN_PRICE) {
         priceEntered = MIN_PRICE;
       }
       if (+priceEntered > MAX_PRICE) {
         priceEntered = MAX_PRICE;
       }
-      priceEntered = +priceEntered;
-      this._price = priceEntered;
+
+      this._price = +priceEntered;
       this._fullPrice = `${this._price} ${this._priceCurrency}`;
 
       this._partialUpdate();

@@ -15,6 +15,7 @@ const makeDestination = (cities, selectedTripType, city) => {
              id="destination"
              name="destination"
              value="${city}"
+             placeholder="Place for you"
       >
       <datalist id="destination-select">
         ${setOptions(cities)}

@@ -49,6 +49,7 @@ export class Trip extends Component {
     this._isFavorite = obj.isFavorite;
     this._newTime = obj.newTime;
     this._price = obj.price;
+    this._fullPrice = `${obj.price} ${this._priceCurrency}`;
     this._offers = new Set([...obj.offers]);
     this._tripInfo = this._findTripByTripName();
     this._icon = this._tripInfo.icon;

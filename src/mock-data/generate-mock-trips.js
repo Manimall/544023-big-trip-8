@@ -11,7 +11,7 @@ const MAX_DESCRIPTION_SENTENCE_QUANTITY = 3;
 const MIN_OFFERS = 0;
 const MAX_OFFERS = 3;
 
-const MAX_PRICE = 500;
+const MAX_PRICE = 1300;
 const MIN_PRICE = 20;
 const PRICE_STEP = 10;
 
