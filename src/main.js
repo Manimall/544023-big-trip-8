@@ -71,6 +71,41 @@ let offers = [];
 let destinations = [];
 let points = [];
 
+const renderTrips = (pointsArr) => {
+  tripListWrapper.innerHTML = ``;
+
+  pointsArr.forEach((item) => {
+
+    const trip = new Trip(item);
+    const tripEdit = new TripEdit(offers, destinations, item);
+
+    // открываем карточку редактирования маршрута
+    trip.onEdit = () => {
+      tripEdit.render();
+      tripListWrapper.replaceChild(tripEdit.element, trip.element);
+      trip.unrender();
+    };
+
+    // режактируем маршрут и сохраняем изменения
+    tripEdit.onSubmit = (newObj) => {
+      makeRequestUpdateData(newObj, trip, tripEdit, tripListWrapper);
+    };
+
+    tripEdit.onKeyEsc = () => {
+      trip.render();
+      tripListWrapper.replaceChild(trip.element, tripEdit.element);
+      tripEdit.resetTrip(trip);
+      tripEdit.unrender();
+    };
+
+    tripEdit.onDelete = ({id}) => {
+      makeRequestDeleteData(id, tripEdit);
+    };
+
+    tripListWrapper.appendChild(trip.render());
+  });
+};
+
 const makeRequest = async () => {
   tripListWrapper.textContent = `Loading route...`;
   try {
@@ -113,16 +148,11 @@ const initStat = () => {
 makeRequest(); // получаем данные с сервера
 
 
-const updatePoint = (pointToUpdate, newPoint) => {
-  const index = pointToUpdate.id;
-  points[index] = Object.assign({}, newPoint);
-};
-
 const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
   try {
     tripEdit.blockToSave();
     const newPoint = await api.updatePoint({id: newData.id, data: Adapter.toRAW(newData)});
-    updatePoint(newData, newPoint);
+    points[newPoint.id] = newPoint;
     tripEdit.element.style.border = ``;
     trip.update(newPoint);
     trip.render();
@@ -184,41 +214,6 @@ const respondToError = (elem) => {
   elem.unblockToSave();
 };
 
-
-const renderTrips = (pointsArr) => {
-  tripListWrapper.innerHTML = ``;
-
-  pointsArr.forEach((item) => {
-
-    const trip = new Trip(item);
-    const tripEdit = new TripEdit(offers, destinations, item);
-
-    // открываем карточку редактирования маршрута
-    trip.onEdit = () => {
-      tripEdit.render();
-      tripListWrapper.replaceChild(tripEdit.element, trip.element);
-      trip.unrender();
-    };
-
-    // режактируем маршрут и сохраняем изменения
-    tripEdit.onSubmit = (newObj) => {
-      makeRequestUpdateData(newObj, trip, tripEdit, tripListWrapper);
-    };
-
-    tripEdit.onKeyEsc = () => {
-      trip.render();
-      tripListWrapper.replaceChild(trip.element, tripEdit.element);
-      tripEdit.resetTrip(trip);
-      tripEdit.unrender();
-    };
-
-    tripEdit.onDelete = ({id}) => {
-      makeRequestDeleteData(id, tripEdit);
-    };
-
-    tripListWrapper.appendChild(trip.render());
-  });
-};
 
 // renderTrips(generatedTrips); // отренедеренные путешествия
 

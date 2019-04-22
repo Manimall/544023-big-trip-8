@@ -57,6 +57,130 @@ export class TripEdit extends Component {
     this._onBtnResetClick = this._onBtnResetClick.bind(this);
   }
 
+  get template() {
+    return (
+      `<article class="point" id="${this._id}">
+        <form class="point-edit" action="" method="get">
+          <header class="point__header">
+
+            ${this._getDayLayout()}
+
+            <div class="travel-way">
+              <label class="travel-way__label" for="travel-way__toggle">${this._icon}</label>
+
+              <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle">
+
+              ${formatTravelWay(tripTypes, this._icon)}
+
+            </div>
+
+            ${makeDestination(this._destinations, this._tripInfo, this._city)}
+
+
+            <div class="point__time">
+              ${this._getTimeLayout()}
+            </div>
+
+            <label class="point__price">
+              write price
+              <span class="point__price-currency">${this._priceCurrency}</span>
+              <input class="point__input" type="text" value="${this._price}" name="price">
+            </label>
+
+            <div class="point__buttons">
+              <button class="point__button point__button--save" type="submit">Save</button>
+              <button class="point__button point__button--reset" type="button">Reset</button>
+              <button class="point__button" type="reset">Delete</button>
+            </div>
+
+            <div class="paint__favorite-wrap">
+              <input type="checkbox" class="point__favorite-input visually-hidden" id="favorite" name="favorite" ${this._isFavorite ? `checked` : ``}>
+              <label class="point__favorite" for="favorite">favorite</label>
+            </div>
+          </header>
+
+          <section class="point__details">
+            <section class="point__offers">
+              <h3 class="point__details-title">Available offers</h3>
+
+              ${formatEditOffers(this._offers)}
+
+            </section>
+            <section class="point__destination">
+              <h3 class="point__details-title">Destination</h3>
+
+              <p class="point__destination-text">
+                ${this._description}
+              </p>
+
+              ${getAllImages(this._pictures)}
+
+            </section>
+
+            <input type="hidden" class="point__total-price" name="total-price" value="">
+          </section>
+        </form>
+      </article>`
+    );
+  }
+
+  onSubmit() {
+
+  }
+
+  onKeyEsc() {
+
+  }
+
+  onDelete() {
+
+  }
+
+  resetTrip(obj) {
+    this._id = obj._id;
+    this._city = obj._city;
+    this._type = obj._type.toLowerCase();
+    this._description = obj._description || this._description;
+    this._pictures = (obj._pictures !== undefined) ? new Set([...obj._pictures]) : this._pictures;
+    this._isFavorite = obj._isFavorite;
+    this._newTime = obj._newTime;
+    this._price = obj._price;
+    this._offers = new Set([...obj._offers]);
+    this._tripInfo = obj._tripInfo;
+    this._icon = obj._icon;
+  }
+
+  blockToSave() {
+    const btnSave = this._element.querySelector(`.point__button--save`);
+    btnSave.disabled = true;
+    btnSave.textContent = `Saving...`;
+    this._element.querySelector(`button[type=reset]`).disabled = true;
+  }
+
+  unblockToSave() {
+    const btnSave = this._element.querySelector(`.point__button--save`);
+    btnSave.disabled = false;
+    btnSave.textContent = `Save`;
+    this._element.querySelector(`button[type=reset]`).disabled = false;
+  }
+
+  blockToDelete() {
+    const btnDelete = this._element.querySelector(`button[type=reset]`);
+    btnDelete.disabled = true;
+    btnDelete.textContent = `Deleting...`;
+    this._element.querySelector(`.point__button--save`).disabled = true;
+  }
+
+  shake() {
+    const ANIMATION_TIMEOUT = 600;
+    this._element.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
+
+    setTimeout(() => {
+      this._element.style.animation = ``;
+    }, ANIMATION_TIMEOUT);
+  }
+
+
   _findTripByTripName() {
     return tripTypes.find((el) => el.name.toLowerCase() === this._type);
   }
@@ -87,20 +211,6 @@ export class TripEdit extends Component {
 
       this._partialUpdate();
     }
-  }
-
-  resetTrip(obj) {
-    this._id = obj._id;
-    this._city = obj._city;
-    this._type = obj._type.toLowerCase();
-    this._description = obj._description || this._description;
-    this._pictures = (obj._pictures !== undefined) ? new Set([...obj._pictures]) : this._pictures;
-    this._isFavorite = obj._isFavorite;
-    this._newTime = obj._newTime;
-    this._price = obj._price;
-    this._offers = new Set([...obj._offers]);
-    this._tripInfo = obj._tripInfo;
-    this._icon = obj._icon;
   }
 
   _getNewTripData() {
@@ -271,74 +381,7 @@ export class TripEdit extends Component {
     </label>`;
   }
 
-  get template() {
-    return (
-      `<article class="point" id="${this._id}">
-        <form class="point-edit" action="" method="get">
-          <header class="point__header">
-
-            ${this._getDayLayout()}
-
-            <div class="travel-way">
-              <label class="travel-way__label" for="travel-way__toggle">${this._icon}</label>
-
-              <input type="checkbox" class="travel-way__toggle visually-hidden" id="travel-way__toggle">
-
-              ${formatTravelWay(tripTypes, this._icon)}
-
-            </div>
-
-            ${makeDestination(this._destinations, this._tripInfo, this._city)}
-
-
-            <div class="point__time">
-              ${this._getTimeLayout()}
-            </div>
-
-            <label class="point__price">
-              write price
-              <span class="point__price-currency">${this._priceCurrency}</span>
-              <input class="point__input" type="text" value="${this._price}" name="price">
-            </label>
-
-            <div class="point__buttons">
-              <button class="point__button point__button--save" type="submit">Save</button>
-              <button class="point__button point__button--reset" type="button">Reset</button>
-              <button class="point__button" type="reset">Delete</button>
-            </div>
-
-            <div class="paint__favorite-wrap">
-              <input type="checkbox" class="point__favorite-input visually-hidden" id="favorite" name="favorite" ${this._isFavorite ? `checked` : ``}>
-              <label class="point__favorite" for="favorite">favorite</label>
-            </div>
-          </header>
-
-          <section class="point__details">
-            <section class="point__offers">
-              <h3 class="point__details-title">Available offers</h3>
-
-              ${formatEditOffers(this._offers)}
-
-            </section>
-            <section class="point__destination">
-              <h3 class="point__details-title">Destination</h3>
-
-              <p class="point__destination-text">
-                ${this._description}
-              </p>
-
-              ${getAllImages(this._pictures)}
-
-            </section>
-
-            <input type="hidden" class="point__total-price" name="total-price" value="">
-          </section>
-        </form>
-      </article>`
-    );
-  }
-
-  bind() {
+  _bind() {
     this._element.querySelector(`article > form`).addEventListener(`submit`, this._onSubmitBtnClick);
     this._element.querySelector(`article > form`).addEventListener(`keydown`, this._onKeyDownFormPress);
     this._element.querySelector(`input[name="price"]`).addEventListener(`change`, this._onPriceChange);
@@ -354,7 +397,7 @@ export class TripEdit extends Component {
     document.addEventListener(`keydown`, this._onKeydownEsc);
   }
 
-  unbind() {
+  _unbind() {
     this._element.querySelector(`article > form`).removeEventListener(`submit`, this._onSubmitBtnClick);
     this._element.querySelector(`article > form`).addEventListener(`keydown`, this._onKeyDownFormPress);
     this._element.querySelector(`input[name="price"]`).removeEventListener(`change`, this._onPriceChange);
@@ -369,18 +412,6 @@ export class TripEdit extends Component {
     flatpickr(this._element.querySelector(`input[name="date-end"]`)).destroy();
     flatpickr(this._element.querySelector(`input[name="day"]`)).destroy();
     document.removeEventListener(`keydown`, this._onKeydownEsc);
-  }
-
-  onSubmit() {
-
-  }
-
-  onKeyEsc() {
-
-  }
-
-  onDelete() {
-
   }
 
   _onDeleteBtnClick(evt) {
@@ -413,36 +444,6 @@ export class TripEdit extends Component {
     if (evt.which === KeyCodes.ENTER) {
       this._onSubmitBtnClick(evt);
     }
-  }
-
-  blockToSave() {
-    const btnSave = this._element.querySelector(`.point__button--save`);
-    btnSave.disabled = true;
-    btnSave.textContent = `Saving...`;
-    this._element.querySelector(`button[type=reset]`).disabled = true;
-  }
-
-  unblockToSave() {
-    const btnSave = this._element.querySelector(`.point__button--save`);
-    btnSave.disabled = false;
-    btnSave.textContent = `Save`;
-    this._element.querySelector(`button[type=reset]`).disabled = false;
-  }
-
-  blockToDelete() {
-    const btnDelete = this._element.querySelector(`button[type=reset]`);
-    btnDelete.disabled = true;
-    btnDelete.textContent = `Deleting...`;
-    this._element.querySelector(`.point__button--save`).disabled = true;
-  }
-
-  shake() {
-    const ANIMATION_TIMEOUT = 600;
-    this._element.style.animation = `shake ${ANIMATION_TIMEOUT / 1000}s`;
-
-    setTimeout(() => {
-      this._element.style.animation = ``;
-    }, ANIMATION_TIMEOUT);
   }
 
 }

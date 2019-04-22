@@ -20,29 +20,29 @@ export class Component {
 
   render() {
     this._element = createElement(this.template);
-    this.bind();
+    this._bind();
     return this._element;
   }
 
   unrender() {
-    this.unbind();
+    this._unbind();
     this._element.remove();
     this._element = null;
   }
 
+  _bind() {
+
+  }
+
+  _unbind() {
+
+  }
+
   _partialUpdate() {
-    this.unbind();
+    this._unbind();
     const oldElement = this._element;
     this.render();
     oldElement.parentNode.replaceChild(this._element, oldElement);
-  }
-
-  bind() {
-
-  }
-
-  unbind() {
-
   }
 
 }

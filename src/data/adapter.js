@@ -2,15 +2,16 @@ export class Adapter {
   constructor(data) {
     this.id = data[`id`];
     this.type = data[`type`];
-    this.newTime = {};
-    this.newTime.timeStart = data[`date_from`];
-    this.newTime.timeEnd = data[`date_to`];
+    this.newTime = {
+      timeStart: data[`date_from`],
+      timeEnd: data[`date_to`],
+    };
     this.price = data[`base_price`] || 0;
     this.offers = data[`offers`] || [];
     this.destination = data[`destination`].name || ``;
     this.description = data[`destination`].description || ``;
     this.pictures = data[`destination`].pictures || [];
-    this.isFavorite = Boolean(data[`is_favorite`]) || false;
+    this.isFavorite = data[`is_favorite`] || false;
   }
 
   // приводим данные к серверному виду

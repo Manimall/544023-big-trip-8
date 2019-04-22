@@ -25,19 +25,28 @@ export class Trip extends Component {
     this._icon = this._tripInfo.icon;
   }
 
-  _findTripByTripName() {
-    return tripTypes.find((el) => el.name.toLowerCase() === this._type);
+  get template() {
+    return (
+      `<article class="trip-point" id="${this._id}">
+        <i class="trip-icon">${this._icon}</i>
+        <h3 class="trip-point__title">${this._getTripTitle()}</h3>
+        <p class="trip-point__schedule">
+          ${this._getTripTimeLayout()}
+        </p>
+        <div class="trip-point__favorite-wrap">
+          <span class="trip-point__favorite ${this._isFavorite ? `trip-point__favorite--active` : ``}">${this._isFavorite}</span>
+        </div>
+        <p class="trip-point__price">${this._fullPrice}</p>
+        ${this._offers.size !== 0 ?
+        `<ul class="trip-point__offers">
+          ${getOffersLayout(this._filterOffers()).join(``)}
+        </ul>` : ``}
+      </article>`
+    );
   }
 
-  _filterOffers() {
-    this._offers = [...this._offers].filter((item) => item.accepted === true);
-    return this._offers;
-  }
+  onEdit() {
 
-  _getTripTitle() {
-    const tripType = this._tripInfo.transport ? `${this._tripInfo.name} to` : `${this._tripInfo.name} at`;
-    const tripDestination = this._city;
-    return `${tripType} ${tripDestination}`;
   }
 
   update(obj) {
@@ -53,6 +62,21 @@ export class Trip extends Component {
     this._offers = new Set([...obj.offers]);
     this._tripInfo = this._findTripByTripName();
     this._icon = this._tripInfo.icon;
+  }
+
+  _findTripByTripName() {
+    return tripTypes.find((el) => el.name.toLowerCase() === this._type);
+  }
+
+  _filterOffers() {
+    this._offers = [...this._offers].filter((item) => item.accepted === true);
+    return this._offers;
+  }
+
+  _getTripTitle() {
+    const tripType = this._tripInfo.transport ? `${this._tripInfo.name} to` : `${this._tripInfo.name} at`;
+    const tripDestination = this._city;
+    return `${tripType} ${tripDestination}`;
   }
 
   _getTripDuration() {
@@ -80,35 +104,11 @@ export class Trip extends Component {
     );
   }
 
-  get template() {
-    return (
-      `<article class="trip-point" id="${this._id}">
-        <i class="trip-icon">${this._icon}</i>
-        <h3 class="trip-point__title">${this._getTripTitle()}</h3>
-        <p class="trip-point__schedule">
-          ${this._getTripTimeLayout()}
-        </p>
-        <div class="trip-point__favorite-wrap">
-          <span class="trip-point__favorite ${this._isFavorite ? `trip-point__favorite--active` : ``}">${this._isFavorite}</span>
-        </div>
-        <p class="trip-point__price">${this._fullPrice}</p>
-        ${this._offers.size !== 0 ?
-        `<ul class="trip-point__offers">
-          ${getOffersLayout(this._filterOffers()).join(``)}
-        </ul>` : ``}
-      </article>`
-    );
-  }
-
-  onEdit() {
-
-  }
-
-  bind() {
+  _bind() {
     this.element.addEventListener(`click`, this.onEdit);
   }
 
-  unbind() {
+  _unbind() {
     this._element.addEventListener(`click`, this.onEdit);
   }
 }

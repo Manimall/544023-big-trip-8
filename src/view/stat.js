@@ -32,53 +32,53 @@ export class Stat {
 
 
   getPointsMoney(arr) {
-    const arrType = [];
-    const arrPrice = [];
+    const types = [];
+    const prices = [];
     arr.forEach((elem) => {
-      let item = arrType.indexOf(Stat.getStrLabel(elem));
+      let item = types.indexOf(Stat.getStrLabel(elem));
       if (item === -1) {
-        arrType.push(Stat.getStrLabel(elem));
-        arrPrice.push(TotalCost.getPricePoint(elem));
+        types.push(Stat.getStrLabel(elem));
+        prices.push(TotalCost.getPricePoint(elem));
       } else {
-        arrPrice[item] += (TotalCost.getPricePoint(elem));
+        prices[item] += (TotalCost.getPricePoint(elem));
       }
     });
-    const count = arrType.length;
-    return {labels: arrType, data: arrPrice, numPoints: count};
+    const count = types.length;
+    return {labels: types, data: prices, numPoints: count};
   }
 
 
   getPointsTimeSpend(arr) {
-    const arrLabel = [];
-    const arrHour = [];
+    const labels = [];
+    const hours = [];
     arr.forEach((elem, i) => {
-      let item = arrLabel.indexOf(Stat.getStrLabel(elem));
+      let item = labels.indexOf(Stat.getStrLabel(elem));
       if (item === -1) {
-        arrLabel.push(Stat.getStrLabel(elem));
-        arrHour.push(Stat.getDurationHour(arr, i));
+        labels.push(Stat.getStrLabel(elem));
+        hours.push(Stat.getDurationHour(arr, i));
       } else {
-        arrHour[item] += Stat.getDurationHour(arr, i);
+        hours[item] += Stat.getDurationHour(arr, i);
       }
     });
-    const count = arrLabel.length;
-    return {labels: arrLabel, data: arrHour, numPoints: count};
+    const count = labels.length;
+    return {labels, data: hours, numPoints: count};
   }
 
 
   getPointsTransport(arr) {
-    const arrType = [];
-    const arrNum = [];
+    const types = [];
+    const numbersOfEqualTrips = [];
     arr.forEach((elem) => {
-      let item = arrType.indexOf(Stat.getStrLabel(elem));
+      let item = types.indexOf(Stat.getStrLabel(elem));
       if ((item === -1) && (Stat.findTripByTripName(elem).transport)) {
-        arrType.push(Stat.getStrLabel(elem));
-        arrNum.push(1);
+        types.push(Stat.getStrLabel(elem));
+        numbersOfEqualTrips.push(1);
       } else {
-        arrNum[item] += 1;
+        numbersOfEqualTrips[item] += 1;
       }
     });
-    const count = arrType.length;
-    return {labels: arrType, data: arrNum, numPoints: count};
+    const count = types.length;
+    return {labels: types, data: numbersOfEqualTrips, numPoints: count};
   }
 
   update(data) {

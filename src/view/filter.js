@@ -1,6 +1,5 @@
 import {Component} from './component';
 import {createControlElement} from '../helpers';
-// import {debounce} from '../debounce';
 
 export class Filter extends Component {
   constructor(obj) {
@@ -12,18 +11,6 @@ export class Filter extends Component {
     this._onFilterClick = this._onFilterClick.bind(this);
   }
 
-  render() {
-    this._element = createControlElement(this.template, this._classListName);
-    this.bind();
-
-    return this._element;
-  }
-
-  get id() {
-    this._id = `filter-${this._name}`;
-    return this._id;
-  }
-
   get template() {
     return (
       `<input type="radio" id="${this.id}" name="filter" value="${this._name}" ${this._checked ? `checked` : ``}>
@@ -31,13 +18,33 @@ export class Filter extends Component {
     ).trim();
   }
 
+  get id() {
+    this._id = `filter-${this._name}`;
+    return this._id;
+  }
+
+  onFilter() {
+
+  }
+
+  render() {
+    this._element = createControlElement(this.template, this._classListName);
+    this._bind();
+
+    return this._element;
+  }
+
   _updateFilter() {
     this._checked = true;
     this._partialUpdate();
   }
 
-  onFilter() {
+  _bind() {
+    this._element.addEventListener(`click`, this._onFilterClick);
+  }
 
+  _unbind() {
+    this._element.removeEventListener(`click`, this._onFilterClick);
   }
 
   _onFilterClick(evt) {
@@ -45,13 +52,5 @@ export class Filter extends Component {
       this.onFilter(evt);
       this._updateFilter();
     }
-  }
-
-  bind() {
-    this._element.addEventListener(`click`, this._onFilterClick);
-  }
-
-  unbind() {
-    this._element.removeEventListener(`click`, this._onFilterClick);
   }
 }

@@ -128,9 +128,10 @@ const POINT_DEFAULT = {
   type: `taxi`,
   destination: ``,
   price: 0,
-  newTime: {},
-  [`newTime.timeStart`]: moment().valueOf(),
-  [`newTime.timeEnd`]: moment().valueOf(),
+  newTime: {
+    timeStart: moment().valueOf(),
+    timeEnd: moment().valueOf()
+  },
   pictures: [],
   offers: [],
   description: ``,

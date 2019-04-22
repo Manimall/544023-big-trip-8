@@ -14,21 +14,6 @@ export class Sorting extends Component {
     this._onSortingClick = debounce(this._onSortingClick.bind(this));
   }
 
-  render() {
-    this._element = createControlElement(this.template, this._classListName);
-    this.bind();
-
-    return this._element;
-  }
-
-  get isAsc() {
-    return this._isAsc;
-  }
-
-  set isAsc(value) {
-    this._isAsc = value;
-  }
-
   get template() {
     return (
       `<input type="radio" id="sorting-${this._name}" name="sorting" value="${this._name}" ${this._checked ? `checked` : ``}>
@@ -65,6 +50,26 @@ export class Sorting extends Component {
     );
   }
 
+  get isAsc() {
+    return this._isAsc;
+  }
+
+  set isAsc(value) {
+    this._isAsc = value;
+  }
+
+
+  onSorting() {
+
+  }
+
+  render() {
+    this._element = createControlElement(this.template, this._classListName);
+    this._bind();
+
+    return this._element;
+  }
+
   _changeDirection() {
     this._isAsc = !this._isAsc;
 
@@ -72,23 +77,20 @@ export class Sorting extends Component {
     this._partialUpdate();
   }
 
-  onSorting() {
-
+  _bind() {
+    this._element.addEventListener(`click`, this._onSortingClick);
   }
+
+  _unbind() {
+    this._element.removeEventListener(`click`, this._onSortingClick);
+  }
+
 
   _onSortingClick(evt) {
     if (typeof this.onSorting === `function`) {
       this.onSorting(evt);
       this._changeDirection(evt);
     }
-  }
-
-  bind() {
-    this._element.addEventListener(`click`, this._onSortingClick);
-  }
-
-  unbind() {
-    this._element.removeEventListener(`click`, this._onSortingClick);
   }
 }
 
