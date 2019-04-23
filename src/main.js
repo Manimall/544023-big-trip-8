@@ -57,26 +57,11 @@ const toggleToTable = () => {
   boardTable.classList.remove(`visually-hidden`);
 };
 
-statBtn.addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-  filterListWrapper.classList.add(`visually-hidden`);
-  if (!evt.target.classList.contains(`view-switch__item--active`)) {
-    toggleToStat();
-  }
-});
-
-boardsBtn.addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-  filterListWrapper.classList.remove(`visually-hidden`);
-  if (!evt.target.classList.contains(`view-switch__item--active`)) {
-    toggleToTable();
-  }
-});
-
 
 let offers = [];
 let destinations = [];
 let points = [];
+let data = {};
 
 const renderTrips = (pointsArr) => {
   tripListWrapper.innerHTML = ``;
@@ -98,6 +83,7 @@ const renderTrips = (pointsArr) => {
       makeRequestUpdateData(newObj, trip, tripEdit, tripListWrapper);
     };
 
+    // отмена изменений в карточке
     tripEdit.onKeyEsc = () => {
       trip.render();
       tripListWrapper.replaceChild(trip.element, tripEdit.element);
@@ -105,6 +91,7 @@ const renderTrips = (pointsArr) => {
       tripEdit.unrender();
     };
 
+    // удаление карточки
     tripEdit.onDelete = ({id}) => {
       makeRequestDeleteData(id, tripEdit);
     };
@@ -118,8 +105,12 @@ const makeRequestGetData = async () => {
   try {
     [offers, destinations, points] =
     await Promise.all([providerOffers.getOffers(), providerDestinations.getDestinations(), provider.getPoints()]);
+    data = {
+      events: points,
+      stat: statData
+    };
     initApp();
-    initStat();
+    initStat(data);
   } catch (err) {
     tripListWrapper.textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
   }
@@ -144,10 +135,6 @@ const initApp = () => {
 };
 
 const initStat = () => {
-  const data = {
-    events: points,
-    stat: statData
-  };
   stat.config = data;
   stat.render();
 };
@@ -304,7 +291,7 @@ const getSortingEvents = (sortingName, trips) => {
       return tripsCopyArr.sort((a, b) => getDuration(a.newTime) - getDuration(b.newTime));
     },
     'sorting-price': () => {
-      return tripsCopyArr.sort((a, b) => a.price - b.price);
+      return tripsCopyArr.sort((a, b) => TotalCost.getPricePoint(a) - TotalCost.getPricePoint(b));
     },
     'sorting-favorite': () => {
       return tripsCopyArr.sort((a, b) => a.isFavorite - b.isFavorite);
@@ -315,6 +302,25 @@ const getSortingEvents = (sortingName, trips) => {
   };
   return fnSorting[sortingName]();
 };
+
+
+statBtn.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  filterListWrapper.classList.add(`visually-hidden`);
+  if (!evt.target.classList.contains(`view-switch__item--active`)) {
+    toggleToStat();
+  }
+  stat.update(data);
+});
+
+boardsBtn.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  filterListWrapper.classList.remove(`visually-hidden`);
+  if (!evt.target.classList.contains(`view-switch__item--active`)) {
+    toggleToTable();
+  }
+});
+
 
 window.addEventListener(`offline`, () => {
   document.title = `${document.title}[OFFLINE]`;
