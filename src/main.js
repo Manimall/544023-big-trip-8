@@ -125,14 +125,14 @@ const makeRequestGetData = async () => {
   }
 };
 
-const renderTotalCost = (arrPoints) => {
+const renderTotalCost = (arrPoints = points) => {
   cost.getCostTrip(arrPoints);
   boardTotalCost.appendChild(cost.render());
 };
 
-const updateTotalCost = () => {
+const updateTotalCost = (pointsArr) => {
   cost.unrender();
-  renderTotalCost(points);
+  renderTotalCost(pointsArr);
 };
 
 const initApp = () => {
@@ -179,7 +179,7 @@ const makeRequestDeleteData = async (id, tripEdit) => {
     const newTrips = await provider.getPoints();
     tripEdit.unrender();
     renderTrips(newTrips);
-    updateTotalCost();
+    updateTotalCost(newTrips);
   } catch (err) {
     respondToError(tripEdit);
   }
@@ -193,7 +193,7 @@ const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
     const newTrips = await provider.getPoints();
     newTripToRender.unrender();
     renderTrips(newTrips);
-    updateTotalCost();
+    updateTotalCost(newTrips);
   } catch (err) {
     respondToError(newTripToRender);
   }

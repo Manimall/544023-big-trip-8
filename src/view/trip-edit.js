@@ -267,7 +267,7 @@ export class TripEdit extends Component {
 
     this._type = this._tripInfo.name;
 
-    this._offers = new Set([...this._getReferencedOffers(this._fullOffers)]);
+    this._objOffers = new Set([...this._getReferencedOffers(this._fullOffers)]);
     this._partialUpdate();
   }
 
