@@ -33,8 +33,8 @@ export class TripEdit extends Component {
 
     this._isFavorite = obj.isFavorite;
 
-    this._allOffers = offers;
-    this._offers = new Set([...this._getReferencedOffers(offers)]);
+    this._fullOffers = offers;
+    this._objOffers = new Set([...obj.offers].filter((item) => item.accepted));
 
     this._tripInfo = Object.assign({}, this._findTripByTripName());
     this._icon = this._tripInfo.icon;
@@ -50,7 +50,8 @@ export class TripEdit extends Component {
     this._onKeyDownFormPress = this._onKeyDownFormPress.bind(this);
     this._onTravelTypeChange = this._onTravelTypeChange.bind(this);
     this._onTravelCityChange = this._onTravelCityChange.bind(this);
-    this._onOffersAddAndDelete = this._onOffersAddAndDelete.bind(this);
+
+    this._onOfferClick = this._onOfferClick.bind(this);
     this._onFavoriteChange = this._onFavoriteChange.bind(this);
 
     this._onDeleteBtnClick = this._onDeleteBtnClick.bind(this);
@@ -103,7 +104,7 @@ export class TripEdit extends Component {
             <section class="point__offers">
               <h3 class="point__details-title">Available offers</h3>
 
-              ${formatEditOffers(this._offers)}
+              ${this._filterOffers()}
 
             </section>
             <section class="point__destination">
@@ -145,7 +146,7 @@ export class TripEdit extends Component {
     this._isFavorite = obj._isFavorite;
     this._newTime = obj._newTime;
     this._price = obj._price;
-    this._offers = new Set([...this._getReferencedOffers(this._allOffers)]);
+    this._objOffers = new Set([...obj._offers]);
     this._tripInfo = obj._tripInfo;
     this._icon = obj._icon;
   }
@@ -180,6 +181,39 @@ export class TripEdit extends Component {
     }, ANIMATION_TIMEOUT);
   }
 
+
+  _filterOffers() {
+    const offersForTrip = this._getReferencedOffers(this._fullOffers);
+    const renderedOffers = offersForTrip.map((offer) => {
+      return [...this._objOffers].find((el) => el.title === offer.name) ?
+        Object.assign({accepted: true}, offer) :
+        offer;
+    });
+    return formatEditOffers(renderedOffers);
+  }
+
+  _onOfferClick({target}) {
+    const clickedOffer = target.nextElementSibling;
+
+    const offerName = clickedOffer.querySelector(`.point__offer-service`).textContent.trim();
+    const offerPrice = clickedOffer.querySelector(`.point__offer-price`).textContent.trim();
+
+    const offerToAdd = {
+      title: offerName,
+      price: +offerPrice,
+      accepted: true,
+    };
+
+    const isOfferExist = [...this._objOffers].map((offer) => offer.title).includes(offerToAdd.title);
+
+    const newOffers = (!isOfferExist) ?
+      [...this._objOffers, offerToAdd] :
+      [...this._objOffers].filter((elem) => elem.title !== offerToAdd.title);
+
+    this._objOffers = new Set(newOffers);
+
+    this._partialUpdate();
+  }
 
   _findTripByTripName() {
     return tripTypes.find((el) => el.name.toLowerCase() === this._type);
@@ -223,7 +257,7 @@ export class TripEdit extends Component {
       isFavorite: this._isFavorite,
       newTime: Object.assign({}, this._newTime),
       pictures: [...this._pictures],
-      offers: new Set([...this._offers]),
+      offers: new Set([...this._objOffers]),
     };
   }
 
@@ -233,7 +267,7 @@ export class TripEdit extends Component {
 
     this._type = this._tripInfo.name;
 
-    this._offers = new Set([...this._getReferencedOffers(this._allOffers)]);
+    this._offers = new Set([...this._getReferencedOffers(this._fullOffers)]);
     this._partialUpdate();
   }
 
@@ -244,35 +278,6 @@ export class TripEdit extends Component {
         this._description = destination.description;
         this._pictures = destination.pictures;
       }
-    }
-
-    this._partialUpdate();
-  }
-
-  _onOffersAddAndDelete({target}) {
-    const clickedOffer = target.nextElementSibling;
-
-    const offerName = clickedOffer.querySelector(`.point__offer-service`).textContent.trim();
-    const offerPrice = clickedOffer.querySelector(`.point__offer-price`).textContent.trim();
-    const offerCurrency = this._priceCurrency;
-
-    const offerToAdd = {
-      name: offerName,
-      price: +offerPrice,
-      currency: offerCurrency,
-      accepted: true,
-    };
-
-    const sameOffer = [...this._offers].find((el) => el.name === offerToAdd.name);
-
-    if (target.checked) {
-      if (sameOffer) {
-        sameOffer.accepted = true;
-      }
-    }
-
-    if (!target.checked) {
-      sameOffer.accepted = false;
     }
 
     this._partialUpdate();
@@ -378,7 +383,7 @@ export class TripEdit extends Component {
     this._element.querySelector(`input[name="price"]`).addEventListener(`change`, this._onPriceChange);
     this._element.querySelector(`.travel-way__select`).addEventListener(`change`, this._onTravelTypeChange);
     this._element.querySelector(`.point__destination-input`).addEventListener(`change`, this._onTravelCityChange);
-    this._element.querySelector(`.point__offers-wrap`).addEventListener(`change`, this._onOffersAddAndDelete);
+    this._element.querySelector(`.point__offers-wrap`).addEventListener(`change`, this._onOfferClick);
     this._element.querySelector(`input[name="favorite"]`).addEventListener(`change`, this._onFavoriteChange);
     this._element.querySelector(`button[type=reset]`).addEventListener(`click`, this._onDeleteBtnClick);
     this._element.querySelector(`.point__button--reset`).addEventListener(`click`, this._onBtnResetClick);
@@ -394,7 +399,7 @@ export class TripEdit extends Component {
     this._element.querySelector(`input[name="price"]`).removeEventListener(`change`, this._onPriceChange);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`change`, this._onTravelTypeChange);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onTravelCityChange);
-    this._element.querySelector(`.point__offers-wrap`).removeEventListener(`change`, this._onOffersAddAndDelete);
+    this._element.querySelector(`.point__offers-wrap`).removeEventListener(`change`, this._onOfferClick);
     this._element.querySelector(`input[name="favorite"]`).removeEventListener(`change`, this._onFavoriteChange);
     this._element.querySelector(`button[type=reset]`).removeEventListener(`click`, this._onDeleteBtnClick);
     this._element.querySelector(`.point__button--reset`).removeEventListener(`click`, this._onBtnResetClick);
