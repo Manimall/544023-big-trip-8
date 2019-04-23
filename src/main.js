@@ -277,6 +277,7 @@ const renderSorting = (sortingArr) => {
   });
 };
 
+
 const getDuration = (obj) => {
   return moment.duration(moment(obj.timeEnd).diff(moment(obj.timeStart)));
 };
@@ -297,7 +298,7 @@ const getSortingEvents = (sortingName, trips) => {
       return tripsCopyArr.sort((a, b) => a.isFavorite - b.isFavorite);
     },
     'sorting-offers': () => {
-      return tripsCopyArr.sort((a, b) => a.offers.size - b.offers.size);
+      return tripsCopyArr.sort((a, b) => a.offers.filter((offer) => offer.accepted).length - b.offers.filter((offer) => offer.accepted).length);
     },
   };
   return fnSorting[sortingName]();
