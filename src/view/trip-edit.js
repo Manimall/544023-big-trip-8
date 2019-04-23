@@ -145,7 +145,7 @@ export class TripEdit extends Component {
     this._isFavorite = obj._isFavorite;
     this._newTime = obj._newTime;
     this._price = obj._price;
-    this._offers = new Set([...this._getReferencedOffers(obj.offers)]);
+    this._offers = new Set([...this._getReferencedOffers(this._allOffers)]);
     this._tripInfo = obj._tripInfo;
     this._icon = obj._icon;
   }
@@ -268,20 +268,11 @@ export class TripEdit extends Component {
     if (target.checked) {
       if (sameOffer) {
         sameOffer.accepted = true;
-
-        this._price = +this._price + offerToAdd.price;
-        this._fullPrice = `${this._price} ${this._priceCurrency}`;
       }
     }
 
     if (!target.checked) {
       sameOffer.accepted = false;
-
-      this._price = +this._price - offerToAdd.price;
-      if (this._price < MIN_PRICE) {
-        this._price = MIN_PRICE;
-      }
-      this._fullPrice = `${this._price} ${this._priceCurrency}`;
     }
 
     this._partialUpdate();
