@@ -18,18 +18,6 @@ export class Api {
     this._authorization = authorization;
   }
 
-  // тест
-
-  // getPoints() {
-  //   return this._load({url: `points`})
-  //     .then(Api.toJSON)
-  //     .then((resolve) => {
-  //       console.log(resolve);
-  //       console.log(Adapter.parsePoints(resolve));
-  //       return Adapter.parsePoints(resolve);
-  //     });
-  // }
-
   // получаем точки путешествия
   getPoints() {
     return this._load({url: `points`})

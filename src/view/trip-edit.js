@@ -34,7 +34,7 @@ export class TripEdit extends Component {
     this._isFavorite = obj.isFavorite;
 
     this._allOffers = offers;
-    this._offers = new Set([...obj.offers]);
+    this._offers = new Set([...this._getReferencedOffers(offers)]);
 
     this._tripInfo = Object.assign({}, this._findTripByTripName());
     this._icon = this._tripInfo.icon;
@@ -145,7 +145,7 @@ export class TripEdit extends Component {
     this._isFavorite = obj._isFavorite;
     this._newTime = obj._newTime;
     this._price = obj._price;
-    this._offers = new Set([...obj._offers]);
+    this._offers = new Set([...this._getReferencedOffers(obj.offers)]);
     this._tripInfo = obj._tripInfo;
     this._icon = obj._icon;
   }
