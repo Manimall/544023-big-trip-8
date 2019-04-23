@@ -1,9 +1,11 @@
-import {filtersData, sortingData, statData} from './mock-data/trip-constants';
+import {filtersData, sortingData, statData, STORE_KEYS} from './mock-data/trip-constants';
 import {TripEdit} from './view/trip-edit';
 import {Trip} from './view/trip';
 import {Stat} from './view/stat';
 import {TotalCost} from './view/total-cost';
 import {Filter} from './view/filter';
+import {Store} from './data/store';
+import {Provider} from './data/provider';
 import {Adapter} from './data/adapter';
 import {Sorting} from './view/sorting';
 import {Api} from './data/api';
@@ -18,9 +20,6 @@ const statBtn = controls.querySelector(`a[href*=stats]`); // борд со ст�
 const boardTable = document.querySelector(`#table`);
 const boardStat = document.querySelector(`#stats`);
 const buttonNewEvent = controls.querySelector(`.trip-controls__new-event`);
-
-// const board = boardTable.querySelector(`.trip-points`);
-
 const sortingListWrapper = boardTable.querySelector(`.trip-sorting`); // контэйнер для вставки элементов сортировки
 
 
@@ -33,6 +32,14 @@ const ServerConfig = {
 };
 
 const api = new Api({mainUrl: ServerConfig.MAIN_URL, authorization: ServerConfig.AUTHORIZATION});
+
+const store = new Store({key: STORE_KEYS.points, storage: localStorage});
+const storeOffers = new Store({key: STORE_KEYS.offers, storage: localStorage});
+const storeDestinations = new Store({key: STORE_KEYS.destinations, storage: localStorage});
+
+const provider = new Provider({api, store, generateId: () => String(Date.now())});
+const providerOffers = new Provider({api, store: storeOffers, generateId: () => String(Date.now())});
+const providerDestinations = new Provider({api, store: storeDestinations, generateId: () => String(Date.now())});
 
 
 // переключаемся с данных на статистику
@@ -106,11 +113,11 @@ const renderTrips = (pointsArr) => {
   });
 };
 
-const makeRequest = async () => {
+const makeRequestGetData = async () => {
   tripListWrapper.textContent = `Loading route...`;
   try {
     [offers, destinations, points] =
-    await Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()]);
+    await Promise.all([providerOffers.getOffers(), providerDestinations.getDestinations(), provider.getPoints()]);
     initApp();
     initStat();
   } catch (err) {
@@ -145,13 +152,13 @@ const initStat = () => {
   stat.render();
 };
 
-makeRequest(); // получаем данные с сервера
+makeRequestGetData(); // получаем данные с сервера
 
 
 const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
   try {
     tripEdit.blockToSave();
-    const newPoint = await api.updatePoint({id: newData.id, data: Adapter.toRAW(newData)});
+    const newPoint = await provider.updatePoint({id: newData.id, data: Adapter.toRAW(newData)});
     points[newPoint.id] = newPoint;
     tripEdit.element.style.border = ``;
     trip.update(newPoint);
@@ -168,8 +175,8 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
 const makeRequestDeleteData = async (id, tripEdit) => {
   try {
     tripEdit.blockToDelete();
-    await api.deletePoint({id});
-    const newTrips = await api.getPoints();
+    await provider.deletePoint({id});
+    const newTrips = await provider.getPoints();
     tripEdit.unrender();
     renderTrips(newTrips);
     updateTotalCost();
@@ -182,8 +189,8 @@ const makeRequestDeleteData = async (id, tripEdit) => {
 const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
   try {
     newTripToRender.blockToSave();
-    await api.createPoint({point: Adapter.toRAW(newDataPoint)});
-    const newTrips = await api.getPoints();
+    await provider.createPoint({point: Adapter.toRAW(newDataPoint)});
+    const newTrips = await provider.getPoints();
     newTripToRender.unrender();
     renderTrips(newTrips);
     updateTotalCost();
@@ -213,9 +220,6 @@ const respondToError = (elem) => {
   elem.shake();
   elem.unblockToSave();
 };
-
-
-// renderTrips(generatedTrips); // отренедеренные путешествия
 
 
 const getFilterEvents = (filterName, trips) => {
@@ -262,7 +266,6 @@ const renderFilters = (filterArr) => {
   });
 };
 
-// renderFilters(filtersData); // отрендеренные фильтры
 
 const renderSorting = (sortingArr) => {
   return sortingArr.forEach((item) => {
@@ -286,9 +289,6 @@ const renderSorting = (sortingArr) => {
 
   });
 };
-
-// renderSorting(sortingData); // отрендеренные элементы сортировки
-
 
 const getDuration = (obj) => {
   return moment.duration(moment(obj.timeEnd).diff(moment(obj.timeStart)));
@@ -315,3 +315,12 @@ const getSortingEvents = (sortingName, trips) => {
   };
   return fnSorting[sortingName]();
 };
+
+window.addEventListener(`offline`, () => {
+  document.title = `${document.title}[OFFLINE]`;
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.split(`[OFFLINE]`)[0];
+  provider.syncPoints();
+});
