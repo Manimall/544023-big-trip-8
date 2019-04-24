@@ -127,6 +127,7 @@ const renderTrips = (pointsArr, dist) => {
       makeRequestDeleteData(id, tripEdit);
     };
 
+    // вставляем карточки в контейнер
     dist.appendChild(trip.render());
   });
 };
