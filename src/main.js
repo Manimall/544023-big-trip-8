@@ -78,7 +78,8 @@ const createArrDays = (arrPoints) => {
       arrDays.push(day);
     }
   });
-  return arrDays.sort((a, b) => +moment(a).format(`YYYYMMDD`) - +moment(b).format(`YYYYMMDD`));
+  return arrDays;
+  // return arrDays.sort((a, b) => +moment(a).format(`YYYYMMDD`) - +moment(b).format(`YYYYMMDD`));
 };
 
 const renderDays = (arrPoints) => {
@@ -91,6 +92,31 @@ const renderDays = (arrPoints) => {
     tripListWrapper.appendChild(boardDay);
     renderTrips(pointsPerDay, distEvents);
   });
+};
+
+const renderOneDay = (arrPoints) => {
+  let minDay = Date.now();
+  arrPoints.forEach((elem) => {
+    minDay = elem.newTime.timeStart < minDay ? elem.newTime.timeStart : minDay;
+  });
+  minDay = moment(minDay).format(`DD MMM YY`);
+  tripListWrapper.innerHTML = ``;
+  const boardDay = new TripDay(minDay).render();
+  const distEvents = boardDay.querySelector(`.trip-day__items`);
+  tripListWrapper.appendChild(boardDay);
+  renderTrips(arrPoints, distEvents);
+};
+
+const renderTargetEvents = (isInAscOrder = true) => {
+  if (elementName.nameSorting === `sorting-event`) {
+    isInAscOrder ?
+      renderDays(getFilterSortingEvents(points)) :
+      renderDays(getFilterSortingEvents(points).reverse());
+  } else {
+    isInAscOrder ?
+     renderOneDay(getFilterSortingEvents(points)) :
+     renderOneDay(getFilterSortingEvents(points).reverse());
+  }
 };
 
 
@@ -183,7 +209,8 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
     trip.render();
     container.replaceChild(trip.element, tripEdit.element);
     tripEdit.unrender();
-    renderDays(getFilterSortingEvents(points));
+    renderTargetEvents();
+    // renderDays(getFilterSortingEvents(points));
     data = {
       events: points,
       stat: statData
@@ -206,6 +233,7 @@ const makeRequestDeleteData = async (id, tripEdit) => {
     };
     tripEdit.unrender();
     renderDays(newTrips);
+    renderTargetEvents();
     updateTotalCost(newTrips);
   } catch (err) {
     respondToError(tripEdit);
@@ -224,7 +252,8 @@ const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
     };
     newTripToRender.unrender();
     tripListWrapper.innerHTML = ``;
-    renderDays(newTrips);
+    // renderDays(newTrips);
+    renderTargetEvents();
     updateTotalCost(newTrips);
   } catch (err) {
     respondToError(newTripToRender);
@@ -265,8 +294,7 @@ const renderFilters = (filterArr) => {
         tripListWrapper.innerHTML = ``;
 
         elementName.nameFilter = target.previousElementSibling.id;
-        const filteredEvents = getFilterSortingEvents(points);
-        renderDays(filteredEvents);
+        renderTargetEvents();
 
         removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
         removeCheckedInput(target.previousElementSibling, filterListWrapper, `input[name="filter"]`);
@@ -286,12 +314,7 @@ const renderSorting = (sortingArr) => {
         tripListWrapper.innerHTML = ``;
 
         elementName.nameSorting = target.id;
-
-        const sortedEvents = sortingEl.isAsc ?
-          getFilterSortingEvents(points).reverse() :
-          getFilterSortingEvents(points);
-
-        renderDays(sortedEvents);
+        renderTargetEvents(sortingEl.isAsc);
 
         removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
       }
