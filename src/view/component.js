@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js/helpers';
+import {createElement} from '../utils/helpers';
 
 export class Component {
   constructor() {

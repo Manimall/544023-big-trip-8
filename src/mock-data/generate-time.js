@@ -1,5 +1,5 @@
 // генерируем время для путешествий
-import {getRandomNumber} from '../utils.js/helpers';
+import {getRandomNumber} from '../utils/helpers';
 
 /**
  * Рассчитываем разницу между началом и концом путешествия

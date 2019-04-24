@@ -78,7 +78,8 @@ const createArrDays = (arrPoints) => {
       arrDays.push(day);
     }
   });
-  return arrDays.sort((a, b) => +moment(a).format(`YYYYMMDD`) - +moment(b).format(`YYYYMMDD`));
+  return arrDays;
+  // return arrDays.sort((a, b) => +moment(a).format(`YYYYMMDD`) - +moment(b).format(`YYYYMMDD`));
 };
 
 const renderDays = (arrPoints) => {
@@ -91,6 +92,35 @@ const renderDays = (arrPoints) => {
     tripListWrapper.appendChild(boardDay);
     renderTrips(pointsPerDay, distEvents);
   });
+};
+
+const renderOneDay = (arrPoints) => {
+  let minDay = Date.now();
+  arrPoints.forEach((elem) => {
+    minDay = elem.newTime.timeStart < minDay ? elem.newTime.timeStart : minDay;
+  });
+  minDay = moment(minDay).format(`DD MMM YY`);
+  tripListWrapper.innerHTML = ``;
+  const boardDay = new TripDay(minDay).render();
+  const distEvents = boardDay.querySelector(`.trip-day__items`);
+  tripListWrapper.appendChild(boardDay);
+  renderTrips(arrPoints, distEvents);
+};
+
+const renderTargetEvents = (isInAscOrder = true) => {
+  if (elementName.nameSorting === `sorting-event`) {
+    if (isInAscOrder) {
+      renderDays(getFilterSortingEvents(points));
+    } else {
+      renderDays(getFilterSortingEvents(points).reverse());
+    }
+  } else {
+    if (isInAscOrder) {
+      renderOneDay(getFilterSortingEvents(points));
+    } else {
+      renderOneDay(getFilterSortingEvents(points).reverse());
+    }
+  }
 };
 
 
@@ -127,6 +157,7 @@ const renderTrips = (pointsArr, dist) => {
       makeRequestDeleteData(id, tripEdit);
     };
 
+    // вставляем карточки в контейнер
     dist.appendChild(trip.render());
   });
 };
@@ -147,8 +178,8 @@ const makeRequestGetData = async () => {
   }
 };
 
-const renderTotalCost = (arrPoints = points) => {
-  cost.getCostTrip(arrPoints);
+const renderTotalCost = () => {
+  cost.getCostTrip(points);
   boardTotalCost.appendChild(cost.render());
 };
 
@@ -183,11 +214,11 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
     trip.render();
     container.replaceChild(trip.element, tripEdit.element);
     tripEdit.unrender();
-    renderDays(getFilterSortingEvents(points));
     data = {
       events: points,
       stat: statData
     };
+    renderTargetEvents();
     updateTotalCost();
   } catch (err) {
     respondToError(tripEdit);
@@ -199,14 +230,14 @@ const makeRequestDeleteData = async (id, tripEdit) => {
   try {
     tripEdit.blockToDelete();
     await provider.deletePoint({id});
-    const newTrips = await provider.getPoints();
+    points = await provider.getPoints();
+    tripEdit.unrender();
+    renderTargetEvents();
     data = {
-      events: newTrips,
+      events: points,
       stat: statData
     };
-    tripEdit.unrender();
-    renderDays(newTrips);
-    updateTotalCost(newTrips);
+    updateTotalCost();
   } catch (err) {
     respondToError(tripEdit);
   }
@@ -217,15 +248,15 @@ const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
   try {
     newTripToRender.blockToSave();
     await provider.createPoint({point: Adapter.toRAW(newDataPoint)});
-    const newTrips = await provider.getPoints();
-    data = {
-      events: newTrips,
-      stat: statData
-    };
+    points = await provider.getPoints();
     newTripToRender.unrender();
     tripListWrapper.innerHTML = ``;
-    renderDays(newTrips);
-    updateTotalCost(newTrips);
+    renderTargetEvents();
+    data = {
+      events: points,
+      stat: statData
+    };
+    updateTotalCost();
   } catch (err) {
     respondToError(newTripToRender);
   }
@@ -265,8 +296,7 @@ const renderFilters = (filterArr) => {
         tripListWrapper.innerHTML = ``;
 
         elementName.nameFilter = target.previousElementSibling.id;
-        const filteredEvents = getFilterSortingEvents(points);
-        renderDays(filteredEvents);
+        renderTargetEvents();
 
         removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
         removeCheckedInput(target.previousElementSibling, filterListWrapper, `input[name="filter"]`);
@@ -282,16 +312,10 @@ const renderSorting = (sortingArr) => {
 
     sortingEl.onSorting = ({target}) => {
       if (target.name === `sorting` && !target.disabled) {
-
         tripListWrapper.innerHTML = ``;
 
         elementName.nameSorting = target.id;
-
-        const sortedEvents = sortingEl.isAsc ?
-          getFilterSortingEvents(points).reverse() :
-          getFilterSortingEvents(points);
-
-        renderDays(sortedEvents);
+        renderTargetEvents(sortingEl.isAsc);
 
         removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
       }

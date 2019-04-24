@@ -1,4 +1,4 @@
-import {getRandomNumber} from '../utils.js/helpers';
+import {getRandomNumber} from '../utils/helpers';
 import {tripPriceCurrency} from './trip-constants';
 
 const MAX_OFFER_PRICE = 100;
