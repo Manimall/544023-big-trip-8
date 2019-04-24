@@ -6,7 +6,7 @@ import {getAllImages} from '../parts-of-trip-edit-template/format-pictures';
 import {MIN_PRICE, MAX_PRICE} from '../mock-data/generate-mock-trips';
 import {tripTypes, POINT_DEFAULT} from '../mock-data/trip-constants';
 
-import {KeyCodes} from '../utils.js/helpers';
+import {KeyCodes} from '../utils/helpers';
 
 import moment from 'moment';
 import flatpickr from 'flatpickr';
@@ -246,8 +246,8 @@ export class TripEdit extends Component {
     return {
       id: this._id,
       type: this._type.toLowerCase(),
-      destination: this._city,
-      price: this._price,
+      destination: (this._city === POINT_DEFAULT.destination) ? (this._city = `Madrid`) : this._city,
+      price: (this._price === POINT_DEFAULT.price) ? (this._price = MIN_PRICE) : this._price,
       description: this._description,
       isFavorite: this._isFavorite,
       newTime: Object.assign({}, this._newTime),

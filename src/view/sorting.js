@@ -1,6 +1,6 @@
 import {Component} from './component';
-import {createControlElement} from '../utils.js/helpers';
-import {debounce} from '../utils.js/debounce';
+import {createControlElement} from '../utils/helpers';
+import {debounce} from '../utils/debounce';
 
 export class Sorting extends Component {
   constructor(obj) {

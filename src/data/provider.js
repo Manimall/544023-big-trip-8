@@ -57,13 +57,12 @@ export class Provider {
     if (Provider.isOnline()) {
       return this._loader.createPoint({point})
         .then(this._sendStorage);
-    } else {
-      point.id = this._generateId();
-      point = Adapter.parsePoint(point);
-      this._needSync = true;
-      this._sendStorage(point);
-      return Promise.resolve(point);
     }
+    point.id = this._generateId();
+    point = Adapter.parsePoint(point);
+    this._needSync = true;
+    this._sendStorage(point);
+    return Promise.resolve(point);
   }
 
 
@@ -71,12 +70,11 @@ export class Provider {
     if (Provider.isOnline()) {
       return this._loader.updatePoint({id, data})
         .then(this._sendStorage);
-    } else {
-      const point = Adapter.parsePoint(data);
-      this._needSync = true;
-      this._sendStorage(point);
-      return Promise.resolve(point);
     }
+    const point = Adapter.parsePoint(data);
+    this._needSync = true;
+    this._sendStorage(point);
+    return Promise.resolve(point);
   }
 
   deletePoint({id}) {
@@ -85,11 +83,10 @@ export class Provider {
         .then(() => {
           this._store.removeItem({id});
         });
-    } else {
-      this._needSync = true;
-      this._store.removeItem({id});
-      return Promise.resolve(id);
     }
+    this._needSync = true;
+    this._store.removeItem({id});
+    return Promise.resolve(id);
   }
 
   syncPoints() {
