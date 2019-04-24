@@ -6,7 +6,7 @@ import {getAllImages} from '../parts-of-trip-edit-template/format-pictures';
 import {MIN_PRICE, MAX_PRICE} from '../mock-data/generate-mock-trips';
 import {tripTypes, POINT_DEFAULT} from '../mock-data/trip-constants';
 
-import {KeyCodes} from '../helpers';
+import {KeyCodes} from '../utils.js/helpers';
 
 import moment from 'moment';
 import flatpickr from 'flatpickr';
