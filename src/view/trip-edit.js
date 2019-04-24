@@ -287,9 +287,10 @@ export class TripEdit extends Component {
     const timeStart = flatpickr(this._element.querySelector(`input[name="date-start"]`), {
       [`time_24hr`]: true,
       enableTime: true,
+      noCalendar: true,
       altInput: true,
-      dateFormat: `Z`,
       altFormat: `H:i`,
+      dateFormat: `U`,
       defaultDate: moment(this._newTime.timeStart).format(),
       onClose: (dateStr) => {
         this._newTime.timeStart = Date.parse(dateStr);
@@ -302,9 +303,10 @@ export class TripEdit extends Component {
     const timeEnd = flatpickr(this._element.querySelector(`input[name="date-end"]`), {
       [`time_24hr`]: true,
       enableTime: true,
+      noCalendar: true,
       altInput: true,
-      dateFormat: `Z`,
       altFormat: `H:i`,
+      dateFormat: `U`,
       defaultDate: moment(this._newTime.timeEnd).format(),
       onClose: (dateStr) => {
         this._newTime.timeEnd = Date.parse(dateStr);
@@ -324,14 +326,20 @@ export class TripEdit extends Component {
       altInput: true,
       altFormat: `M j`,
       dateFormat: `M j`,
-      defaultDate: this._newTime.dayNow,
+      defaultDate: this._newTime.timeStart,
       onChange: (selectedDates) => {
+        console.log(moment(this._newTime.timeStart).format(`DD MMMM`));
+        console.log(moment(this._newTime.timeStart));
+        console.log(new Date(this._newTime.timeStart));
         let updatedDateStart = Date.parse(selectedDates[0]);
-        if (updatedDateStart < moment().valueOf()) {
-          this._newTime.dayNow = moment().valueOf();
+        if (updatedDateStart < this._newTime.timeStart) {
+          updatedDateStart = this._newTime.timeStart;
         } else {
-          this._newTime.dayNow = moment(selectedDates[0]).valueOf();
-          this._newTime.timeStart = moment(this._newTime.dayNow).valueOf();
+          console.log(moment.duration(moment(updatedDateStart).diff(moment(this._newTime.timeStart))));
+          const durationInUnix = moment.duration(moment(updatedDateStart).diff(moment(this._newTime.timeStart))).as(`milliseconds`);
+          console.log(durationInUnix);
+          this._newTime.timeStart = updatedDateStart;
+          // this._newTime.timeEnd =
           if (this._newTime.timeEnd < this._newTime.timeStart) {
             this._newTime.timeStart = this._newTime.timeEnd;
           }

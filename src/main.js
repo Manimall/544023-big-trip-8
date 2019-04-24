@@ -1,6 +1,7 @@
 import {filtersData, sortingData, statData, STORE_KEYS} from './mock-data/trip-constants';
 import {TripEdit} from './view/trip-edit';
 import {Trip} from './view/trip';
+import {TripDay} from './view/trip-day';
 import {Stat} from './view/stat';
 import {TotalCost} from './view/total-cost';
 import {Filter} from './view/filter';
@@ -13,11 +14,13 @@ import {Api} from './data/api';
 
 import {removeCheckedInput, getFilterSortingEvents, elementName} from './sorting-filtering-controller';
 
+import moment from 'moment';
+
 
 const boardTotalCost = document.querySelector(`.trip`);
 const controls = document.querySelector(`.trip-controls`);
 const filterListWrapper = controls.querySelector(`.trip-filter`); // контэйнер для вставки фильтров
-const tripListWrapper = document.querySelector(`.trip-day__items`); // контэйнер для вставки путешествий
+const tripListWrapper = document.querySelector(`.trip-points`); // контэйнер для вставки путешествий вместе с датами
 const boardsBtn = controls.querySelector(`a[href*=table]`); // борд с путешествиями
 const statBtn = controls.querySelector(`a[href*=stats]`); // борд со статистикой
 const boardTable = document.querySelector(`#table`);
@@ -66,8 +69,33 @@ let destinations = [];
 let points = [];
 let data = {};
 
-const renderTrips = (pointsArr) => {
+
+const createArrDays = (arrPoints) => {
+  const arrDays = [];
+  arrPoints.forEach((point) => {
+    const day = moment(point.newTime.timeStart).format(`DD MMM YY`);
+    if (arrDays.indexOf(day) === -1) {
+      arrDays.push(day);
+    }
+  });
+  return arrDays;
+};
+
+const renderDays = (arrPoints) => {
   tripListWrapper.innerHTML = ``;
+  const arrDays = createArrDays(arrPoints);
+  arrDays.forEach((day) => {
+    const boardDay = new TripDay(day).render();
+    const pointsPerDay = arrPoints.filter((el) => moment(el.newTime.timeStart).format(`DD MMM YY`) === day);
+    const distEvents = boardDay.querySelector(`.trip-day__items`);
+    tripListWrapper.appendChild(boardDay);
+    renderTrips(pointsPerDay, distEvents);
+  });
+};
+
+
+const renderTrips = (pointsArr, dist) => {
+  dist.innerHTML = ``;
 
   pointsArr.forEach((item) => {
 
@@ -77,19 +105,19 @@ const renderTrips = (pointsArr) => {
     // открываем карточку редактирования маршрута
     trip.onEdit = () => {
       tripEdit.render();
-      tripListWrapper.replaceChild(tripEdit.element, trip.element);
+      dist.replaceChild(tripEdit.element, trip.element);
       trip.unrender();
     };
 
     // режактируем маршрут и сохраняем изменения
     tripEdit.onSubmit = (newObj) => {
-      makeRequestUpdateData(newObj, trip, tripEdit, tripListWrapper);
+      makeRequestUpdateData(newObj, trip, tripEdit, dist);
     };
 
     // отмена изменений в карточке
     tripEdit.onKeyEsc = () => {
       trip.render();
-      tripListWrapper.replaceChild(trip.element, tripEdit.element);
+      dist.replaceChild(trip.element, tripEdit.element);
       tripEdit.resetTrip(trip);
       tripEdit.unrender();
     };
@@ -99,7 +127,7 @@ const renderTrips = (pointsArr) => {
       makeRequestDeleteData(id, tripEdit);
     };
 
-    tripListWrapper.appendChild(trip.render());
+    dist.appendChild(trip.render());
   });
 };
 
@@ -134,7 +162,7 @@ const initApp = () => {
   renderTotalCost(points);
   renderFilters(filtersData);
   renderSorting(sortingData);
-  renderTrips(points);
+  renderDays(points);
 };
 
 const initStat = () => {
@@ -172,7 +200,7 @@ const makeRequestDeleteData = async (id, tripEdit) => {
       stat: statData
     };
     tripEdit.unrender();
-    renderTrips(newTrips);
+    renderDays(newTrips);
     updateTotalCost(newTrips);
   } catch (err) {
     respondToError(tripEdit);
@@ -190,7 +218,8 @@ const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
       stat: statData
     };
     newTripToRender.unrender();
-    renderTrips(newTrips);
+    tripListWrapper.innerHTML = ``;
+    renderDays(newTrips);
     updateTotalCost(newTrips);
   } catch (err) {
     respondToError(newTripToRender);
@@ -212,6 +241,7 @@ buttonNewEvent.addEventListener(`click`, () => {
   };
 });
 
+
 const respondToError = (elem) => {
   elem.element.style.border = `2px solid rgb(191, 38, 65)`;
   elem.shake();
@@ -231,7 +261,7 @@ const renderFilters = (filterArr) => {
 
         elementName.nameFilter = target.previousElementSibling.id;
         const filteredEvents = getFilterSortingEvents(points);
-        renderTrips(filteredEvents);
+        renderDays(filteredEvents);
 
         removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
         removeCheckedInput(target.previousElementSibling, filterListWrapper, `input[name="filter"]`);
@@ -239,7 +269,6 @@ const renderFilters = (filterArr) => {
     };
   });
 };
-
 
 const renderSorting = (sortingArr) => {
   return sortingArr.forEach((item) => {
@@ -257,7 +286,7 @@ const renderSorting = (sortingArr) => {
           getFilterSortingEvents(points).reverse() :
           getFilterSortingEvents(points);
 
-        renderTrips(sortedEvents);
+        renderDays(sortedEvents);
 
         removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
       }

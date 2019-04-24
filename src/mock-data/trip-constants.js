@@ -96,7 +96,7 @@ const filtersData = [
 const sortingData = [
   {
     name: `event`,
-    checked: false
+    checked: true
   },
   {
     name: `time`,

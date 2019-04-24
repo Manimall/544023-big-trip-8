@@ -698,10 +698,10 @@ input[name="sorting"]:checked ~ .trip-sorting__item .sorting-down {
   transform: translateY(-50%);
 }
 
-input[id="sorting-event"]:checked ~ .trip-sorting__item .sorting-up,
+/* input[id="sorting-event"]:checked ~ .trip-sorting__item .sorting-up,
 input[id="sorting-event"]:checked ~ .trip-sorting__item .sorting-down {
   display: none;
-}
+} */
 
 input[name="sorting"]:checked ~ .trip-sorting__item .sorting-up {
   left: 30%;
@@ -709,6 +709,16 @@ input[name="sorting"]:checked ~ .trip-sorting__item .sorting-up {
 
 input[name="sorting"]:checked ~ .trip-sorting__item .sorting-down {
   right: 45%;
+}
+
+
+
+input[name="sorting"]:checked ~ .trip-sorting__item--event .sorting-up{
+  left: 44px;
+}
+
+input[name="sorting"]:checked ~ .trip-sorting__item--event .sorting-down {
+  left: 54px;
 }
 
 input[name="sorting"]:checked ~ .trip-sorting__item--favorite .sorting-up {
