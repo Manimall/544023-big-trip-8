@@ -167,6 +167,10 @@ const makeRequestDeleteData = async (id, tripEdit) => {
     tripEdit.blockToDelete();
     await provider.deletePoint({id});
     const newTrips = await provider.getPoints();
+    data = {
+      events: newTrips,
+      stat: statData
+    };
     tripEdit.unrender();
     renderTrips(newTrips);
     updateTotalCost(newTrips);
@@ -181,6 +185,10 @@ const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
     newTripToRender.blockToSave();
     await provider.createPoint({point: Adapter.toRAW(newDataPoint)});
     const newTrips = await provider.getPoints();
+    data = {
+      events: newTrips,
+      stat: statData
+    };
     newTripToRender.unrender();
     renderTrips(newTrips);
     updateTotalCost(newTrips);
