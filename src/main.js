@@ -4,12 +4,15 @@ import {Trip} from './view/trip';
 import {Stat} from './view/stat';
 import {TotalCost} from './view/total-cost';
 import {Filter} from './view/filter';
+
 import {Store} from './data/store';
 import {Provider} from './data/provider';
 import {Adapter} from './data/adapter';
 import {Sorting} from './view/sorting';
 import {Api} from './data/api';
-import moment from 'moment';
+
+import {removeCheckedInput, getFilterSortingEvents, elementName} from './sorting-filtering-controller';
+
 
 const boardTotalCost = document.querySelector(`.trip`);
 const controls = document.querySelector(`.trip-controls`);
@@ -201,38 +204,12 @@ buttonNewEvent.addEventListener(`click`, () => {
   };
 });
 
-
 const respondToError = (elem) => {
   elem.element.style.border = `2px solid rgb(191, 38, 65)`;
   elem.shake();
   elem.unblockToSave();
 };
 
-
-const getFilterEvents = (filterName, trips) => {
-  const fnFilter = {
-    'filter-everything': (obj) => {
-      return obj;
-    },
-    'filter-future': (obj) => {
-      return obj.filter((el) => el.newTime.timeStart > Date.now());
-    },
-    'filter-past': (obj) => {
-      return obj.filter((el) => el.newTime.timeEnd < Date.now());
-    },
-  };
-
-  return fnFilter[filterName]([...trips]);
-};
-
-const removeCheckedInput = (elem, parentWrapper, inputClass) => {
-  const allInputs = parentWrapper.querySelectorAll(inputClass);
-  [...allInputs].forEach((item) => {
-    if (elem !== item) {
-      item.removeAttribute(`checked`);
-    }
-  });
-};
 
 const renderFilters = (filterArr) => {
   return filterArr.forEach((item) => {
@@ -243,7 +220,9 @@ const renderFilters = (filterArr) => {
       const clickedFilter = target.classList.contains(`trip-filter__item`);
       if (clickedFilter && !target.previousElementSibling.disabled) {
         tripListWrapper.innerHTML = ``;
-        const filteredEvents = getFilterEvents(target.previousElementSibling.id, points);
+
+        elementName.nameFilter = target.previousElementSibling.id;
+        const filteredEvents = getFilterSortingEvents(points);
         renderTrips(filteredEvents);
 
         removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
@@ -264,9 +243,11 @@ const renderSorting = (sortingArr) => {
 
         tripListWrapper.innerHTML = ``;
 
+        elementName.nameSorting = target.id;
+
         const sortedEvents = sortingEl.isAsc ?
-          getSortingEvents(target.id, points).reverse() :
-          getSortingEvents(target.id, points);
+          getFilterSortingEvents(points).reverse() :
+          getFilterSortingEvents(points);
 
         renderTrips(sortedEvents);
 
@@ -275,33 +256,6 @@ const renderSorting = (sortingArr) => {
     };
 
   });
-};
-
-
-const getDuration = (obj) => {
-  return moment.duration(moment(obj.timeEnd).diff(moment(obj.timeStart)));
-};
-
-const getSortingEvents = (sortingName, trips) => {
-  let tripsCopyArr = [...trips];
-  const fnSorting = {
-    'sorting-event': () => {
-      return tripsCopyArr;
-    },
-    'sorting-time': () => {
-      return tripsCopyArr.sort((a, b) => getDuration(a.newTime) - getDuration(b.newTime));
-    },
-    'sorting-price': () => {
-      return tripsCopyArr.sort((a, b) => TotalCost.getPricePoint(a) - TotalCost.getPricePoint(b));
-    },
-    'sorting-favorite': () => {
-      return tripsCopyArr.sort((a, b) => a.isFavorite - b.isFavorite);
-    },
-    'sorting-offers': () => {
-      return tripsCopyArr.sort((a, b) => a.offers.filter((offer) => offer.accepted).length - b.offers.filter((offer) => offer.accepted).length);
-    },
-  };
-  return fnSorting[sortingName]();
 };
 
 

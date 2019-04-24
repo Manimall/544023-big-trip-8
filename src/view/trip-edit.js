@@ -220,12 +220,8 @@ export class TripEdit extends Component {
   }
 
   _getReferencedOffers(offers) {
-    return [...offers].reduce((acc, item) => {
-      if (item.type === this._type.toLowerCase()) {
-        acc = item.offers;
-      }
-      return acc;
-    }, []);
+    const referencedElement = [...offers].find((el) => el.type === this._type.toLowerCase());
+    return referencedElement.offers;
   }
 
   _onPriceChange(evt) {
