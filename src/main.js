@@ -67,10 +67,7 @@ const toggleToTable = () => {
 let offers = [];
 let destinations = [];
 let points = [];
-let data = {
-  events: points,
-  stat: statData
-};
+let data = {};
 
 
 const createArrDays = (arrPoints) => {
@@ -160,6 +157,7 @@ const renderTrips = (pointsArr, dist) => {
       makeRequestDeleteData(id, tripEdit);
     };
 
+    // вставляем карточки в контейнер
     dist.appendChild(trip.render());
   });
 };
