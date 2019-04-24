@@ -246,8 +246,8 @@ export class TripEdit extends Component {
     return {
       id: this._id,
       type: this._type.toLowerCase(),
-      destination: this._city,
-      price: this._price,
+      destination: (this._city === POINT_DEFAULT.destination) ? (this._city = `Madrid`) : this._city,
+      price: (this._price === POINT_DEFAULT.price) ? (this._price = MIN_PRICE) : this._price,
       description: this._description,
       isFavorite: this._isFavorite,
       newTime: Object.assign({}, this._newTime),

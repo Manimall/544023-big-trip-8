@@ -12,7 +12,7 @@ const MIN_OFFERS = 0;
 const MAX_OFFERS = 3;
 
 const MAX_PRICE = 1300;
-const MIN_PRICE = 20;
+const MIN_PRICE = 100;
 const PRICE_STEP = 10;
 
 let prices = [];

@@ -69,8 +69,7 @@ export class Trip extends Component {
   }
 
   _filterOffers() {
-    this._offers = [...this._offers].filter((item) => item.accepted);
-    return this._offers;
+    return [...this._offers].filter((item) => item.accepted);
   }
 
   _getTripTitle() {
@@ -82,10 +81,6 @@ export class Trip extends Component {
   _getTripDuration() {
     let duration = moment.duration(moment(this._newTime.timeEnd).set({second: 0, millisecond: 0}).diff(moment(this._newTime.timeStart).set({second: 0, millisecond: 0})));
     const days = duration.days();
-    // if (days > 0) {
-    //   this._newTime.timeEnd = moment(moment(this._newTime.timeEnd).subtract(days, `days`)).valueOf();
-    //   duration = moment.duration(moment(this._newTime.timeEnd).set({second: 0, millisecond: 0}).diff(moment(this._newTime.timeStart).set({second: 0, millisecond: 0})));
-    // }
     return duration.days() > 0 ? `${days}D ${duration.hours()}H ${duration.minutes()}M` : `${duration.hours()}H ${duration.minutes()}M`;
   }
 

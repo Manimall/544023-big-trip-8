@@ -1,4 +1,3 @@
-// import {getRandomNumber} from '../utils/helpers';
 import moment from 'moment';
 
 // иконки для путешествий

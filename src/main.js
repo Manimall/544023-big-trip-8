@@ -67,7 +67,10 @@ const toggleToTable = () => {
 let offers = [];
 let destinations = [];
 let points = [];
-let data = {};
+let data = {
+  events: points,
+  stat: statData
+};
 
 
 const createArrDays = (arrPoints) => {
@@ -109,13 +112,17 @@ const renderOneDay = (arrPoints) => {
 
 const renderTargetEvents = (isInAscOrder = true) => {
   if (elementName.nameSorting === `sorting-event`) {
-    return isInAscOrder ?
-      renderDays(getFilterSortingEvents(points)) :
+    if (isInAscOrder) {
+      renderDays(getFilterSortingEvents(points));
+    } else {
       renderDays(getFilterSortingEvents(points).reverse());
+    }
   } else {
-    return isInAscOrder ?
-      renderOneDay(getFilterSortingEvents(points)) :
+    if (isInAscOrder) {
+      renderOneDay(getFilterSortingEvents(points));
+    } else {
       renderOneDay(getFilterSortingEvents(points).reverse());
+    }
   }
 };
 
@@ -173,8 +180,8 @@ const makeRequestGetData = async () => {
   }
 };
 
-const renderTotalCost = (arrPoints = points) => {
-  cost.getCostTrip(arrPoints);
+const renderTotalCost = () => {
+  cost.getCostTrip(points);
   boardTotalCost.appendChild(cost.render());
 };
 
@@ -209,6 +216,24 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
     trip.render();
     container.replaceChild(trip.element, tripEdit.element);
     tripEdit.unrender();
+    data = {
+      events: points,
+      stat: statData
+    };
+    renderTargetEvents();
+    updateTotalCost();
+  } catch (err) {
+    respondToError(tripEdit);
+  }
+};
+
+
+const makeRequestDeleteData = async (id, tripEdit) => {
+  try {
+    tripEdit.blockToDelete();
+    await provider.deletePoint({id});
+    points = await provider.getPoints();
+    tripEdit.unrender();
     renderTargetEvents();
     data = {
       events: points,
@@ -221,37 +246,19 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
 };
 
 
-const makeRequestDeleteData = async (id, tripEdit) => {
-  try {
-    tripEdit.blockToDelete();
-    await provider.deletePoint({id});
-    const newTrips = await provider.getPoints();
-    data = {
-      events: newTrips,
-      stat: statData
-    };
-    tripEdit.unrender();
-    renderTargetEvents();
-    updateTotalCost(newTrips);
-  } catch (err) {
-    respondToError(tripEdit);
-  }
-};
-
-
 const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
   try {
     newTripToRender.blockToSave();
     await provider.createPoint({point: Adapter.toRAW(newDataPoint)});
-    const newTrips = await provider.getPoints();
-    data = {
-      events: newTrips,
-      stat: statData
-    };
+    points = await provider.getPoints();
     newTripToRender.unrender();
     tripListWrapper.innerHTML = ``;
     renderTargetEvents();
-    updateTotalCost(newTrips);
+    data = {
+      events: points,
+      stat: statData
+    };
+    updateTotalCost();
   } catch (err) {
     respondToError(newTripToRender);
   }
