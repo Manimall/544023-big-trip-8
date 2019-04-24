@@ -86,9 +86,6 @@ export class Trip extends Component {
       this._newTime.timeEnd = moment(moment(this._newTime.timeEnd).subtract(days, `days`)).valueOf();
       duration = moment.duration(moment(this._newTime.timeEnd).set({second: 0, millisecond: 0}).diff(moment(this._newTime.timeStart).set({second: 0, millisecond: 0})));
     }
-    // } else if (days <= 0) {
-    //   this._newTime.timeEnd = this._newTime.timeStart;
-    // }
     return duration.days() > 0 ? `${days}D ${duration.hours()}H ${duration.minutes()}M` : `${duration.hours()}H ${duration.minutes()}M`;
   }
 

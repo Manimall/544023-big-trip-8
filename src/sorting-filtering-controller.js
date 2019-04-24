@@ -31,7 +31,7 @@ const getFilterSortingEvents = (trips) => {
 
   const fnSorting = {
     'sorting-event': () => {
-      return tripsCopyArr;
+      return tripsCopyArr.sort((a, b) => a.newTime.timeStart - b.newTime.timeStart);
     },
     'sorting-time': () => {
       return tripsCopyArr.sort((a, b) => getDuration(a.newTime) - getDuration(b.newTime));

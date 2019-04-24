@@ -328,21 +328,12 @@ export class TripEdit extends Component {
       dateFormat: `M j`,
       defaultDate: this._newTime.timeStart,
       onChange: (selectedDates) => {
-        console.log(moment(this._newTime.timeStart).format(`DD MMMM`));
-        console.log(moment(this._newTime.timeStart));
-        console.log(new Date(this._newTime.timeStart));
         let updatedDateStart = Date.parse(selectedDates[0]);
-        if (updatedDateStart < this._newTime.timeStart) {
-          updatedDateStart = this._newTime.timeStart;
-        } else {
-          console.log(moment.duration(moment(updatedDateStart).diff(moment(this._newTime.timeStart))));
-          const durationInUnix = moment.duration(moment(updatedDateStart).diff(moment(this._newTime.timeStart))).as(`milliseconds`);
-          console.log(durationInUnix);
-          this._newTime.timeStart = updatedDateStart;
-          // this._newTime.timeEnd =
-          if (this._newTime.timeEnd < this._newTime.timeStart) {
-            this._newTime.timeStart = this._newTime.timeEnd;
-          }
+        const durationInUnix = moment.duration(moment(updatedDateStart).diff(moment(this._newTime.timeStart))).as(`milliseconds`);
+        this._newTime.timeStart = updatedDateStart;
+        this._newTime.timeEnd = moment(this._newTime.timeEnd).add(durationInUnix, `milliseconds`);
+        if (this._newTime.timeEnd < this._newTime.timeStart) {
+          this._newTime.timeStart = this._newTime.timeEnd;
         }
         this._partialUpdate();
       }

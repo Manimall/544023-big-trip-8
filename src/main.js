@@ -183,6 +183,7 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
     trip.render();
     container.replaceChild(trip.element, tripEdit.element);
     tripEdit.unrender();
+    renderDays(getFilterSortingEvents(points));
     updateTotalCost();
   } catch (err) {
     respondToError(tripEdit);
