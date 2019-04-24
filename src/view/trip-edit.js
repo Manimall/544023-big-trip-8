@@ -228,19 +228,18 @@ export class TripEdit extends Component {
     evt.preventDefault();
 
     let priceEntered = evt.target.value;
-    if (priceEntered.match(/^\d{3,4}$/)) {
-      if (+priceEntered < MIN_PRICE) {
-        priceEntered = MIN_PRICE;
-      }
-      if (+priceEntered > MAX_PRICE) {
-        priceEntered = MAX_PRICE;
-      }
 
-      this._price = +priceEntered;
-      this._fullPrice = `${this._price} ${this._priceCurrency}`;
-
-      this._partialUpdate();
+    if (+priceEntered < MIN_PRICE) {
+      priceEntered = MIN_PRICE;
     }
+    if (+priceEntered > MAX_PRICE) {
+      priceEntered = MAX_PRICE;
+    }
+
+    this._price = +priceEntered;
+    this._fullPrice = `${this._price} ${this._priceCurrency}`;
+
+    this._partialUpdate();
   }
 
   _getNewTripData() {
@@ -291,7 +290,7 @@ export class TripEdit extends Component {
       altInput: true,
       altFormat: `H:i`,
       dateFormat: `U`,
-      defaultDate: moment(this._newTime.timeStart).format(),
+      defaultDate: this._newTime.timeStart,
       onClose: (dateStr) => {
         this._newTime.timeStart = Date.parse(dateStr);
       },
@@ -307,7 +306,7 @@ export class TripEdit extends Component {
       altInput: true,
       altFormat: `H:i`,
       dateFormat: `U`,
-      defaultDate: moment(this._newTime.timeEnd).format(),
+      defaultDate: this._newTime.timeEnd,
       onClose: (dateStr) => {
         this._newTime.timeEnd = Date.parse(dateStr);
       },
@@ -322,19 +321,37 @@ export class TripEdit extends Component {
   }
 
   _onDayChange() {
-    flatpickr(this._element.querySelector(`input[name="day"]`), {
-      altInput: true,
-      altFormat: `M j`,
-      dateFormat: `M j`,
-      defaultDate: this._newTime.timeStart,
-      onChange: (selectedDates) => {
-        let updatedDateStart = Date.parse(selectedDates[0]);
-        const durationInUnix = moment.duration(moment(updatedDateStart).diff(moment(this._newTime.timeStart))).as(`milliseconds`);
-        this._newTime.timeStart = updatedDateStart;
-        this._newTime.timeEnd = moment(this._newTime.timeEnd).add(durationInUnix, `milliseconds`);
-        if (this._newTime.timeEnd < this._newTime.timeStart) {
-          this._newTime.timeStart = this._newTime.timeEnd;
+    flatpickr(this._element.querySelector(`.point__date .point__input`), {
+      'altInput': true,
+      'altFormat': `M j`,
+      'dateFormat': `U`,
+      'defaultDate': this._newTime.timeStart,
+      'onChange': (data, string) => {
+        const selectedDate = moment.unix(Number(string));
+
+        const newYear = parseInt(moment(selectedDate).format(`YYYY`), 10);
+        const newMonth = parseInt(moment(selectedDate).format(`MM`), 10);
+        const newDay = parseInt(moment(selectedDate).format(`DD`), 10);
+
+        const newDateStartInput = moment.unix(this._newTime.timeStart)
+          .set(`year`, newYear)
+          .set(`month`, newMonth - 1)
+          .set(`date`, newDay)
+          .format(`X`);
+
+        const newDateEndInput = moment.unix(this._newTime.timeEnd)
+          .set(`year`, newYear)
+          .set(`month`, newMonth - 1)
+          .set(`date`, newDay)
+          .format(`X`);
+
+        this._newTime.timeStart = +newDateStartInput * 1000;
+        this._newTime.timeEnd = +newDateEndInput * 1000;
+
+        if (this._newTime.timeStart > this._newTime.timeEnd) {
+          this._newTime.timeEnd = this._newTime.timeStart;
         }
+
         this._partialUpdate();
       }
     });

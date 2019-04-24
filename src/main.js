@@ -78,7 +78,7 @@ const createArrDays = (arrPoints) => {
       arrDays.push(day);
     }
   });
-  return arrDays;
+  return arrDays.sort((a, b) => +moment(a).format(`YYYYMMDD`) - +moment(b).format(`YYYYMMDD`));
 };
 
 const renderDays = (arrPoints) => {
@@ -184,6 +184,10 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
     container.replaceChild(trip.element, tripEdit.element);
     tripEdit.unrender();
     renderDays(getFilterSortingEvents(points));
+    data = {
+      events: points,
+      stat: statData
+    };
     updateTotalCost();
   } catch (err) {
     respondToError(tripEdit);
