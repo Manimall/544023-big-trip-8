@@ -1,26 +1,31 @@
-import {filtersData, sortingData, statData} from './mock-data/trip-constants';
+import {filtersData, sortingData, statData, STORE_KEYS} from './mock-data/trip-constants';
 import {TripEdit} from './view/trip-edit';
 import {Trip} from './view/trip';
+import {TripDay} from './view/trip-day';
 import {Stat} from './view/stat';
 import {TotalCost} from './view/total-cost';
 import {Filter} from './view/filter';
+
+import {Store} from './data/store';
+import {Provider} from './data/provider';
 import {Adapter} from './data/adapter';
 import {Sorting} from './view/sorting';
 import {Api} from './data/api';
+
+import {removeCheckedInput, getFilterSortingEvents, elementName} from './sorting-filtering-controller';
+
 import moment from 'moment';
+
 
 const boardTotalCost = document.querySelector(`.trip`);
 const controls = document.querySelector(`.trip-controls`);
 const filterListWrapper = controls.querySelector(`.trip-filter`); // контэйнер для вставки фильтров
-const tripListWrapper = document.querySelector(`.trip-day__items`); // контэйнер для вставки путешествий
+const tripListWrapper = document.querySelector(`.trip-points`); // контэйнер для вставки путешествий вместе с датами
 const boardsBtn = controls.querySelector(`a[href*=table]`); // борд с путешествиями
 const statBtn = controls.querySelector(`a[href*=stats]`); // борд со статистикой
 const boardTable = document.querySelector(`#table`);
 const boardStat = document.querySelector(`#stats`);
 const buttonNewEvent = controls.querySelector(`.trip-controls__new-event`);
-
-// const board = boardTable.querySelector(`.trip-points`);
-
 const sortingListWrapper = boardTable.querySelector(`.trip-sorting`); // контэйнер для вставки элементов сортировки
 
 
@@ -33,6 +38,14 @@ const ServerConfig = {
 };
 
 const api = new Api({mainUrl: ServerConfig.MAIN_URL, authorization: ServerConfig.AUTHORIZATION});
+
+const store = new Store({key: STORE_KEYS.points, storage: localStorage});
+const storeOffers = new Store({key: STORE_KEYS.offers, storage: localStorage});
+const storeDestinations = new Store({key: STORE_KEYS.destinations, storage: localStorage});
+
+const provider = new Provider({api, store, generateId: () => String(Date.now())});
+const providerOffers = new Provider({api, store: storeOffers, generateId: () => String(Date.now())});
+const providerDestinations = new Provider({api, store: storeDestinations, generateId: () => String(Date.now())});
 
 
 // переключаемся с данных на статистику
@@ -50,29 +63,39 @@ const toggleToTable = () => {
   boardTable.classList.remove(`visually-hidden`);
 };
 
-statBtn.addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-  filterListWrapper.classList.add(`visually-hidden`);
-  if (!evt.target.classList.contains(`view-switch__item--active`)) {
-    toggleToStat();
-  }
-});
-
-boardsBtn.addEventListener(`click`, (evt) => {
-  evt.preventDefault();
-  filterListWrapper.classList.remove(`visually-hidden`);
-  if (!evt.target.classList.contains(`view-switch__item--active`)) {
-    toggleToTable();
-  }
-});
-
 
 let offers = [];
 let destinations = [];
 let points = [];
+let data = {};
 
-const renderTrips = (pointsArr) => {
+
+const createArrDays = (arrPoints) => {
+  const arrDays = [];
+  arrPoints.forEach((point) => {
+    const day = moment(point.newTime.timeStart).format(`DD MMM YY`);
+    if (arrDays.indexOf(day) === -1) {
+      arrDays.push(day);
+    }
+  });
+  return arrDays.sort((a, b) => +moment(a).format(`YYYYMMDD`) - +moment(b).format(`YYYYMMDD`));
+};
+
+const renderDays = (arrPoints) => {
   tripListWrapper.innerHTML = ``;
+  const arrDays = createArrDays(arrPoints);
+  arrDays.forEach((day) => {
+    const boardDay = new TripDay(day).render();
+    const pointsPerDay = arrPoints.filter((el) => moment(el.newTime.timeStart).format(`DD MMM YY`) === day);
+    const distEvents = boardDay.querySelector(`.trip-day__items`);
+    tripListWrapper.appendChild(boardDay);
+    renderTrips(pointsPerDay, distEvents);
+  });
+};
+
+
+const renderTrips = (pointsArr, dist) => {
+  dist.innerHTML = ``;
 
   pointsArr.forEach((item) => {
 
@@ -82,50 +105,56 @@ const renderTrips = (pointsArr) => {
     // открываем карточку редактирования маршрута
     trip.onEdit = () => {
       tripEdit.render();
-      tripListWrapper.replaceChild(tripEdit.element, trip.element);
+      dist.replaceChild(tripEdit.element, trip.element);
       trip.unrender();
     };
 
     // режактируем маршрут и сохраняем изменения
     tripEdit.onSubmit = (newObj) => {
-      makeRequestUpdateData(newObj, trip, tripEdit, tripListWrapper);
+      makeRequestUpdateData(newObj, trip, tripEdit, dist);
     };
 
+    // отмена изменений в карточке
     tripEdit.onKeyEsc = () => {
       trip.render();
-      tripListWrapper.replaceChild(trip.element, tripEdit.element);
+      dist.replaceChild(trip.element, tripEdit.element);
       tripEdit.resetTrip(trip);
       tripEdit.unrender();
     };
 
+    // удаление карточки
     tripEdit.onDelete = ({id}) => {
       makeRequestDeleteData(id, tripEdit);
     };
 
-    tripListWrapper.appendChild(trip.render());
+    dist.appendChild(trip.render());
   });
 };
 
-const makeRequest = async () => {
+const makeRequestGetData = async () => {
   tripListWrapper.textContent = `Loading route...`;
   try {
     [offers, destinations, points] =
-    await Promise.all([api.getOffers(), api.getDestinations(), api.getPoints()]);
+    await Promise.all([providerOffers.getOffers(), providerDestinations.getDestinations(), provider.getPoints()]);
+    data = {
+      events: points,
+      stat: statData
+    };
     initApp();
-    initStat();
+    initStat(data);
   } catch (err) {
     tripListWrapper.textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
   }
 };
 
-const renderTotalCost = (arrPoints) => {
+const renderTotalCost = (arrPoints = points) => {
   cost.getCostTrip(arrPoints);
   boardTotalCost.appendChild(cost.render());
 };
 
-const updateTotalCost = () => {
+const updateTotalCost = (pointsArr) => {
   cost.unrender();
-  renderTotalCost(points);
+  renderTotalCost(pointsArr);
 };
 
 const initApp = () => {
@@ -133,31 +162,32 @@ const initApp = () => {
   renderTotalCost(points);
   renderFilters(filtersData);
   renderSorting(sortingData);
-  renderTrips(points);
+  renderDays(points);
 };
 
 const initStat = () => {
-  const data = {
-    events: points,
-    stat: statData
-  };
   stat.config = data;
   stat.render();
 };
 
-makeRequest(); // получаем данные с сервера
+makeRequestGetData(); // получаем данные с сервера
 
 
 const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
   try {
     tripEdit.blockToSave();
-    const newPoint = await api.updatePoint({id: newData.id, data: Adapter.toRAW(newData)});
+    const newPoint = await provider.updatePoint({id: newData.id, data: Adapter.toRAW(newData)});
     points[newPoint.id] = newPoint;
     tripEdit.element.style.border = ``;
     trip.update(newPoint);
     trip.render();
     container.replaceChild(trip.element, tripEdit.element);
     tripEdit.unrender();
+    renderDays(getFilterSortingEvents(points));
+    data = {
+      events: points,
+      stat: statData
+    };
     updateTotalCost();
   } catch (err) {
     respondToError(tripEdit);
@@ -168,11 +198,15 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
 const makeRequestDeleteData = async (id, tripEdit) => {
   try {
     tripEdit.blockToDelete();
-    await api.deletePoint({id});
-    const newTrips = await api.getPoints();
+    await provider.deletePoint({id});
+    const newTrips = await provider.getPoints();
+    data = {
+      events: newTrips,
+      stat: statData
+    };
     tripEdit.unrender();
-    renderTrips(newTrips);
-    updateTotalCost();
+    renderDays(newTrips);
+    updateTotalCost(newTrips);
   } catch (err) {
     respondToError(tripEdit);
   }
@@ -182,11 +216,16 @@ const makeRequestDeleteData = async (id, tripEdit) => {
 const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
   try {
     newTripToRender.blockToSave();
-    await api.createPoint({point: Adapter.toRAW(newDataPoint)});
-    const newTrips = await api.getPoints();
+    await provider.createPoint({point: Adapter.toRAW(newDataPoint)});
+    const newTrips = await provider.getPoints();
+    data = {
+      events: newTrips,
+      stat: statData
+    };
     newTripToRender.unrender();
-    renderTrips(newTrips);
-    updateTotalCost();
+    tripListWrapper.innerHTML = ``;
+    renderDays(newTrips);
+    updateTotalCost(newTrips);
   } catch (err) {
     respondToError(newTripToRender);
   }
@@ -215,34 +254,6 @@ const respondToError = (elem) => {
 };
 
 
-// renderTrips(generatedTrips); // отренедеренные путешествия
-
-
-const getFilterEvents = (filterName, trips) => {
-  const fnFilter = {
-    'filter-everything': (obj) => {
-      return obj;
-    },
-    'filter-future': (obj) => {
-      return obj.filter((el) => el.newTime.timeStart > Date.now());
-    },
-    'filter-past': (obj) => {
-      return obj.filter((el) => el.newTime.timeEnd < Date.now());
-    },
-  };
-
-  return fnFilter[filterName]([...trips]);
-};
-
-const removeCheckedInput = (elem, parentWrapper, inputClass) => {
-  const allInputs = parentWrapper.querySelectorAll(inputClass);
-  [...allInputs].forEach((item) => {
-    if (elem !== item) {
-      item.removeAttribute(`checked`);
-    }
-  });
-};
-
 const renderFilters = (filterArr) => {
   return filterArr.forEach((item) => {
     const filter = new Filter(item);
@@ -252,8 +263,10 @@ const renderFilters = (filterArr) => {
       const clickedFilter = target.classList.contains(`trip-filter__item`);
       if (clickedFilter && !target.previousElementSibling.disabled) {
         tripListWrapper.innerHTML = ``;
-        const filteredEvents = getFilterEvents(target.previousElementSibling.id, points);
-        renderTrips(filteredEvents);
+
+        elementName.nameFilter = target.previousElementSibling.id;
+        const filteredEvents = getFilterSortingEvents(points);
+        renderDays(filteredEvents);
 
         removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
         removeCheckedInput(target.previousElementSibling, filterListWrapper, `input[name="filter"]`);
@@ -261,8 +274,6 @@ const renderFilters = (filterArr) => {
     };
   });
 };
-
-// renderFilters(filtersData); // отрендеренные фильтры
 
 const renderSorting = (sortingArr) => {
   return sortingArr.forEach((item) => {
@@ -274,11 +285,13 @@ const renderSorting = (sortingArr) => {
 
         tripListWrapper.innerHTML = ``;
 
-        const sortedEvents = sortingEl.isAsc ?
-          getSortingEvents(target.id, points).reverse() :
-          getSortingEvents(target.id, points);
+        elementName.nameSorting = target.id;
 
-        renderTrips(sortedEvents);
+        const sortedEvents = sortingEl.isAsc ?
+          getFilterSortingEvents(points).reverse() :
+          getFilterSortingEvents(points);
+
+        renderDays(sortedEvents);
 
         removeCheckedInput(target, sortingListWrapper, `input[name="sorting"]`);
       }
@@ -287,31 +300,30 @@ const renderSorting = (sortingArr) => {
   });
 };
 
-// renderSorting(sortingData); // отрендеренные элементы сортировки
+
+statBtn.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  filterListWrapper.classList.add(`visually-hidden`);
+  if (!evt.target.classList.contains(`view-switch__item--active`)) {
+    toggleToStat();
+  }
+  stat.update(data);
+});
+
+boardsBtn.addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  filterListWrapper.classList.remove(`visually-hidden`);
+  if (!evt.target.classList.contains(`view-switch__item--active`)) {
+    toggleToTable();
+  }
+});
 
 
-const getDuration = (obj) => {
-  return moment.duration(moment(obj.timeEnd).diff(moment(obj.timeStart)));
-};
+window.addEventListener(`offline`, () => {
+  document.title = `${document.title}[OFFLINE]`;
+});
 
-const getSortingEvents = (sortingName, trips) => {
-  let tripsCopyArr = [...trips];
-  const fnSorting = {
-    'sorting-event': () => {
-      return tripsCopyArr;
-    },
-    'sorting-time': () => {
-      return tripsCopyArr.sort((a, b) => getDuration(a.newTime) - getDuration(b.newTime));
-    },
-    'sorting-price': () => {
-      return tripsCopyArr.sort((a, b) => a.price - b.price);
-    },
-    'sorting-favorite': () => {
-      return tripsCopyArr.sort((a, b) => a.isFavorite - b.isFavorite);
-    },
-    'sorting-offers': () => {
-      return tripsCopyArr.sort((a, b) => a.offers.size - b.offers.size);
-    },
-  };
-  return fnSorting[sortingName]();
-};
+window.addEventListener(`online`, () => {
+  document.title = document.title.split(`[OFFLINE]`)[0];
+  provider.syncPoints();
+});

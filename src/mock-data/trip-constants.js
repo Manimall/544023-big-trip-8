@@ -127,7 +127,7 @@ const POINT_DEFAULT = {
   id: null,
   type: `taxi`,
   destination: ``,
-  price: 0,
+  price: ``,
   newTime: {
     timeStart: moment().valueOf(),
     timeEnd: moment().valueOf()
@@ -138,4 +138,11 @@ const POINT_DEFAULT = {
   isFavorite: false,
 };
 
-export {tripIcons, tripCities, tripOffers, tripDescription, tripTypes, tripPriceCurrency, tripAllPictures, filtersData, sortingData, statData, POINT_DEFAULT};
+
+const STORE_KEYS = {
+  points: `points-store-key`,
+  offers: `offers-store-key`,
+  destinations: `destinations-store-key`
+};
+
+export {tripIcons, tripCities, tripOffers, tripDescription, tripTypes, tripPriceCurrency, tripAllPictures, filtersData, sortingData, statData, POINT_DEFAULT, STORE_KEYS};

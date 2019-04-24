@@ -5,14 +5,14 @@ const formatEditOffers = (offers) => {
     acc += `
       <input class="point__offers-input visually-hidden"
             type="checkbox"
-            id="${offer.title || offer.name}"
+            id="${offer.name}"
             name="offer"
-            value="${offer.title || offer.name}"
+            value="${offer.name}"
             ${offer.accepted ? `checked` : ``}
       >
-      <label for="${offer.title || offer.name}" class="point__offers-label">
+      <label for="${offer.name}" class="point__offers-label">
         <span class="point__offer-service">
-          ${offer.title || offer.name}
+          ${offer.name}
         </span>
           + ${OFFER_CURRENCY}
         <span class="point__offer-price">

@@ -69,7 +69,7 @@ export class Trip extends Component {
   }
 
   _filterOffers() {
-    this._offers = [...this._offers].filter((item) => item.accepted === true);
+    this._offers = [...this._offers].filter((item) => item.accepted);
     return this._offers;
   }
 
