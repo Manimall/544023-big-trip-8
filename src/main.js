@@ -109,13 +109,13 @@ const renderOneDay = (arrPoints) => {
 
 const renderTargetEvents = (isInAscOrder = true) => {
   if (elementName.nameSorting === `sorting-event`) {
-    isInAscOrder ?
+    return isInAscOrder ?
       renderDays(getFilterSortingEvents(points)) :
       renderDays(getFilterSortingEvents(points).reverse());
   } else {
-    isInAscOrder ?
-     renderOneDay(getFilterSortingEvents(points)) :
-     renderOneDay(getFilterSortingEvents(points).reverse());
+    return isInAscOrder ?
+      renderOneDay(getFilterSortingEvents(points)) :
+      renderOneDay(getFilterSortingEvents(points).reverse());
   }
 };
 
@@ -210,7 +210,6 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
     container.replaceChild(trip.element, tripEdit.element);
     tripEdit.unrender();
     renderTargetEvents();
-    // renderDays(getFilterSortingEvents(points));
     data = {
       events: points,
       stat: statData
@@ -232,7 +231,6 @@ const makeRequestDeleteData = async (id, tripEdit) => {
       stat: statData
     };
     tripEdit.unrender();
-    renderDays(newTrips);
     renderTargetEvents();
     updateTotalCost(newTrips);
   } catch (err) {
@@ -252,7 +250,6 @@ const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
     };
     newTripToRender.unrender();
     tripListWrapper.innerHTML = ``;
-    // renderDays(newTrips);
     renderTargetEvents();
     updateTotalCost(newTrips);
   } catch (err) {
@@ -310,7 +307,6 @@ const renderSorting = (sortingArr) => {
 
     sortingEl.onSorting = ({target}) => {
       if (target.name === `sorting` && !target.disabled) {
-
         tripListWrapper.innerHTML = ``;
 
         elementName.nameSorting = target.id;

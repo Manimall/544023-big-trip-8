@@ -1,5 +1,5 @@
 import * as constants from './trip-constants';
-import {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, returnTrueOrFalse} from '../utils.js/helpers';
+import {getRandomNumber, getRandomElementFromArr, getFewRandomItemsFromArr, returnTrueOrFalse} from '../utils/helpers';
 import {generateOffers} from './generate-offers';
 import {generateTime} from './generate-time';
 
