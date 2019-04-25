@@ -79,7 +79,6 @@ const createArrDays = (arrPoints) => {
     }
   });
   return arrDays;
-  // return arrDays.sort((a, b) => +moment(a).format(`YYYYMMDD`) - +moment(b).format(`YYYYMMDD`));
 };
 
 const renderDays = (arrPoints) => {
