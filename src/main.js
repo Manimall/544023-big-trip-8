@@ -214,10 +214,6 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
     trip.render();
     container.replaceChild(trip.element, tripEdit.element);
     tripEdit.unrender();
-    data = {
-      events: points,
-      stat: statData
-    };
     renderTargetEvents();
     updateTotalCost();
   } catch (err) {
@@ -233,10 +229,6 @@ const makeRequestDeleteData = async (id, tripEdit) => {
     points = await provider.getPoints();
     tripEdit.unrender();
     renderTargetEvents();
-    data = {
-      events: points,
-      stat: statData
-    };
     updateTotalCost();
   } catch (err) {
     respondToError(tripEdit);
@@ -252,10 +244,6 @@ const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
     newTripToRender.unrender();
     tripListWrapper.innerHTML = ``;
     renderTargetEvents();
-    data = {
-      events: points,
-      stat: statData
-    };
     updateTotalCost();
   } catch (err) {
     respondToError(newTripToRender);
@@ -331,6 +319,10 @@ statBtn.addEventListener(`click`, (evt) => {
   if (!evt.target.classList.contains(`view-switch__item--active`)) {
     toggleToStat();
   }
+  data = {
+    events: points,
+    stat: statData
+  };
   stat.update(data);
 });
 
