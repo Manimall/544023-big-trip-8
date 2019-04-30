@@ -1,4 +1,4 @@
-import {filtersData, sortingData, statData, STORE_KEYS} from './mock-data/trip-constants';
+import {filtersData, sortingData, STORE_KEYS} from './mock-data/trip-constants';
 import {TripEdit} from './view/trip-edit';
 import {Trip} from './view/trip';
 import {TripDay} from './view/trip-day';
@@ -108,7 +108,7 @@ const renderOneDay = (arrPoints) => {
 
 const renderTargetEvents = (isInAscOrder = true) => {
   if (elementName.nameSorting === `sorting-event`) {
-    if (!isInAscOrder) {
+    if (isInAscOrder) {
       renderDays(getFilterSortingEvents(points));
     } else {
       renderDays(getFilterSortingEvents(points).reverse());
@@ -166,10 +166,6 @@ const makeRequestGetData = async () => {
   try {
     [offers, destinations, points] =
     await Promise.all([providerOffers.getOffers(), providerDestinations.getDestinations(), provider.getPoints()]);
-    data = {
-      events: points,
-      stat: statData
-    };
     initApp();
     initStat(data);
   } catch (err) {
@@ -196,7 +192,7 @@ const initApp = () => {
 };
 
 const initStat = () => {
-  stat.config = data;
+  stat.config = points;
   stat.render();
 };
 
@@ -318,11 +314,7 @@ statBtn.addEventListener(`click`, (evt) => {
   if (!evt.target.classList.contains(`view-switch__item--active`)) {
     toggleToStat();
   }
-  data = {
-    events: points,
-    stat: statData
-  };
-  stat.update(data);
+  stat.update(points);
 });
 
 boardsBtn.addEventListener(`click`, (evt) => {

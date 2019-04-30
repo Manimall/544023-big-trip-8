@@ -1,4 +1,4 @@
-import {tripTypes} from '../mock-data/trip-constants';
+import {tripTypes, statData} from '../mock-data/trip-constants';
 import moment from 'moment';
 import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -16,14 +16,14 @@ export class Stat {
     this._ctx = [];
   }
 
-  set config(data) {
+  set config(events) {
     for (let i = 0; i < COUNT_STAT; i += 1) {
-      this._container[i] = document.querySelector(data.stat[i].selectorParent);
-      this._ctx[i] = this._container[i].querySelector(data.stat[i].selector);
+      this._container[i] = document.querySelector(statData[i].selectorParent);
+      this._ctx[i] = this._container[i].querySelector(statData[i].selector);
       this._config[i] = {
-        _title: data.stat[i].title,
-        _unit: data.stat[i].unit,
-        _arrPoints: this[data.stat[i].method](data.events),
+        _title: statData[i].title,
+        _unit: statData[i].unit,
+        _arrPoints: this[statData[i].method](events),
       };
       this._ctx[i].height = BAR_HEIGHT * this._config[i]._arrPoints.numPoints;
       this._container[i].style = `height: ${this._ctx[i].height}px`;
@@ -81,9 +81,9 @@ export class Stat {
     return {labels: types, data: numbersOfEqualTrips, numPoints: count};
   }
 
-  update(data) {
+  update(events) {
     for (let i = 0; i < COUNT_STAT; i += 1) {
-      this._config[i]._arrPoints = this[data.stat[i].method](data.events);
+      this._config[i]._arrPoints = this[statData[i].method](events);
       this._element[i].config.data.labels = this._config[i]._arrPoints.labels;
       this._element[i].config.data.datasets[0].data = this._config[i]._arrPoints.data;
       this._element[i].chart.update();
