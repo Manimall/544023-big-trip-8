@@ -108,13 +108,13 @@ const renderOneDay = (arrPoints) => {
 
 const renderTargetEvents = (isInAscOrder = true) => {
   if (elementName.nameSorting === `sorting-event`) {
-    if (isInAscOrder) {
+    if (!isInAscOrder) {
       renderDays(getFilterSortingEvents(points));
     } else {
       renderDays(getFilterSortingEvents(points).reverse());
     }
   } else {
-    if (isInAscOrder) {
+    if (!isInAscOrder) {
       renderOneDay(getFilterSortingEvents(points));
     } else {
       renderOneDay(getFilterSortingEvents(points).reverse());
