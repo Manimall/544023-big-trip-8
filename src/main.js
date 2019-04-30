@@ -11,6 +11,7 @@ import {Provider} from './data/provider';
 import {Adapter} from './data/adapter';
 import {Sorting} from './view/sorting';
 import {Api} from './data/api';
+import {Model} from './data/model';
 
 import {removeCheckedInput, getFilterSortingEvents, elementName} from './sorting-filtering-controller';
 
@@ -28,6 +29,7 @@ const boardStat = document.querySelector(`#stats`);
 const buttonNewEvent = controls.querySelector(`.trip-controls__new-event`);
 const sortingListWrapper = boardTable.querySelector(`.trip-sorting`); // контэйнер для вставки элементов сортировки
 
+const model = new Model();
 
 const stat = new Stat();
 const cost = new TotalCost();
@@ -62,12 +64,6 @@ const toggleToTable = () => {
   boardStat.classList.add(`visually-hidden`);
   boardTable.classList.remove(`visually-hidden`);
 };
-
-
-let offers = [];
-let destinations = [];
-let points = [];
-let data = {};
 
 
 const createArrDays = (arrPoints) => {
@@ -109,15 +105,15 @@ const renderOneDay = (arrPoints) => {
 const renderTargetEvents = (isInAscOrder = true) => {
   if (elementName.nameSorting === `sorting-event`) {
     if (isInAscOrder) {
-      renderDays(getFilterSortingEvents(points));
+      renderDays(getFilterSortingEvents(model.points));
     } else {
-      renderDays(getFilterSortingEvents(points).reverse());
+      renderDays(getFilterSortingEvents(model.points).reverse());
     }
   } else {
     if (!isInAscOrder) {
-      renderOneDay(getFilterSortingEvents(points));
+      renderOneDay(getFilterSortingEvents(model.points));
     } else {
-      renderOneDay(getFilterSortingEvents(points).reverse());
+      renderOneDay(getFilterSortingEvents(model.points).reverse());
     }
   }
 };
@@ -129,7 +125,7 @@ const renderTrips = (pointsArr, dist) => {
   pointsArr.forEach((item) => {
 
     const trip = new Trip(item);
-    const tripEdit = new TripEdit(offers, destinations, item);
+    const tripEdit = new TripEdit(model.offers, model.destinations, item);
 
     // открываем карточку редактирования маршрута
     trip.onEdit = () => {
@@ -164,17 +160,17 @@ const renderTrips = (pointsArr, dist) => {
 const makeRequestGetData = async () => {
   tripListWrapper.textContent = `Loading route...`;
   try {
-    [offers, destinations, points] =
+    [model.offers, model.destinations, model.points] =
     await Promise.all([providerOffers.getOffers(), providerDestinations.getDestinations(), provider.getPoints()]);
     initApp();
-    initStat(data);
+    initStat();
   } catch (err) {
     tripListWrapper.textContent = `Something went wrong while loading your route info. Check your connection or try again later`;
   }
 };
 
 const renderTotalCost = () => {
-  cost.getCostTrip(points);
+  cost.getCostTrip(model.points);
   boardTotalCost.appendChild(cost.render());
 };
 
@@ -185,14 +181,14 @@ const updateTotalCost = (pointsArr) => {
 
 const initApp = () => {
   tripListWrapper.textContent = ``;
-  renderTotalCost(points);
+  renderTotalCost(model.points);
   renderFilters(filtersData);
   renderSorting(sortingData);
-  renderDays(points);
+  renderDays(model.points);
 };
 
 const initStat = () => {
-  stat.config = points;
+  stat.config = model.points;
   stat.render();
 };
 
@@ -203,7 +199,7 @@ const makeRequestUpdateData = async (newData, trip, tripEdit, container) => {
   try {
     tripEdit.blockToSave();
     const newPoint = await provider.updatePoint({id: newData.id, data: Adapter.toRAW(newData)});
-    points[newPoint.id] = newPoint;
+    model.points[newPoint.id] = newPoint;
     tripEdit.element.style.border = ``;
     trip.update(newPoint);
     trip.render();
@@ -221,7 +217,7 @@ const makeRequestDeleteData = async (id, tripEdit) => {
   try {
     tripEdit.blockToDelete();
     await provider.deletePoint({id});
-    points = await provider.getPoints();
+    model.points = await provider.getPoints();
     tripEdit.unrender();
     renderTargetEvents();
     updateTotalCost();
@@ -235,7 +231,7 @@ const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
   try {
     newTripToRender.blockToSave();
     await provider.createPoint({point: Adapter.toRAW(newDataPoint)});
-    points = await provider.getPoints();
+    model.points = await provider.getPoints();
     newTripToRender.unrender();
     tripListWrapper.innerHTML = ``;
     renderTargetEvents();
@@ -247,7 +243,7 @@ const makeRequestInsertData = async (newDataPoint, newTripToRender) => {
 
 buttonNewEvent.addEventListener(`click`, () => {
   toggleToTable();
-  const newPoint = new TripEdit(offers, destinations);
+  const newPoint = new TripEdit(model.offers, model.destinations);
 
   tripListWrapper.insertBefore(newPoint.render(), tripListWrapper.firstChild);
 
@@ -314,7 +310,7 @@ statBtn.addEventListener(`click`, (evt) => {
   if (!evt.target.classList.contains(`view-switch__item--active`)) {
     toggleToStat();
   }
-  stat.update(points);
+  stat.update(model.points);
 });
 
 boardsBtn.addEventListener(`click`, (evt) => {

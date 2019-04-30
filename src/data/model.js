@@ -17,6 +17,18 @@ export class Model {
     return this._destinations;
   }
 
+  set points(data) {
+    this._points = data;
+  }
+
+  set destinations(data) {
+    this._destinations = data;
+  }
+
+  set offers(data) {
+    this._offers = data;
+  }
+
   update(newPoints) {
     this._points = newPoints;
   }
