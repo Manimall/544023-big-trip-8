@@ -29,7 +29,7 @@ export class Model {
     this._offers = data;
   }
 
-  update(newPoints) {
-    this._points = newPoints;
-  }
+  // update(newPoints) {
+  //   this._points = newPoints;
+  // }
 }
