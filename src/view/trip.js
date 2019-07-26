@@ -104,6 +104,6 @@ export class Trip extends Component {
   }
 
   _unbind() {
-    this._element.addEventListener(`click`, this.onEdit);
+    this._element.removeEventListener(`click`, this.onEdit);
   }
 }

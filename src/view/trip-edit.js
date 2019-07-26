@@ -407,7 +407,7 @@ export class TripEdit extends Component {
 
   _unbind() {
     this._element.querySelector(`article > form`).removeEventListener(`submit`, this._onSubmitBtnClick);
-    this._element.querySelector(`article > form`).addEventListener(`keydown`, this._onKeyDownFormPress);
+    this._element.querySelector(`article > form`).removeEventListener(`keydown`, this._onKeyDownFormPress);
     this._element.querySelector(`input[name="price"]`).removeEventListener(`change`, this._onPriceChange);
     this._element.querySelector(`.travel-way__select`).removeEventListener(`change`, this._onTravelTypeChange);
     this._element.querySelector(`.point__destination-input`).removeEventListener(`change`, this._onTravelCityChange);
